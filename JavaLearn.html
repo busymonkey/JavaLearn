@@ -3,9 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <title>Java学习</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://unpkg.com/vxe-table/lib/index.css">
+    <script src="https://unpkg.com/vue/dist/vue"></script>
+    <script src="https://unpkg.com/element-ui/lib/index"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xe-utils"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vxe-table"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/qs/6.5.2/qs.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.7.0/echarts.min.js"></script>
+    <!-- vxe-table支持element样式 -->
+    <script src="https://unpkg.com/vxe-table-plugin-element"></script>
 </head>
 <body>
+<div id="treeMap" style="width: 1900px;height:900px;" ref="treeMap">
 
+</div>
 
 </body>
+<script type="text/javascript">
+    let treeMap = new Vue({
+        el: '#treeMap',
+        data: {},
+        methods: {
+            initChart: function () {
+                let myChart = echarts.init(this.$refs.treeMap)
+
+                let data = [{
+                    name: '节点1',
+                    value: 10,
+                    children: [{
+                        name: '节点1-1',
+                        value: 5,
+                        link: 'http://www.baidu.com'
+                    }, {
+                        name: '节点1-2',
+                        value: 5
+                    }]
+                }, {
+                    name: '节点2',
+                    value: 10,
+                }, {
+                    name: '节点3',
+                    value: 10,
+                }, {
+                    name: '节点4',
+                    value: 10,
+                }]
+
+                let option = {
+                    series: [{
+                        nodeClick: 'link',
+                        roam: false,
+                        name: 'option',
+                        type: 'treemap',
+                        data: data,
+                        leafDepth: 1,
+                        levels: [
+                            {
+                                itemStyle: {
+                                    borderColor: '#555',
+                                    borderWidth: 4,
+                                    gapWidth: 4
+                                }
+                            },
+                            {
+                                colorSaturation: [0.3, 0.6],
+                                itemStyle: {
+                                    borderColorSaturation: 0.7,
+                                    gapWidth: 2,
+                                    borderWidth: 2
+                                }
+                            },
+                            {
+                                colorSaturation: [0.3, 0.5],
+                                itemStyle: {
+                                    borderColorSaturation: 0.6,
+                                    gapWidth: 1
+                                }
+                            },
+                            {
+                                colorSaturation: [0.3, 0.5]
+                            }
+                        ]
+                    }],
+                }
+                myChart.setOption(option)
+            }
+        }
+    })
+
+    treeMap.initChart()
+</script>
 </html>
