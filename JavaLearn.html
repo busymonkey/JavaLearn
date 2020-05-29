@@ -30,32 +30,106 @@
                 let myChart = echarts.init(this.$refs.treeMap)
 
                 let data = [{
-                    name: '节点1',
-                    value: 10,
+                    name: '消息中心',
+                    value: 100,
                     children: [{
-                        name: '节点1-1',
-                        value: 5,
-                        link: 'http://www.baidu.com'
+                        name: 'RabbitMq',
+                        value: 100,
                     }, {
-                        name: '节点1-2',
-                        value: 5
+                        name: 'RocketMq',
+                        value: 100,
                     }]
                 }, {
-                    name: '节点2',
-                    value: 10,
+                    name: '微服务',
+                    value: 100,
+                    children: [{
+                        name: '注册中心',
+                        value: 100,
+                        children: [{
+                            name: 'Etcd',
+                            value: 100,
+                        }, {
+                            name: 'Consul',
+                            value: 100,
+                        }, {
+                            name: 'Zookeeper',
+                            value: 100,
+                        }]
+                    }, {
+                        name: '常见问题',
+                        value: 100,
+                    }, {
+                        name: 'DDD模型',
+                        value: 100,
+                    }]
                 }, {
-                    name: '节点3',
-                    value: 10,
+                    name: '缓存',
+                    value: 100,
+                    children: [{
+                        name: '缓存难点',
+                        value: 100,
+                    }, {
+                        name: '分布式缓存',
+                        value: 100,
+                    }, {
+                        name: 'redis',
+                        value: 100,
+                    }]
                 }, {
-                    name: '节点4',
-                    value: 10,
+                    name: '网络基础',
+                    value: 100,
+                    children: [{
+                        name: 'TCP/UDP',
+                        value: 100,
+                    }, {
+                        name: 'HTTP/HTTPS',
+                        value: 100,
+                    }, {
+                        name: 'POST/GET',
+                        value: 100,
+                    }]
+                }, {
+                    name: '数据库基础',
+                    value: 100,
+                    children: [{
+                        name: '索引',
+                        value: 100,
+                    }, {
+                        name: 'Oracle',
+                        value: 100,
+                    }, {
+                        name: 'Mysql',
+                        value: 100,
+                    }]
+                }, {
+                    name: 'Java基础',
+                    value: 100,
+                    children: [{
+                        name: '流式处理',
+                        value: 100,
+                    }, {
+                        name: 'JVM',
+                        value: 100,
+                    }, {
+                        name: '常考关键字',
+                        value: 100,
+                    }, {
+                        name: '多线程',
+                        value: 100,
+                    }, {
+                        name: '设计模式',
+                        value: 100,
+                    }, {
+                        name: '常用集合',
+                        value: 100,
+                    }]
                 }]
 
                 let option = {
                     series: [{
                         nodeClick: 'link',
                         roam: false,
-                        name: 'option',
+                        name: '开始',
                         type: 'treemap',
                         data: data,
                         leafDepth: 1,
@@ -85,7 +159,11 @@
                             {
                                 colorSaturation: [0.3, 0.5]
                             }
-                        ]
+                        ],
+                        label: {
+                            fontSize: 24,
+                            fontWeight: 'bold',
+                        }
                     }],
                 }
                 myChart.setOption(option)
