@@ -1,176 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
+<html></!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Java总结</title>
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <link rel="stylesheet" href="https://unpkg.com/vxe-table/lib/index.css">
-    <script src="https://unpkg.com/vue/dist/vue"></script>
-    <script src="https://unpkg.com/element-ui/lib/index"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xe-utils"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vxe-table"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.bootcss.com/qs/6.5.2/qs.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.7.0/echarts.min.js"></script>
-    <!-- vxe-table支持element样式 -->
-    <script src="https://unpkg.com/vxe-table-plugin-element"></script>
+    <title>test</title>
+    <title>Element_HTML</title>
+    <link rel="stylesheet" href="codemirror-5.45.0/lib/codemirror.css"/>
+    <link rel="stylesheet" href="codemirror-5.45.0/theme/dracula.css"/>
+    <link rel="stylesheet" href="codemirror-5.45.0/addon/fold/foldgutter.css"/>
+    <link rel="stylesheet" href="codemirror-5.45.0/addon/scroll/simplescrollbars.css"/>
+    <!-- 定制版 ionic 样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/vonic@2.0.0-beta.11/dist/vonic.min.css">
+    <!-- 依赖库 axios/vue/vue-router -->
+    <script src="https://unpkg.com/axios@0.15.3/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue@2.1.10/dist/vue.min.js"></script>
+    <script src="https://unpkg.com/vue-router@2.2.1/dist/vue-router.min.js"></script>
+    <!-- vonic 核心文件 -->
+    <script src="https://unpkg.com/vonic@2.0.0-beta.11/dist/vonic.min.js"></script>
+    <script src="codemirror-5.45.0/lib/codemirror.js"></script>
+    <script src="codemirror-5.45.0/mode/groovy/groovy.js"></script>
+    <script src="codemirror-5.45.0/mode/clike/clike.js"></script>
+    <script src="codemirror-5.45.0/addon/fold/foldcode.js"></script>
+    <script src="codemirror-5.45.0/addon/fold/foldgutter.js"></script>
+    <script src="codemirror-5.45.0/addon/fold/brace-fold.js"></script>
+    <script src="codemirror-5.45.0/addon/fold/comment-fold.js"></script>
+    <script src="codemirror-5.45.0/addon/scroll/simplescrollbars.js"></script>
 </head>
 <body>
-<div id="treeMap" style="width: 1900px;height:900px;" ref="treeMap">
-
-</div>
-
+<von-app></von-app>
 </body>
 <script type="text/javascript">
-    let treeMap = new Vue({
-        el: '#treeMap',
-        data: {},
-        methods: {
-            initChart: function () {
-                let myChart = echarts.init(this.$refs.treeMap)
-
-                let data = [{
-                    name: '消息中心',
-                    value: 100,
-                    children: [{
-                        name: 'RabbitMq',
-                        value: 100,
-                    }, {
-                        name: 'RocketMq',
-                        value: 100,
-                    }]
-                }, {
-                    name: '微服务',
-                    value: 100,
-                    children: [{
-                        name: '注册中心',
-                        value: 100,
-                        children: [{
-                            name: 'Etcd',
-                            value: 100,
-                        }, {
-                            name: 'Consul',
-                            value: 100,
-                        }, {
-                            name: 'Zookeeper',
-                            value: 100,
-                        }]
-                    }, {
-                        name: '常见问题',
-                        value: 100,
-                    }, {
-                        name: 'DDD模型',
-                        value: 100,
-                    }]
-                }, {
-                    name: '缓存',
-                    value: 100,
-                    children: [{
-                        name: '缓存难点',
-                        value: 100,
-                    }, {
-                        name: '分布式缓存',
-                        value: 100,
-                    }, {
-                        name: 'redis',
-                        value: 100,
-                    }]
-                }, {
-                    name: '网络基础',
-                    value: 100,
-                    children: [{
-                        name: 'TCP/UDP',
-                        value: 100,
-                    }, {
-                        name: 'HTTP/HTTPS',
-                        value: 100,
-                    }, {
-                        name: 'POST/GET',
-                        value: 100,
-                    }]
-                }, {
-                    name: '数据库基础',
-                    value: 100,
-                    children: [{
-                        name: '索引',
-                        value: 100,
-                    }, {
-                        name: 'Oracle',
-                        value: 100,
-                    }, {
-                        name: 'Mysql',
-                        value: 100,
-                    }]
-                }, {
-                    name: 'Java基础',
-                    value: 100,
-                    children: [{
-                        name: '流式处理',
-                        value: 100,
-                    }, {
-                        name: 'JVM',
-                        value: 100,
-                    }, {
-                        name: '常考关键字',
-                        value: 100,
-                    }, {
-                        name: '多线程',
-                        value: 100,
-                    }, {
-                        name: '设计模式',
-                        value: 100,
-                    }, {
-                        name: '常用集合',
-                        value: 100,
-                    }]
-                }]
-
-                let option = {
-                    series: [{
-                        nodeClick: 'link',
-                        roam: false,
-                        name: '开始',
-                        type: 'treemap',
-                        data: data,
-                        leafDepth: 1,
-                        levels: [
-                            {
-                                itemStyle: {
-                                    borderColor: '#555',
-                                    borderWidth: 4,
-                                    gapWidth: 4
-                                }
-                            },
-                            {
-                                colorSaturation: [0.3, 0.6],
-                                itemStyle: {
-                                    borderColorSaturation: 0.7,
-                                    gapWidth: 2,
-                                    borderWidth: 2
-                                }
-                            },
-                            {
-                                colorSaturation: [0.3, 0.5],
-                                itemStyle: {
-                                    borderColorSaturation: 0.6,
-                                    gapWidth: 1
-                                }
-                            },
-                            {
-                                colorSaturation: [0.3, 0.5]
-                            }
-                        ],
-                        label: {
-                            fontSize: 24,
-                            fontWeight: 'bold',
-                        }
-                    }],
-                }
-                myChart.setOption(option)
+    const Index = {
+        template: `
+			<div class="page has-navbar" v-nav="{ title: 'Home' }">
+				<div class="page-content text-center">
+					<h2 class="padding" v-text="msg"></h2>
+					<router-link class="button button-assertive" to="/about">
+					<i class="ion-information-circled"></i> About
+					</router-link>
+				</div>
+			</div>
+		`,
+        data() {
+            return {
+                msg: 'Hello! Vonic.'
             }
         }
+    }
+
+    const About = {
+        template: `
+			<div class="page has-navbar" v-nav="{ title: 'About', showBackButton: true }">
+				<div class="page-content text-center">
+					<h2 class="padding">Nothing here.</h2>
+					<textarea class="form-control" id="code" name="code">
+int getState()
+void setState()
+boolean compareAndSetState(int e222222222222222222222222222222222222222222222222222222222222222222222222xpect, int update)
+					</textarea>
+				</div>
+			</div>
+		`,
+        mounted() {
+            let editor = CodeMirror.fromTextArea(document.getElementById("code"), options)
+            editor.setSize(500, 500)
+        }
+    }
+
+    const routes = [
+        { path: '/', component: Index },
+        { path: '/about', component: About }
+    ]
+
+    Vue.use(Vonic.app, {
+        routes
     })
 
-    treeMap.initChart()
+    let options = {
+        tabSize: 2,
+        lineNumbers: true,
+        // line: true,
+        theme: "dracula",	//设置主题
+        // lineWrapping: true,
+        // foldGutter: true,
+        // gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+        // matchBrackets: true,
+        readOnly: true,
+        // coverGutterNextToScrollbar: true,
+        // fixedGutter: true,
+        scrollbarStyle: "simple",
+        // autoRefresh: true,
+        // smartIndent: true,
+    }
+
+
 </script>
 </html>
