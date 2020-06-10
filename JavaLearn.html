@@ -1,5 +1,6 @@
 <html>
 <head>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>test</title>
     <link rel="stylesheet" href="codemirror-5.45.0/lib/codemirror.css"/>
@@ -20,25 +21,43 @@
     <script src="codemirror-5.45.0/addon/fold/comment-fold.js"></script>
     <script src="codemirror-5.45.0/addon/scroll/simplescrollbars.js"></script>
 </head>
+<style lang="scss">
+    .cells.cells-44 > .row > .col {
+        padding: 30px 0;
+    }
+    .cells-33 > .row > .col {
+        padding: 50px 0;
+    }
+</style>
 <body>
 <von-app></von-app>
 </body>
 <script type="text/javascript">
     const Index = {
         template: `
-			<div class="page has-navbar" v-nav="{ title: 'Ŀ¼' }">
+			<div class="page has-navbar" v-nav="{ title: '目录' }">
 				<div class="page-content text-center">
 					<h2 class="padding" v-text="msg"></h2>
 					<router-link class="button button-assertive" to="/about">
 					<i class="ion-information-circled"></i> About
 					</router-link>
+					<cells class="cells-33" :items="cells" :on-cell-click="onCellClick"></cells>
 				</div>
 			</div>
 		`,
         data() {
             return {
-                msg: 'Hello! Vonic.'
+                msg: 'Hello',
+                cells: ['好','好','好','好','好','好','好','好','好'],
             }
+        },
+        methods: {
+            onCellClick(cellIndex) {
+                console.log('cell ' + cellIndex + ' clicked');
+                this.$router.push({
+                    path: `/about`,
+                })
+            },
         }
     }
 
