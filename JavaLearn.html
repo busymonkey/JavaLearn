@@ -6,13 +6,10 @@
     <link rel="stylesheet" href="codemirror-5.45.0/theme/dracula.css"/>
     <link rel="stylesheet" href="codemirror-5.45.0/addon/fold/foldgutter.css"/>
     <link rel="stylesheet" href="codemirror-5.45.0/addon/scroll/simplescrollbars.css"/>
-    <!-- 定制版 ionic 样式 -->
     <link rel="stylesheet" href="https://unpkg.com/vonic@2.0.0-beta.11/dist/vonic.min.css">
-    <!-- 依赖库 axios/vue/vue-router -->
     <script src="https://unpkg.com/axios@0.15.3/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vue@2.1.10/dist/vue.min.js"></script>
     <script src="https://unpkg.com/vue-router@2.2.1/dist/vue-router.min.js"></script>
-    <!-- vonic 核心文件 -->
     <script src="https://unpkg.com/vonic@2.0.0-beta.11/dist/vonic.min.js"></script>
     <script src="codemirror-5.45.0/lib/codemirror.js"></script>
     <script src="codemirror-5.45.0/mode/groovy/groovy.js"></script>
@@ -29,7 +26,7 @@
 <script type="text/javascript">
     const Index = {
         template: `
-			<div class="page has-navbar" v-nav="{ title: 'Home' }">
+			<div class="page has-navbar" v-nav="{ title: '目录' }">
 				<div class="page-content text-center">
 					<h2 class="padding" v-text="msg"></h2>
 					<router-link class="button button-assertive" to="/about">
@@ -74,16 +71,8 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
 
     let options = {
         tabSize: 2,
-        lineNumbers: true,
-        // line: true,
-        theme: "dracula",	//设置主题
-        // lineWrapping: true,
-        // foldGutter: true,
-        // gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-        // matchBrackets: true,
+        theme: "dracula",
         readOnly: true,
-        // coverGutterNextToScrollbar: true,
-        // fixedGutter: true,
         scrollbarStyle: "simple",
     }
 
