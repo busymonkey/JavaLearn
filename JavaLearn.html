@@ -363,15 +363,24 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
     }
     //// 路由
     const routes = [
-        { path: '/', redirect: '/home' }, //// 默认路由
-        { path: '/home', component: Home }, //// 首页
-        { path: '/java', component: Java }, //// 一级 Java
-        { path: '/dataBase', component: DataBase }, //// 一级 数据库
-        { path: '/netWork', component: NetWork }, //// 一级 网络
-        { path: '/cache', component: Cache }, //// 一级 缓存
-        { path: '/middleWare', component: MiddleWare }, //// 一级 中间件
-        { path: '/microService', component: MicroService }, //// 一级 微服务
-        { path: '/algorithm', component: Algorithm }, //// 一级 算法
+        //// 默认路由
+        { path: '/', redirect: '/home' },
+        //// 首页
+        { path: '/home', component: Home },
+        //// 一级菜单 Java
+        { path: '/java', component: Java },
+        //// 一级菜单 数据库
+        { path: '/dataBase', component: DataBase },
+        //// 一级菜单 网络
+        { path: '/netWork', component: NetWork },
+        //// 一级菜单 缓存
+        { path: '/cache', component: Cache },
+        //// 一级菜单 中间件
+        { path: '/middleWare', component: MiddleWare },
+        //// 一级菜单 微服务
+        { path: '/microService', component: MicroService },
+        //// 一级菜单 算法
+        { path: '/algorithm', component: Algorithm },
         { path: '/demo', component: Demo }
     ]
     //// 启动
