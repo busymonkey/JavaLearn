@@ -22,79 +22,114 @@
     <script src="codemirror-5.45.0/addon/scroll/simplescrollbars.js"></script>
 </head>
 <style lang="scss">
-    .cells.cells-44 > .row > .col {
-        padding: 30px 0;
-    }
-    .cells-33 > .row > .col {
+    .cells-43 > .row > .col {
         padding: 50px 0;
+        font-size: 15px;
+        font-weight: unset;
+        /*background:#000;*/
+        /*color:#FFF;*/
     }
 </style>
 <body>
 <von-app></von-app>
 </body>
 <script type="text/javascript">
-    const Index = {
+    //// 首页
+    const Home = {
         template: `
-			<div class="page has-navbar" v-nav="{ title: '目录' }">
-				<div class="page-content text-center">
-					<h2 class="padding" v-text="msg"></h2>
-					<router-link class="button button-assertive" to="/about">
-					<i class="ion-information-circled"></i> About
-					</router-link>
-					<cells class="cells-33" :items="cells" :on-cell-click="onCellClick"></cells>
-				</div>
+			<div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <span slot="title"><h3 class="padding text-center">目录</h3></span>
+                    </von-header>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="4"></cells>
+                </div>
 			</div>
 		`,
         data() {
             return {
-                msg: 'Hello',
-                cells: ['好','好','好','好','好','好','好','好','好'],
+                cells: ['Java基础','null','null','null','null','null','null','null','null','null','null','null'],
             }
         },
         methods: {
             onCellClick(cellIndex) {
-                console.log('cell ' + cellIndex + ' clicked');
-                this.$router.push({
-                    path: `/about`,
-                })
+                switch (cellIndex) {
+                    case 0: this.$router.push({path: `/javaBasic`}); break;
+                    default: this.$router.push({path: `/demo`});
+                }
+
             },
         }
     }
-
-    const About = {
+    //// 一级 Java基础
+    const JavaBasic = {
         template: `
-			<div class="page has-navbar" v-nav="{ title: 'About', showBackButton: true }">
-				<div class="page-content">
-					<h2 class="padding">Nothing here.</h2>
-					<textarea class="form-control" id="code" name="code">int getState()
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
+                        <span slot="title"><h3 class="padding text-center">Java基础</h3></span>
+                    </von-header>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="4"></cells>
+                </div>
+			</div>
+		`,
+        data() {
+            return {
+                cells: ['常考集合','常考关键字','设计模式','多线程','流式编程','JVM','null','null','null','null','null','null'],
+            }
+        },
+        methods: {
+            onCellClick(cellIndex) {
+                switch (cellIndex) {
+                    case 0: this.$router.push({path: `/javaBasic`}); break;
+                    default: this.$router.push({path: `/demo`});
+                }
+
+            },
+        }
+    }
+    //// 测试页面
+    const Demo = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.go(-1)"></button>
+                        <span slot="title"><h3 class="padding text-center">Demo</h3></span>
+                    </von-header>
+                    <textarea class="form-control" id="code" name="code">int getState()
 void setState()
 boolean compareAndSetState(int e222222222222222222222222222222222222222222222222222222222222222222222222xpect, int update)
 					</textarea>
-				</div>
+                </div>
 			</div>
 		`,
+        data() {
+            return {
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
         mounted() {
-            let editor = CodeMirror.fromTextArea(document.getElementById("code"), options)
+            let editor = CodeMirror.fromTextArea(document.getElementById("code"), this.options)
             editor.setSize(500, 500)
         }
     }
-
+    //// 路由
     const routes = [
-        { path: '/', component: Index },
-        { path: '/about', component: About }
+        { path: '/home', component: Home },
+        { path: '/javaBasic', component: JavaBasic },
+        { path: '/demo', component: Demo }
     ]
-
+    //// 启动
     Vue.use(Vonic.app, {
         routes
     })
-
-    let options = {
-        tabSize: 2,
-        theme: "dracula",
-        readOnly: true,
-        scrollbarStyle: "simple",
-    }
-
 
 </script>
 </html>
