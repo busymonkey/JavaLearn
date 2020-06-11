@@ -29,6 +29,19 @@
         /*background:#000;*/
         /*color:#FFF;*/
     }
+    .headerTop {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    p {
+        padding: 10px 15px 10px 0;
+        font-size: 12px;
+        line-height: 22px;
+        text-align: justify;
+    }
+    .stableBack {
+        background:#f5f5f5;
+    }
 </style>
 <body>
 <von-app></von-app>
@@ -40,49 +53,277 @@
 			<div class="page has-navbar" v-nav="{hideNavbar: true}">
                 <div class="page-content">
                     <von-header :theme="'stable'">
-                        <span slot="title"><h3 class="padding text-center">目录</h3></span>
+                        <span slot="title"><h3 class="padding text-center headerTop">目录</h3></span>
                     </von-header>
-                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="4"></cells>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="3"></cells>
                 </div>
 			</div>
 		`,
         data() {
             return {
-                cells: ['Java基础','null','null','null','null','null','null','null','null','null','null','null'],
+                cells: ['Java基础','数据库基础','网络基础','缓存','中间件','微服务','算法'],
             }
         },
         methods: {
             onCellClick(cellIndex) {
                 switch (cellIndex) {
-                    case 0: this.$router.push({path: `/javaBasic`}); break;
+                    case 0: this.$router.push({path: '/java'}); break;
+                    case 1: this.$router.push({path: '/dataBase'}); break;
+                    case 2: this.$router.push({path: '/netWork'}); break;
+                    case 3: this.$router.push({path: '/cache'}); break;
+                    case 4: this.$router.push({path: '/middleWare'}); break;
+                    case 5: this.$router.push({path: '/microService'}); break;
+                    case 6: this.$router.push({path: '/algorithm'}); break;
+                    default:
+                }
+            },
+        }
+    }
+    //// 一级 Java
+    const Java = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">Java</h3></span>
+                    </von-header>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="2"></cells>
+                </div>
+			</div>
+		`,
+        data() {
+            return {
+                cells: ['集合','关键字','设计模式','多线程','流式编程','JVM'],
+            }
+        },
+        methods: {
+            onCellClick(cellIndex) {
+                switch (cellIndex) {
+                    case 0: break;
+                    case 1: break;
+                    case 2: break;
+                    case 3: break;
+                    case 4: break;
+                    case 5: break;
                     default: this.$router.push({path: `/demo`});
                 }
 
             },
         }
     }
-    //// 一级 Java基础
-    const JavaBasic = {
+    //// 一级 数据库
+    const DataBase = {
         template: `
             <div class="page has-navbar" v-nav="{hideNavbar: true}">
                 <div class="page-content">
                     <von-header :theme="'stable'">
                         <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
-                        <span slot="title"><h3 class="padding text-center">Java基础</h3></span>
+                        <span slot="title"><h3 class="padding text-center headerTop">数据库</h3></span>
                     </von-header>
-                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="4"></cells>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="2"></cells>
                 </div>
 			</div>
 		`,
         data() {
             return {
-                cells: ['常考集合','常考关键字','设计模式','多线程','流式编程','JVM','null','null','null','null','null','null'],
+                cells: ['事务','执行计划','索引','Mysql','Oracle','数据库设计范式'],
             }
         },
         methods: {
             onCellClick(cellIndex) {
                 switch (cellIndex) {
-                    case 0: this.$router.push({path: `/javaBasic`}); break;
+                    case 0: break;
+                    case 1: break;
+                    case 2: break;
+                    case 3: break;
+                    case 4: break;
+                    case 5: break;
+                    default: this.$router.push({path: `/demo`});
+                }
+
+            },
+        }
+    }
+    //// 一级 网络
+    const NetWork = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">网络</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="Post/Get" content-height="108">
+                          <p>Post</p>
+                          <p>Get</p>
+                        </accordion-item>
+                        <div class="padding stableBack"></div>
+                        <accordion-item class="stableBack" title="Http/Https" content-height="108">
+                          <p>Http</p>
+                          <p>Https</p>
+                        </accordion-item>
+                        <div class="padding stableBack"></div>
+                        <accordion-item class="stableBack" title="Cookie/Session/Token" content-height="108">
+                          <p>Cookie</p>
+                          <p>Session</p>
+                          <p>Token</p>
+                        </accordion-item>
+                        <div class="padding stableBack"></div>
+                        <accordion-item class="stableBack" title="对称加密/非对称加密" content-height="108">
+                          <p>对称加密</p>
+                          <p>非对称加密</p>
+                        </accordion-item>
+                        <div class="padding stableBack"></div>
+                        <accordion-item class="stableBack" title="正向代理/反向代理" content-height="108">
+                          <p>正向代理</p>
+                          <p>反向代理</p>
+                        </accordion-item>
+                        <div class="padding stableBack"></div>
+                        <accordion-item class="stableBack" title="TCP/UDP" content-height="108">
+                          <p>TCP</p>
+                          <p>UDP</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+			</div>
+		`,
+        data() {
+            return {
+
+            }
+        },
+        methods: {
+
+        }
+    }
+    //// 一级 缓存
+    const Cache = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">缓存</h3></span>
+                    </von-header>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="2"></cells>
+                </div>
+			</div>
+		`,
+        data() {
+            return {
+                cells: ['null','null','null','null','null','JVM'],
+            }
+        },
+        methods: {
+            onCellClick(cellIndex) {
+                switch (cellIndex) {
+                    case 0: break;
+                    case 1: break;
+                    case 2: break;
+                    case 3: break;
+                    case 4: break;
+                    case 5: break;
+                    default: this.$router.push({path: `/demo`});
+                }
+
+            },
+        }
+    }
+    //// 一级 中间件
+    const MiddleWare = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">中间件</h3></span>
+                    </von-header>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="2"></cells>
+                </div>
+			</div>
+		`,
+        data() {
+            return {
+                cells: ['null','null','null','null','null','JVM'],
+            }
+        },
+        methods: {
+            onCellClick(cellIndex) {
+                switch (cellIndex) {
+                    case 0: break;
+                    case 1: break;
+                    case 2: break;
+                    case 3: break;
+                    case 4: break;
+                    case 5: break;
+                    default: this.$router.push({path: `/demo`});
+                }
+
+            },
+        }
+    }
+    //// 一级 微服务
+    const MicroService = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">微服务</h3></span>
+                    </von-header>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="2"></cells>
+                </div>
+			</div>
+		`,
+        data() {
+            return {
+                cells: ['null','null','null','null','null','JVM'],
+            }
+        },
+        methods: {
+            onCellClick(cellIndex) {
+                switch (cellIndex) {
+                    case 0: break;
+                    case 1: break;
+                    case 2: break;
+                    case 3: break;
+                    case 4: break;
+                    case 5: break;
+                    default: this.$router.push({path: `/demo`});
+                }
+
+            },
+        }
+    }
+    //// 一级 算法
+    const Algorithm = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">算法</h3></span>
+                    </von-header>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="2"></cells>
+                </div>
+			</div>
+		`,
+        data() {
+            return {
+                cells: ['null','null','null','null','null','JVM'],
+            }
+        },
+        methods: {
+            onCellClick(cellIndex) {
+                switch (cellIndex) {
+                    case 0: break;
+                    case 1: break;
+                    case 2: break;
+                    case 3: break;
+                    case 4: break;
+                    case 5: break;
                     default: this.$router.push({path: `/demo`});
                 }
 
@@ -122,8 +363,15 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
     }
     //// 路由
     const routes = [
-        { path: '/home', component: Home },
-        { path: '/javaBasic', component: JavaBasic },
+        { path: '/', redirect: '/home' }, //// 默认路由
+        { path: '/home', component: Home }, //// 首页
+        { path: '/java', component: Java }, //// 一级 Java
+        { path: '/dataBase', component: DataBase }, //// 一级 数据库
+        { path: '/netWork', component: NetWork }, //// 一级 网络
+        { path: '/cache', component: Cache }, //// 一级 缓存
+        { path: '/middleWare', component: MiddleWare }, //// 一级 中间件
+        { path: '/microService', component: MicroService }, //// 一级 微服务
+        { path: '/algorithm', component: Algorithm }, //// 一级 算法
         { path: '/demo', component: Demo }
     ]
     //// 启动
