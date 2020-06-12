@@ -34,13 +34,15 @@
         font-weight: bold;
     }
     p {
-        padding: 10px 15px 10px 0;
+        padding: 5px 15px 0 0;
         font-size: 12px;
-        line-height: 22px;
-        text-align: justify;
+        line-height: 20px;
     }
     .stableBack {
         background:#f5f5f5;
+    }
+    .textArea {
+        padding: 10px 10px 0 10px;
     }
 </style>
 <body>
@@ -79,6 +81,7 @@
             },
         }
     }
+
     //// 一级 Java
     const Java = {
         template: `
@@ -100,7 +103,7 @@
         methods: {
             onCellClick(cellIndex) {
                 switch (cellIndex) {
-                    case 0: break;
+                    case 0: this.$router.push({path: `/collection`}); break;
                     case 1: break;
                     case 2: break;
                     case 3: break;
@@ -112,6 +115,32 @@
             },
         }
     }
+    //// 二级 集合
+    const Collection = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/java')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">集合</h3></span>
+                    </von-header>
+                    <span @click="$router.push('/hashMap')">
+                        <item class="item-icon-right">HashMap<i class="icon ion-ios-arrow-right"></i></item>
+                    </span>
+
+                </div>
+			</div>
+		`,
+        data() {
+            return {
+
+            }
+        },
+        methods: {
+
+        }
+    }
+
     //// 一级 数据库
     const DataBase = {
         template: `
@@ -127,15 +156,15 @@
 		`,
         data() {
             return {
-                cells: ['事务','执行计划','索引','Mysql','Oracle','数据库设计范式'],
+                cells: ['事务','执行计划','索引','Mysql','Oracle','设计范式'],
             }
         },
         methods: {
             onCellClick(cellIndex) {
                 switch (cellIndex) {
-                    case 0: break;
-                    case 1: break;
-                    case 2: break;
+                    case 0: this.$router.push({path: `/transaction`}); break;
+                    case 1: this.$router.push({path: `/executionPlan`}); break;
+                    case 2: this.$router.push({path: `/index`}); break;
                     case 3: break;
                     case 4: break;
                     case 5: break;
@@ -145,6 +174,142 @@
             },
         }
     }
+    //// 二级 执行计划
+    const ExecutionPlan = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/dataBase')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">执行计划</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <div class="item item-divider">索引命中</div>
+                        <accordion-item class="stableBack" title="or" content-height="60">
+                          <p>列a，列b只有当独立索引时才会命中，联合索引是不会命中</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="like" content-height="60">
+                          <p>通配符在右边，或者无通配符可以命中索引，通配符在左边无法命中索引</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="最左原则" content-height="200">
+                          <p>联合索引index(a, b, c)</p>
+                          <p>where a = 1 and b = 1 and c = 1 是可以命中索引，类型为 ref 类型</p>
+                          <p>where b = 1 and c = 1 是无法命中索引，类型为 ALL</p>
+                          <p>where a > 1 and b = 1 and c = 1 是可以命中索引的（只要有最左的a索引），索引类型是 range</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="其他" content-height="108">
+                          <p>关联条件是不走索引的</p>
+                          <p>范围索引数据库会衡量效率，如果走索引效率更低，也不会走索引</p>
+                        </accordion-item>
+                        <div class="item item-divider">执行计划</div>
+                        <accordion-item class="stableBack" title="预留" content-height="108">
+                          <p>预留</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+			</div>
+		`,
+        data() {
+            return {
+
+            }
+        },
+        methods: {
+
+        }
+    }
+    //// 二级 事务
+    const Transaction = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/dataBase')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">事务</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="ACID" content-height="500">
+                          <p>原子性（Atomicity）：事务必须是原子工作单元；对于其数据修改，要么全都执行，要么全都不执行。通常，与某个事务关联的操作具有共同的目标，并且是相互依赖的。如果系统只执行这些操作的一个子集，则可能会破坏事务的总体目标。原子性消除了系统处理操作子集的可能性</p>
+                          <p>一致性（Consistency）：事务在完成时，必须使所有的数据都保持一致状态。在相关数据库中，所有规则都必须应用于事务的修改，以保持所有数据的完整性。事务结束时，所有的内部数据结构（如 B 树索引或双向链表）都必须是正确的。某些维护一致性的责任由应用程序开发人员承担，他们必须确保应用程序已强制所有已知的完整性约束。例如，当开发用于转帐的应用程序时，应避免在转帐过程中任意移动小数点</p>
+                          <p>隔离性（Isolation）：由并发事务所作的修改必须与任何其它并发事务所作的修改隔离。事务查看数据时数据所处的状态，要么是另一并发事务修改它之前的状态，要么是另一事务修改它之后的状态，事务不会查看中间状态的数据。这称为可串行性，因为它能够重新装载起始数据，并且重播一系列事务，以使数据结束时的状态与原始事务执行的状态相同。当事务可序列化时将获得最高的隔离级别。在此级别上，从一组可并行执行的事务获得的结果与通过连续运行每个事务所获得的结果相同。由于高度隔离会限制可并行执行的事务数，所以一些应用程序降低隔离级别以换取更大的吞吐量</p>
+                          <p>持久性（Durability）：事务完成之后，它对于系统的影响是永久性的。该修改即使出现致命的系统故障也将一直保持</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="隔离级别" content-height="220">
+                          <p>读未提交：会造成脏读、不可重复读、幻读</p>
+                          <p>读已提交：会造成不可重复读、幻读</p>
+                          <p>可重复读：会造成幻读</p>
+                          <p>可串行化：</p>
+                          <p>Mysql支持四种隔离级别（默认是可重复读），Oracle支持读已提交和可串行化（默认是读已提交）</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="脏读" content-height="60">
+                          <p>某个事务已更新一份数据，另一个事务在此时读取了同一份数据，由于某些原因，前一个RollBack了操作，则后一个事务所读取的数据就会是不正确的</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="幻读" content-height="60">
+                          <p>在一个事务的两次查询之中数据不一致，这可能是两次查询过程中间插入了一个事务更新的原有的数据</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="不可重复读" content-height="108">
+                          <p>在一个事务的两次查询中数据笔数不一致，例如有一个事务查询了几列(Row)数据，而另一个事务却在此时插入了新的几列数据，先前的事务在接下来的查询中，就会发现有几列数据是它先前所没有的</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+			</div>
+		`,
+        data() {
+            return {
+
+            }
+        },
+        methods: {
+
+        }
+    }
+    //// 二级 索引
+    const Index = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/dataBase')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">索引</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="B树" content-height="108">
+                          <p>m阶平衡树：m阶为一节点至多有m棵子树 ，也就是说B树上的结点最多只能有m棵子树</p>
+                          <p>每个非根节点所包含的关键字个数 j 满足：m/2 - 1 <= j <= m - 1（分割标志）</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="B+树" content-height="100">
+                          <p>叶子节点增加横向索引</p>
+                          <p>内部节点只保存索引，不保存实际数据，实际数据都在叶子节点</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="B*树" content-height="60">
+                          <p>内部节点增加横向索引</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="聚簇索引" content-height="60">
+                          <p>已主键构造出的一个B+树索引</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="非聚簇索引" content-height="60">
+                          <p>非聚集索引又叫辅助索引，叶子节点并不包含行记录数据，而是存储了聚集索引键</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="全文索引" content-height="60">
+                          <p>只有字段的数据类型为 char、varchar、text 及其系列才可以建全文索引</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="回表" content-height="60">
+                          <p>数据库根据索引找到了指定的记录所在行后，还需要根据rowid再次到数据块里取数据的操作</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+			</div>
+		`,
+        data() {
+            return {
+
+            }
+        },
+        methods: {
+
+        }
+    }
+
     //// 一级 网络
     const NetWork = {
         template: `
@@ -159,28 +324,23 @@
                           <p>Post</p>
                           <p>Get</p>
                         </accordion-item>
-                        <div class="padding stableBack"></div>
                         <accordion-item class="stableBack" title="Http/Https" content-height="108">
                           <p>Http</p>
                           <p>Https</p>
                         </accordion-item>
-                        <div class="padding stableBack"></div>
                         <accordion-item class="stableBack" title="Cookie/Session/Token" content-height="108">
                           <p>Cookie</p>
                           <p>Session</p>
                           <p>Token</p>
                         </accordion-item>
-                        <div class="padding stableBack"></div>
                         <accordion-item class="stableBack" title="对称加密/非对称加密" content-height="108">
                           <p>对称加密</p>
                           <p>非对称加密</p>
                         </accordion-item>
-                        <div class="padding stableBack"></div>
                         <accordion-item class="stableBack" title="正向代理/反向代理" content-height="108">
                           <p>正向代理</p>
                           <p>反向代理</p>
                         </accordion-item>
-                        <div class="padding stableBack"></div>
                         <accordion-item class="stableBack" title="TCP/UDP" content-height="108">
                           <p>TCP</p>
                           <p>UDP</p>
@@ -198,6 +358,7 @@
 
         }
     }
+
     //// 一级 缓存
     const Cache = {
         template: `
@@ -213,7 +374,7 @@
 		`,
         data() {
             return {
-                cells: ['null','null','null','null','null','JVM'],
+                cells: ['null','null','null','null','null','null'],
             }
         },
         methods: {
@@ -231,6 +392,7 @@
             },
         }
     }
+
     //// 一级 中间件
     const MiddleWare = {
         template: `
@@ -246,7 +408,7 @@
 		`,
         data() {
             return {
-                cells: ['null','null','null','null','null','JVM'],
+                cells: ['null','null','null','null','null','null'],
             }
         },
         methods: {
@@ -264,6 +426,7 @@
             },
         }
     }
+
     //// 一级 微服务
     const MicroService = {
         template: `
@@ -279,7 +442,7 @@
 		`,
         data() {
             return {
-                cells: ['null','null','null','null','null','JVM'],
+                cells: ['null','null','null','null','null','null'],
             }
         },
         methods: {
@@ -297,6 +460,7 @@
             },
         }
     }
+
     //// 一级 算法
     const Algorithm = {
         template: `
@@ -312,7 +476,7 @@
 		`,
         data() {
             return {
-                cells: ['null','null','null','null','null','JVM'],
+                cells: ['null','null','null','null','null','null'],
             }
         },
         methods: {
@@ -330,6 +494,67 @@
             },
         }
     }
+
+    //// 单元模块 HashMap
+    const HashMap = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.go(-1)"></button>
+                        <span slot="title"><h3 class="padding text-center">HashMap</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="Hash算法介绍" content-height="80">
+                          <p>Hash，一般翻译做“散列”，也有直接音译为“哈希”的，就是把任意长度的输入，通过散列算法，变换成固定长度的输出，该输出就是散列值。两个不同的输入值，根据同一散列函数计算出的散列值相同的现象叫做碰撞。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="常见Hash算法" content-height="320">
+                          <p>直接定址法：直接以关键字k或者k加上某个常数（k+c）作为哈希地址。</p>
+                          <p>数字分析法：提取关键字中取值比较均匀的数字作为哈希地址。</p>
+                          <p>除留余数法：用关键字k除以某个不大于哈希表长度m的数p，将所得余数作为哈希表地址。</p>
+                          <p>分段叠加法：按照哈希表地址位数将关键字分成位数相等的几部分，其中最后一部分可以比较短。然后将这几部分相加，舍弃最高进位后的结果就是该关键字的哈希地址。</p>
+                          <p>平方取中法：如果关键字各个部分分布都不均匀的话，可以先求出它的平方值，然后按照需求取中间的几位作为哈希地址。</p>
+                          <p>伪随机数法：采用一个伪随机数当作哈希函数。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="解决碰撞的方法" content-height="260">
+                          <p>开放定址法：开放定址法就是一旦发生了冲突，就去寻找下一个空的散列地址，只要散列表足够大，空的散列地址总能找到，并将记录存入。</p>
+                          <p>链地址法：将哈希表的每个单元作为链表的头结点，所有哈希地址为i的元素构成一个同义词链表。即发生冲突时就把该关键字链在以该单元为头结点的链表的尾部。</p>
+                          <p>再哈希法：当哈希地址发生冲突用其他的函数计算另一个哈希函数地址，直到冲突不再产生为止。</p>
+                          <p>建立公共溢出区：将哈希表分为基本表和溢出表两部分，发生冲突的元素都放入溢出表中。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="MD5和Hash的区别" content-height="220">
+                          <p>首先，MD5与hash都是单向加密的算法，可以把一些信息进行单向加密成固定长度的散列码。（hash算法即常说的散列算法，也被人翻译成哈希）；其次，MD5也是hash算法的一种，常见的hash算法还有sha1,sha2等。MD5也被称为信息摘要算法，由于其算法复杂不够，容易被暴力破解的。SHA1算法也存在和MD5一样的问题。还有SHA2、SHA256、SHA512等，这些算法的复杂度相对要高，但是依然是可被破解的只是破解成本被增加了，但是一些常用的文本信息（比如密码）的散列码被一些专业厂端记录下来了，还是容易被破解的，怎么办呢？ 加个密码盐呗，这样的话暴力破解几乎是搞不定了，即使搞定了可能也因为过去太久时间而变的没有价值。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="Jdk7 hash()" content-height="340">
+                            <div><textarea id="jdk7hash"></textarea></div>
+                        </accordion-item>
+                    </accordion>
+
+
+                </div>
+			</div>
+		`,
+        data() {
+            return {
+                jdk7hash:
+                    "h = hashSeed; //// hashSeed\n" +
+                    "h ^= k.hashCode(); //// hashCode是JVM对应的地址码\n" +
+                    "h ^= (h >>> 20) ^ (h >>> 12);\n" +
+                    "return h ^ (h >>> 7) ^ (h >>> 4);",
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        mounted() {
+            let editor = CodeMirror.fromTextArea(document.getElementById("jdk7hash"), this.options)
+            editor.setValue(this.jdk7hash)
+        }
+    }
+
     //// 测试页面
     const Demo = {
         template: `
@@ -367,20 +592,36 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         { path: '/', redirect: '/home' },
         //// 首页
         { path: '/home', component: Home },
+
         //// 一级菜单 Java
         { path: '/java', component: Java },
+        { path: '/collection', component: Collection }, //// 二级菜单 集合
+
         //// 一级菜单 数据库
         { path: '/dataBase', component: DataBase },
+        { path: '/executionPlan', component: ExecutionPlan }, //// 二级菜单 执行计划
+        { path: '/transaction', component: Transaction }, //// 二级菜单 事务
+        { path: '/index', component: Index }, //// 二级菜单 索引
+
         //// 一级菜单 网络
         { path: '/netWork', component: NetWork },
+
         //// 一级菜单 缓存
         { path: '/cache', component: Cache },
+
         //// 一级菜单 中间件
         { path: '/middleWare', component: MiddleWare },
+
         //// 一级菜单 微服务
         { path: '/microService', component: MicroService },
+
         //// 一级菜单 算法
         { path: '/algorithm', component: Algorithm },
+
+        //// 代码段
+        { path: '/hashMap', component: HashMap },
+
+        //// 测试页
         { path: '/demo', component: Demo }
     ]
     //// 启动
