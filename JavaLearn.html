@@ -185,19 +185,19 @@
                     </von-header>
                     <accordion default-index="0">
                         <div class="item item-divider">索引命中</div>
-                        <accordion-item class="stableBack" title="or" content-height="60">
+                        <accordion-item class="stableBack" title="or" content-height="80">
                           <p>列a，列b只有当独立索引时才会命中，联合索引是不会命中</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="like" content-height="60">
+                        <accordion-item class="stableBack" title="like" content-height="80">
                           <p>通配符在右边，或者无通配符可以命中索引，通配符在左边无法命中索引</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="最左原则" content-height="200">
+                        <accordion-item class="stableBack" title="最左原则" content-height="230">
                           <p>联合索引index(a, b, c)</p>
                           <p>where a = 1 and b = 1 and c = 1 是可以命中索引，类型为 ref 类型</p>
                           <p>where b = 1 and c = 1 是无法命中索引，类型为 ALL</p>
                           <p>where a > 1 and b = 1 and c = 1 是可以命中索引的（只要有最左的a索引），索引类型是 range</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="其他" content-height="108">
+                        <accordion-item class="stableBack" title="其他" content-height="120">
                           <p>关联条件是不走索引的</p>
                           <p>范围索引数据库会衡量效率，如果走索引效率更低，也不会走索引</p>
                         </accordion-item>
@@ -228,26 +228,26 @@
                         <span slot="title"><h3 class="padding text-center headerTop">事务</h3></span>
                     </von-header>
                     <accordion default-index="0">
-                        <accordion-item class="stableBack" title="ACID" content-height="500">
+                        <accordion-item class="stableBack" title="ACID" content-height="600">
                           <p>原子性（Atomicity）：事务必须是原子工作单元；对于其数据修改，要么全都执行，要么全都不执行。通常，与某个事务关联的操作具有共同的目标，并且是相互依赖的。如果系统只执行这些操作的一个子集，则可能会破坏事务的总体目标。原子性消除了系统处理操作子集的可能性</p>
                           <p>一致性（Consistency）：事务在完成时，必须使所有的数据都保持一致状态。在相关数据库中，所有规则都必须应用于事务的修改，以保持所有数据的完整性。事务结束时，所有的内部数据结构（如 B 树索引或双向链表）都必须是正确的。某些维护一致性的责任由应用程序开发人员承担，他们必须确保应用程序已强制所有已知的完整性约束。例如，当开发用于转帐的应用程序时，应避免在转帐过程中任意移动小数点</p>
                           <p>隔离性（Isolation）：由并发事务所作的修改必须与任何其它并发事务所作的修改隔离。事务查看数据时数据所处的状态，要么是另一并发事务修改它之前的状态，要么是另一事务修改它之后的状态，事务不会查看中间状态的数据。这称为可串行性，因为它能够重新装载起始数据，并且重播一系列事务，以使数据结束时的状态与原始事务执行的状态相同。当事务可序列化时将获得最高的隔离级别。在此级别上，从一组可并行执行的事务获得的结果与通过连续运行每个事务所获得的结果相同。由于高度隔离会限制可并行执行的事务数，所以一些应用程序降低隔离级别以换取更大的吞吐量</p>
                           <p>持久性（Durability）：事务完成之后，它对于系统的影响是永久性的。该修改即使出现致命的系统故障也将一直保持</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="隔离级别" content-height="220">
+                        <accordion-item class="stableBack" title="隔离级别" content-height="300">
                           <p>读未提交：会造成脏读、不可重复读、幻读</p>
                           <p>读已提交：会造成不可重复读、幻读</p>
                           <p>可重复读：会造成幻读</p>
                           <p>可串行化：</p>
                           <p>Mysql支持四种隔离级别（默认是可重复读），Oracle支持读已提交和可串行化（默认是读已提交）</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="脏读" content-height="60">
+                        <accordion-item class="stableBack" title="脏读" content-height="100">
                           <p>某个事务已更新一份数据，另一个事务在此时读取了同一份数据，由于某些原因，前一个RollBack了操作，则后一个事务所读取的数据就会是不正确的</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="幻读" content-height="60">
+                        <accordion-item class="stableBack" title="幻读" content-height="100">
                           <p>在一个事务的两次查询之中数据不一致，这可能是两次查询过程中间插入了一个事务更新的原有的数据</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="不可重复读" content-height="108">
+                        <accordion-item class="stableBack" title="不可重复读" content-height="130">
                           <p>在一个事务的两次查询中数据笔数不一致，例如有一个事务查询了几列(Row)数据，而另一个事务却在此时插入了新的几列数据，先前的事务在接下来的查询中，就会发现有几列数据是它先前所没有的</p>
                         </accordion-item>
                     </accordion>
@@ -273,11 +273,11 @@
                         <span slot="title"><h3 class="padding text-center headerTop">索引</h3></span>
                     </von-header>
                     <accordion default-index="0">
-                        <accordion-item class="stableBack" title="B树" content-height="108">
+                        <accordion-item class="stableBack" title="B树" content-height="200">
                           <p>m阶平衡树：m阶为一节点至多有m棵子树 ，也就是说B树上的结点最多只能有m棵子树</p>
                           <p>每个非根节点所包含的关键字个数 j 满足：m/2 - 1 <= j <= m - 1（分割标志）</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="B+树" content-height="100">
+                        <accordion-item class="stableBack" title="B+树" content-height="120">
                           <p>叶子节点增加横向索引</p>
                           <p>内部节点只保存索引，不保存实际数据，实际数据都在叶子节点</p>
                         </accordion-item>
@@ -287,13 +287,13 @@
                         <accordion-item class="stableBack" title="聚簇索引" content-height="60">
                           <p>已主键构造出的一个B+树索引</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="非聚簇索引" content-height="60">
+                        <accordion-item class="stableBack" title="非聚簇索引" content-height="90">
                           <p>非聚集索引又叫辅助索引，叶子节点并不包含行记录数据，而是存储了聚集索引键</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="全文索引" content-height="60">
+                        <accordion-item class="stableBack" title="全文索引" content-height="90">
                           <p>只有字段的数据类型为 char、varchar、text 及其系列才可以建全文索引</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="回表" content-height="60">
+                        <accordion-item class="stableBack" title="回表" content-height="90">
                           <p>数据库根据索引找到了指定的记录所在行后，还需要根据rowid再次到数据块里取数据的操作</p>
                         </accordion-item>
                     </accordion>
@@ -320,30 +320,52 @@
                         <span slot="title"><h3 class="padding text-center headerTop">网络</h3></span>
                     </von-header>
                     <accordion default-index="0">
-                        <accordion-item class="stableBack" title="Post/Get" content-height="108">
-                          <p>Post</p>
-                          <p>Get</p>
+                        <accordion-item class="stableBack" title="Post/Get" content-height="600">
+                            <p>GET在浏览器回退时是无害的，而POST会再次提交请求</p>
+                            <p>GET产生的URL地址可以被Bookmark，而POST不可以</p>
+                            <p>GET请求会被浏览器主动cache，而POST不会，除非手动设置</p>
+                            <p>GET请求只能进行url编码，而POST支持多种编码方式</p>
+                            <p>GET请求参数会被完整保留在浏览器历史记录里，而POST中的参数不会被保留</p>
+                            <p>GET请求在URL中传送的参数是有长度限制的，而POST么有</p>
+                            <p>对参数的数据类型，GET只接受ASCII字符，而POST没有限制</p>
+                            <p>GET比POST更不安全，因为参数直接暴露在URL上，所以不能用来传递敏感信息</p>
+                            <p>GET参数通过URL传递，POST放在Request body中</p>
+                            <p>GET产生一个TCP数据包；POST产生两个TCP数据包</p>
+                            <p>对于GET方式的请求，浏览器会把http header和data一并发送出去，服务器响应200（返回数据）而对于POST，浏览器先发送header，服务器响应100 continue，浏览器再发送data，服务器响应200 ok（返回数据）</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="Http/Https" content-height="108">
-                          <p>Http</p>
-                          <p>Https</p>
+                        <accordion-item class="stableBack" title="Http/Https" content-height="250">
+                            <p>HTTP 1.1 比较 1.0：新增缓存策略、带宽优化及网络连接使用（防止带宽浪费、增加断点续传、长连接）、新增24个错误码</p>
+                            <p>HTTP 2.0 比较 1.1：新的二进制格式、多路复用、header压缩、服务端推送</p>
+                            <p>HTTPS 比较 HTTP：需要申请CA证书、运行在SSL/TLS上（加密传输）、端口由80到443、对称加密和非对称加密的结合</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="Cookie/Session/Token" content-height="108">
-                          <p>Cookie</p>
-                          <p>Session</p>
-                          <p>Token</p>
+                        <accordion-item class="stableBack" title="Cookie/Session/Token" content-height="350">
+                            <p>Cookie：抓包可见，keyValue形式、可设置过期时间，保存在客户端，可被编辑</p>
+                            <p>Session：保存在服务端，HashMap形式，可以保存对象、可设置过期时间</p>
+                            <p>Token：Token是在客户端频繁向服务端请求数据，服务端频繁的去数据库查询用户名和密码并进行对比，判断用户名和密码正确与否，并作出相应提示，在这样的背景下，Token便应运而生。Token是服务端生成的一串字符串，以作客户端进行请求的一个令牌，当第一次登录后，服务器生成一个Token便将此Token返回给客户端，以后客户端只需带上这个Token前来请求数据即可，无需再次带上用户名和密码。</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="对称加密/非对称加密" content-height="108">
-                          <p>对称加密</p>
-                          <p>非对称加密</p>
+                        <accordion-item class="stableBack" title="对称加密/非对称加密" content-height="650">
+                            <p>对称加密：对称加密算法的优点是算法公开、计算量小、加密速度快、加密效率高。 对称加密算法的缺点是在数据传送前,发送方和接收方必须商定好秘钥,然后使双方都能保存好秘钥。其次如果一方的秘钥被泄露,那么加密信息也就不安全了。另外,每对用户每次使用对称加密算法时,都需要使用其他人不知道的唯一秘钥,这会使得收、发双方所拥有的钥匙数量巨大,密钥管理成为双方的负担。</p>
+                            <p>非对称加密（签名）：私钥加密，公钥解密，内容不会被篡改，但是内容会被获取。服务端用私钥对数据加密，发送给客户端，客户端公钥解密。</p>
+                            <p>非对称加密（加密）：公钥加密，私钥解密，内容会被篡改，但是不会被获取。客户端用公钥对数据加密，发送给服务端，服务端私钥解密。</p>
+                            <p>HTTPS结合：</p>
+                            <p>1、浏览器使用Https的URL访问服务器，建立SSL链接。</p>
+                            <p>2、服务器收到SSL链接，发送非对称加密的公钥A返回给浏览器</p>
+                            <p>3、浏览器生成随机数，作为对称加密的密钥B</p>
+                            <p>4、浏览器使用公钥A，对自己生成的密钥B进行加密，得到密钥C</p>
+                            <p>5、浏览器将密钥C，发送给服务器。</p>
+                            <p>6、服务器用私钥D对接受的密钥C进行解密，得到对称加密钥B。</p>
+                            <p>7、浏览器和服务器之间可以用密钥B作为对称加密密钥进行通信。</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="正向代理/反向代理" content-height="108">
-                          <p>正向代理</p>
-                          <p>反向代理</p>
+                        <accordion-item class="stableBack" title="正向代理/反向代理" content-height="160">
+                            <p>正向代理：类似一个跳板机，代理访问外部资源</p>
+                            <p>反向代理：代理服务器可被外网访问，应用服务器不能被外网访问，可被代理服务器访问和负载</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="TCP/UDP" content-height="108">
-                          <p>TCP</p>
-                          <p>UDP</p>
+                        <accordion-item class="stableBack" title="TCP/UDP" content-height="220">
+                            <p>是否面向无连接的（TCP发送数据之前先要connect）</p>
+                            <p>TCP 是面向字节流的，UDP 是基于数据报的</p>
+                            <p>TCP 保证数据正确性，UDP 可能丢包</p>
+                            <p>TCP 保证数据顺序，UDP 不保证</p>
+                            <p>对系统资源的要求（TCP较多，UDP少） </p>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -508,7 +530,7 @@
                         <accordion-item class="stableBack" title="一些参数" content-height="340">
                             <div><textarea id="someParams"></textarea></div>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="加载因子（扩容因子）" content-height="700">
+                        <accordion-item class="stableBack" title="加载因子（扩容因子）" content-height="400">
                             <p>HashMap在初始化的时候给定预期大小，能减少扩容次数，最大限度的提升效率。推荐使用官方算法，这样能尽可能减少hash冲突，以及减少resize次数</p>
                             <p>HashMap的初始容量为16，当HashMap中有16 * 0.75 = 12个容量时，HashMap就会进行扩容。扩容会变为原来的两倍；</p>
                             <p>如果加载因子越大，扩容发生的频率就会比较低，占用空间比较小，但是发生hash冲突的几率会提升，对元素操作时间会增加，运行效率降低；</p>
@@ -516,12 +538,15 @@
                             <p>而且因为容量默认为2的次方，当加载因子为0.75时，容量和加载因子的乘积为整数。所以系统默认加载因子取了0.5 -1 之间的0.75。</p>
                             <div><textarea id="loadFactory"></textarea></div>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="tableSizeFor" content-height="700">
+                        <accordion-item class="stableBack" title="tableSizeFor" content-height="400">
                             <p>用于获取离当前值最近的2的幂数，一般用来做阈值，通过5次无符号位运算得到</p>
                             <div><textarea id="tableSizeFor"></textarea></div>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="Jdk7 hash()" content-height="340">
-                            <div><textarea id="jdk7hash"></textarea></div>
+                        <accordion-item class="stableBack" title="JDK8" content-height="400">
+                            <p>Java 8中使用红黑树来替代链表存储冲突的元素。这意味着我们可以将最坏情况下的性能从O(n)提高到O(logn)。如果恶意程序知道我们用的是Hash算法，则在纯链表情况下，它能够发送大量请求导致哈希碰撞，然后不停访问这些key导致HashMap忙于进行线性查找，最终陷入瘫痪，即形成了拒绝服务攻击（DoS）</p>
+                            <p>为什么链表长度到 8 时转红黑树：因为红黑树的平均查找长度是log（n），长度为8的时候，平均查找长度为3。。如果继续使用链表，平均查找长度为8/2=4。这才有转换为树的必要。。链表长度如果是6以内，6/2=3，速度也很快的。转化为树还有生成树的时间，并不明智。</p>
+                            <p>为什么不用平衡树AVL：AVL树是更加严格的平衡，因此可以提供更快的查找速度，一般读取查找密集型任务，适用AVL树。红黑树更适合于插入修改密集型任务。</p>
+                            <div><textarea id="JDK8Hash"></textarea></div>
                         </accordion-item>
                         <accordion-item class="stableBack" title="Hash算法介绍" content-height="100">
                           <p>Hash，一般翻译做“散列”，也有直接音译为“哈希”的，就是把任意长度的输入，通过散列算法，变换成固定长度的输出，该输出就是散列值。两个不同的输入值，根据同一散列函数计算出的散列值相同的现象叫做碰撞。</p>
@@ -590,11 +615,8 @@
                     "5 >>>   0000000000000000111111111111111\n" +
                     "6 >>>   1111111111111111111111111111111\n" +
                     "2147483647\n}",
-                jdk7hash:
-                    "h = hashSeed; //// hashSeed\n" +
-                    "h ^= k.hashCode(); //// hashCode是JVM对应的地址码\n" +
-                    "h ^= (h >>> 20) ^ (h >>> 12);\n" +
-                    "return h ^ (h >>> 7) ^ (h >>> 4);",
+                JDK8Hash:
+                    "h ^ (h >>> 16)",
                 options: {
                     tabSize: 2,
                     theme: "dracula",
@@ -606,12 +628,16 @@
         mounted() {
             let editorSomeParams = CodeMirror.fromTextArea(document.getElementById("someParams"), this.options)
             editorSomeParams.setValue(this.someParams)
+            editorSomeParams.setSize('auto','300px');
             let editorLoadFactory = CodeMirror.fromTextArea(document.getElementById("loadFactory"), this.options)
             editorLoadFactory.setValue(this.loadFactory)
+            editorLoadFactory.setSize('auto','30px');
             let editorTableSizeFor = CodeMirror.fromTextArea(document.getElementById("tableSizeFor"), this.options)
             editorTableSizeFor.setValue(this.tableSizeFor)
-            let editorJdk7hash = CodeMirror.fromTextArea(document.getElementById("jdk7hash"), this.options)
-            editorJdk7hash.setValue(this.jdk7hash)
+            editorTableSizeFor.setSize('auto','300px');
+            let editorHash = CodeMirror.fromTextArea(document.getElementById("JDK8Hash"), this.options)
+            editorHash.setValue(this.JDK8Hash)
+            editorHash.setSize('auto','30px');
         }
     }
 
