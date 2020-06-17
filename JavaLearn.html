@@ -106,19 +106,20 @@
         `,
         data() {
             return {
-                cells: ['集合','关键字','设计模式','多线程','流式编程','JVM',' 类加载器'],
+                cells: ['集合','锁','设计模式','多线程','流式编程','JVM',' 类加载器','杂项'],
             }
         },
         methods: {
             onCellClick(cellIndex) {
                 switch (cellIndex) {
                     case 0: this.$router.push({path: `/collection`}); break;
-                    case 1: break;
+                    case 1: this.$router.push({path: `/lock`}); break;
                     case 2: this.$router.push({path: `/designMode`}); break;
                     case 3: break;
                     case 4: break;
                     case 5: break;
                     case 6: break;
+                    case 7: this.$router.push({path: `/other`}); break;
                     default: this.$router.push({path: `/demo`});
                 }
 
@@ -143,6 +144,32 @@
                             <p>Hashtable既不支持Null key也不支持Null value，Hashtable的put()方法的注释中有说明</p>
                             <p>TreeMap是自然有序的，初始化时可以使用一些排序方法得到需要顺序的map</p>
                             <p>ConcurrentHashMap 使用了分段锁，sychronized关键字（跟HashTable不同，HashTable是锁整个表）</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+            }
+        },
+        methods: {
+
+        }
+    }
+    //// 二级 锁
+    const Lock = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/java')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">锁</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="锁" content-height="280">
+                            <p>锁</p>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -301,6 +328,32 @@
             let editorAbstractFactory = CodeMirror.fromTextArea(document.getElementById("abstractFactory"), this.options)
             editorAbstractFactory.setValue(this.abstractFactory)
             editorAbstractFactory.setSize('auto','100px');
+        }
+    }
+    //// 二级 杂项
+    const Other = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/java')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">杂项</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="transient" content-height="280">
+                            <p>transient</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+            }
+        },
+        methods: {
+
         }
     }
 
@@ -845,7 +898,9 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         //// 一级菜单 Java
         { path: '/java', component: Java },
         { path: '/collection', component: Collection }, //// 二级菜单 集合
+        { path: '/lock', component: Lock }, //// 二级菜单 锁
         { path: '/designMode', component: DesignMode }, //// 二级菜单 设计模式
+        { path: '/other', component: Other }, //// 二级菜单 杂项
 
         //// 一级菜单 数据库
         { path: '/dataBase', component: DataBase },
