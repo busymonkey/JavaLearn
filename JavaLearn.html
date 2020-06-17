@@ -44,6 +44,10 @@
     .textArea {
         padding: 10px 10px 0 10px;
     }
+    .imgSize {
+        height: 100px;
+        width: 100%;
+    }
 </style>
 <body>
 <von-app></von-app>
@@ -105,7 +109,7 @@
                 switch (cellIndex) {
                     case 0: this.$router.push({path: `/collection`}); break;
                     case 1: break;
-                    case 2: break;
+                    case 2: this.$router.push({path: `/designMode`}); break;
                     case 3: break;
                     case 4: break;
                     case 5: break;
@@ -127,7 +131,14 @@
                     <span @click="$router.push('/hashMap')">
                         <item class="item-icon-right">HashMap<i class="icon ion-ios-arrow-right"></i></item>
                     </span>
-
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="Map的比较" content-height="280">
+                            <p>HashMap非线程安全，HashTable 和 ConcurrentHashMap线程安全</p>
+                            <p>Hashtable既不支持Null key也不支持Null value，Hashtable的put()方法的注释中有说明</p>
+                            <p>TreeMap是自然有序的，初始化时可以使用一些排序方法得到需要顺序的map</p>
+                            <p>ConcurrentHashMap 使用了分段锁，sychronized关键字（跟HashTable不同，HashTable是锁整个表）</p>
+                        </accordion-item>
+                    </accordion>
                 </div>
 			</div>
 		`,
@@ -138,6 +149,128 @@
         },
         methods: {
 
+        }
+    }
+    //// 二级 设计模式
+    const DesignMode = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/java')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">设计模式</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="单例模式（懒加载）" content-height="400">
+                            <p>这种写法能够在多线程中很好的工作，而且看起来它也具备很好的lazy loading，但是，遗憾的是，效率很低，99%情况下不需要同步。</p>
+                            <div><textarea id="singleLazy"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="单例模式（预加载）" content-height="360">
+                            <p>这种方式基于classloder机制避免了多线程的同步问题，不过，instance在类装载时就实例化，虽然导致类装载的原因有很多种，在单例模式中大多数都是调用getInstance方法， 但是也不能确定有其他的方式（或者其他的静态方法）导致类装载，这时候初始化instance显然没有达到lazy loading的效果。</p>
+                            <div><textarea id="singlePre"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="单例模式（静态内部类）" content-height="360">
+                            <p>懒加载，而且在JVM层实现了线程安全（如果不是多个类加载器环境）</p>
+                            <div><textarea id="singleInnerClass"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="单例模式（枚举）" content-height="320">
+                            <p>这种方式是Effective Java作者Josh Bloch 提倡的方式，它不仅能避免多线程同步问题，而且还能防止反序列化重新创建新的对象，可谓是很坚强的壁垒啊，不过，个人认为由于1.5中才加入enum特性，用这种方式写不免让人感觉生疏，在实际工作中，我也很少看见有人这么写过。</p>
+                            <div><textarea id="singleEnum"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="单例模式（双重校验锁）" content-height="410">
+                            <p>懒加载的升级版，俗称双重检查锁定，在JDK1.5之后，双重检查锁定才能够正常达到单例效果。</p>
+                            <div><textarea id="singleDouble"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="工厂模式（简单工厂）" content-height="410">
+                            <p>一个工厂只生产一种产品：</p>
+                            <p>1、工厂类角色：这是本模式的核心，含有一定的商业逻辑和判断逻辑。在java中它往往由一个具体类实现。</p>
+                            <p>2、抽象产品角色：它一般是具体产品继承的父类或者实现的接口。在java中由接口或者抽象类来实现。</p>
+                            <p>3、具体产品角色：工厂类所创建的对象就是此角色的实例。在java中由一个具体类实现。</p>
+                            <div><img src="./img/simpleFactory.bmp" class="imgSize"></div>
+                        </accordion-item>
+                    </accordion>
+                </div>
+			</div>
+		`,
+        data() {
+            return {
+                singleLazy:
+                    "public class Singleton { \n" +
+                    "    private static Singleton instance;\n" +
+                    "    private Singleton (){}\n" +
+                    "    public static synchronized Singleton getInstance() {\n" +
+                    "    if (instance == null) {\n" +
+                    "        instance = new Singleton();\n" +
+                    "    }\n" +
+                    "    return instance;\n" +
+                    "    }\n" +
+                    "}",
+                singlePre:
+                    "public class Singleton { \n" +
+                    "    private static Singleton instance = new Singleton();\n" +
+                    "    private Singleton (){}\n" +
+                    "    public static Singleton getInstance() {\n" +
+                    "       return instance;\n" +
+                    "    }\n" +
+                    "}",
+                singleInnerClass:
+                    "public class Singleton { \n" +
+                    "    private static class SingletonHolder {\n" +
+                    "       private static final Singleton INSTANCE = new Singleton();\n" +
+                    "    }\n" +
+                    "    private Singleton (){}\n" +
+                    "    public static final Singleton getInstance() {\n" +
+                    "       return SingletonHolder.INSTANCE;\n" +
+                    "    }\n" +
+                    "}",
+                singleEnum:
+                    "public enum Singleton {\n" +
+                    "    INSTANCE;\n" +
+                    "    public void whateverMethod() {\n" +
+                    "    }\n" +
+                    "}",
+                singleDouble:
+                    "public class Singleton { \n" +
+                    "    private volatile static Singleton singleton;\n" +
+                    "    private Singleton (){}\n" +
+                    "    public static Singleton getSingleton() {\n" +
+                    "       if (instance == null) {\n" +
+                    "           synchronized (Singleton.class) {\n" +
+                    "               if (singleton == null) {\n" +
+                    "                   singleton = new Singleton();\n" +
+                    "               }\n" +
+                    "           }\n" +
+                    "       }\n" +
+                    "       return singleton;\n" +
+                    "    }\n" +
+                    "}",
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        methods: {
+
+        },
+        mounted() {
+            let editorSingleLazy = CodeMirror.fromTextArea(document.getElementById("singleLazy"), this.options)
+            editorSingleLazy.setValue(this.singleLazy)
+            editorSingleLazy.setSize('auto','250px');
+            let editorSinglePre = CodeMirror.fromTextArea(document.getElementById("singlePre"), this.options)
+            editorSinglePre.setValue(this.singlePre)
+            editorSinglePre.setSize('auto','200px');
+            let editorSingleInnerClass = CodeMirror.fromTextArea(document.getElementById("singleInnerClass"), this.options)
+            editorSingleInnerClass.setValue(this.singleInnerClass)
+            editorSingleInnerClass.setSize('auto','220px');
+            let editorSingleEnum = CodeMirror.fromTextArea(document.getElementById("singleEnum"), this.options)
+            editorSingleEnum.setValue(this.singleEnum)
+            editorSingleEnum.setSize('auto','120px');
+            let editorSingleDouble = CodeMirror.fromTextArea(document.getElementById("singleDouble"), this.options)
+            editorSingleDouble.setValue(this.singleDouble)
+            editorSingleDouble.setSize('auto','290px');
         }
     }
 
@@ -682,6 +815,7 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         //// 一级菜单 Java
         { path: '/java', component: Java },
         { path: '/collection', component: Collection }, //// 二级菜单 集合
+        { path: '/designMode', component: DesignMode }, //// 二级菜单 设计模式
 
         //// 一级菜单 数据库
         { path: '/dataBase', component: DataBase },
