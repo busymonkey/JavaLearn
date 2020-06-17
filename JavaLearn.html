@@ -100,13 +100,13 @@
                         <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
                         <span slot="title"><h3 class="padding text-center headerTop">Java</h3></span>
                     </von-header>
-                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="2"></cells>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="3"></cells>
                 </div>
             </div>
         `,
         data() {
             return {
-                cells: ['集合','关键字','设计模式','多线程','流式编程','JVM'],
+                cells: ['集合','关键字','设计模式','多线程','流式编程','JVM',' 类加载器'],
             }
         },
         methods: {
@@ -118,6 +118,7 @@
                     case 3: break;
                     case 4: break;
                     case 5: break;
+                    case 6: break;
                     default: this.$router.push({path: `/demo`});
                 }
 
