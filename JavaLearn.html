@@ -26,8 +26,6 @@
         padding: 50px 0;
         font-size: 15px;
         font-weight: unset;
-        /*background:#000;*/
-        /*color:#FFF;*/
     }
     .headerTop {
         font-size: 20px;
@@ -590,8 +588,45 @@
                         <span slot="title"><h3 class="padding text-center headerTop">线程</h3></span>
                     </von-header>
                     <accordion default-index="0">
-                        <accordion-item class="stableBack" title="线程" content-height="280">
-                            <p>线程</p>
+                        <accordion-item class="stableBack" title="线程状态" content-height="90">
+                            <p>NEW（start之前）、RUNNABLE、BLOCKED（同步块）、WAITING（wait()）、TIMED_WAITING、TERMINATED</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">主线程和子线程</div>
+                        <accordion-item class="stableBack" title="start和run" content-height="340">
+                            <p>首先new Thread()出来的对象会分配一个线程名称</p>
+                            <p><span class="redBold">start</span>：来启动线程，真正实现了多线程运行。这时无需等待run方法体代码执行完毕，可以直接继续执行下面的代码；通过调用Thread类的start()方法来启动一个线程， 这时此线程是处于就绪状态， 并没有运行。 然后通过此Thread类调用方法run()来完成其运行操作的， 这里方法run()称为线程体，它包含了要执行的这个线程的内容， Run方法运行结束， 此线程终止。然后CPU再调度其它线程。</p>
+                            <p><span class="redBold">run</span>：相当于普通方法调用。<span class="redBold">程序还是会顺序执行</span>，要等待run方法体执行完毕后，才可继续执行下面的代码； 程序中只有主线程——这一个线程， 其程序执行路径还是只有一条， 这样就没有达到写线程的目的。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="主线程结束后不影响子线程" content-height="350">
+                            <div><textarea id="mainSub1"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="主线程等待子线程结束后结束" content-height="350">
+                            <div><textarea id="mainSub2"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="主线程结束后子线程（守护线程）立即终止" content-height="380">
+                            <p>子线程需要设置守护线程</p>
+                            <div><textarea id="mainSub3"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="守护线程" content-height="180">
+                            <p>User和Daemon两者几乎没有区别，唯一的不同之处就在于虚拟机的离开：如果 User Thread已经全部退出运行了，只剩下Daemon Thread存在了，虚拟机也就退出了。 因为没有了被守护者，Daemon也就没有工作可做了，也就没有继续运行程序的必要了。</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">sleep和wait</div>
+                        <accordion-item class="stableBack" title="sleep" content-height="210">
+                            <p>sleep()方法是线程类（Thread）的静态方法，使得当前线程进入阻塞状态，给执行机会给其他线程（实际上，调用sleep()方法时并不要求持有任何锁，即sleep()可在任何地方使用。），但是监控状态依然保持，到时后会自动恢复。</p>
+                            <p>当线程处于上锁时，sleep()方法<span class="redBold">不会释放对象锁，只会让出CPU执行时间片</span>。休眠时间满后，该线程不一定会立即执行，等待CPU调度。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="wait" content-height="260">
+                            <p>wait()方法是Object类里的方法，当一个线程执行wait()方法时，它就进入到一个和该对象相关的等待池中（进入等待队列，也就是阻塞的一种，叫等待阻塞），<span class="redBold">同时释放对象锁，并让出CPU资源</span>，待指定时间结束后返还得到对象锁。</p>
+                            <p>wait()使用notify()方法、notiftAll()方法唤醒当前等待池中的线程。等待的线程只是被激活，但是必须得再次获得锁才能继续往下执行。wait()方法、notify()方法和notiftAll()方法用于协调多线程对共享数据的存取，所以<span class="redBold">只能在同步方法或者同步块中使用</span>，否则抛出IllegalMonitorStateException。</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">线程相关方法</div>
+                        <accordion-item class="stableBack" title="join" content-height="420">
+                            <p>调用isAlive()判断形成是否活跃，活跃则调用wait()方法等待，活跃是native方法（<span class="redBold">子线程都在运行则活跃</span>）</p>
+                            <div><textarea id="threadJoin"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="yield" content-height="420">
+                            <p>让出同优先级线程的CPU时间片</p>
+                            <p>public static native void yield();</p>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -599,11 +634,110 @@
         `,
         data() {
             return {
-
+                mainSub1: "public class SubThread implements Runnable {\n" +
+                    "    @Override\n" +
+                    "    public void run() {\n" +
+                    "        try {\n" +
+                    "            System.out.println(\"子线程启动\");\n" +
+                    "            Thread.sleep(5000);\n" +
+                    "            System.out.println(\"子线程结束\");\n" +
+                    "        } catch (InterruptedException e) {\n" +
+                    "            e.printStackTrace();\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public static void main(String[] args) throws InterruptedException {\n" +
+                    "    System.out.println(\"主线程启动\");\n" +
+                    "    Thread thread = new Thread(new SubThread());\n" +
+                    "    thread.start();\n" +
+                    "    Thread.sleep(100);\n" +
+                    "    System.out.println(\"主线程结束\");\n" +
+                    "}\n" +
+                    "\n" +
+                    "结果：\n" +
+                    "主线程启动\n" +
+                    "子线程启动\n" +
+                    "主线程结束\n" +
+                    "子线程结束",
+                mainSub2: "public class TestMain {\n" +
+                    "    public static void main(String[] args) throws InterruptedException {\n" +
+                    "        System.out.println(\"主线程启动\");\n" +
+                    "        Thread thread = new Thread(new SubThread());\n" +
+                    "        thread.start();\n" +
+                    "        thread.join();\n" +
+                    "        Thread.sleep(100);\n" +
+                    "        System.out.println(\"主线程结束\");\n" +
+                    "    }\n" +
+                    "}\n" +
+                    "\n" +
+                    "结果：\n" +
+                    "主线程启动\n" +
+                    "子线程启动\n" +
+                    "子线程结束\n" +
+                    "主线程结束",
+                mainSub3: "public class MainTest {\n" +
+                    "    public static void main(String[] args) throws InterruptedException {\n" +
+                    "        System.out.println(\"主线程启动\");\n" +
+                    "        Thread thread = new Thread(new SubThread());\n" +
+                    "        thread.setDaemon(true);\n" +
+                    "        thread.start();\n" +
+                    "        Thread.sleep(100);\n" +
+                    "        System.out.println(\"主线程结束\");\n" +
+                    "    }\n" +
+                    "}\n" +
+                    "\n" +
+                    "\n" +
+                    "结果：\n" +
+                    "主线程启动\n" +
+                    "子线程启动\n" +
+                    "主线程结束\n",
+                threadJoin: "public final synchronized void join(long millis) throws InterruptedException {\n" +
+                    "    long base = System.currentTimeMillis();\n" +
+                    "    long now = 0;\n" +
+                    "\n" +
+                    "    if (millis < 0) {\n" +
+                    "        throw new IllegalArgumentException(\"timeout value is negative\");\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    if (millis == 0) {\n" +
+                    "        while (isAlive()) {\n" +
+                    "            wait(0);\n" +
+                    "        }\n" +
+                    "    } else {\n" +
+                    "        while (isAlive()) {\n" +
+                    "            long delay = millis - now;\n" +
+                    "            if (delay <= 0) {\n" +
+                    "                break;\n" +
+                    "            }\n" +
+                    "            wait(delay);\n" +
+                    "            now = System.currentTimeMillis() - base;\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public final native boolean isAlive();",
+                options: {
+                    tabSize: 4,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
             }
         },
-        methods: {
-
+        mounted() {
+            let editorMainSub1 = CodeMirror.fromTextArea(document.getElementById("mainSub1"), this.options)
+            editorMainSub1.setValue(this.mainSub1)
+            editorMainSub1.setSize('auto','300px')
+            let editorMainSub2 = CodeMirror.fromTextArea(document.getElementById("mainSub2"), this.options)
+            editorMainSub2.setValue(this.mainSub2)
+            editorMainSub2.setSize('auto','300px')
+            let editorMainSub3 = CodeMirror.fromTextArea(document.getElementById("mainSub3"), this.options)
+            editorMainSub3.setValue(this.mainSub3)
+            editorMainSub3.setSize('auto','300px')
+            let editorThreadJoin = CodeMirror.fromTextArea(document.getElementById("threadJoin"), this.options)
+            editorThreadJoin.setValue(this.threadJoin)
+            editorThreadJoin.setSize('auto','300px')
         }
     }
     //// 二级 杂项
