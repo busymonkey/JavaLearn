@@ -750,8 +750,15 @@
                         <span slot="title"><h3 class="padding text-center headerTop">杂项</h3></span>
                     </von-header>
                     <accordion default-index="0">
+                        <accordion-item class="stableBack" title="volatile" content-height="220">
+                            <p>volatile让变量每次在使用的时候，都从<span class="redBold">主存</span>中取。而不是从各个线程的“工作内存”</p>
+                            <p>volatile具有synchronized关键字的“可见性”，但是没有synchronized关键字的“并发正确性”，就是说<span class="redBold">不保证线程执行的有序性</span></p>
+                            <p>volatile变量对于每次使用，线程都能得到当前volatile变量的最新值。</p>
+                        </accordion-item>
                         <accordion-item class="stableBack" title="transient" content-height="280">
-                            <p>transient</p>
+                            <p>对于已实现Serilizable接口，将不需要序列化的属性前添加关键字transient，序列化对象的时候，这个属性就不会序列化到指定的目的地中</p>
+                            <p>一个静态变量不管是否被transient修饰，均不能被序列化</p>
+                            <p><span class="redBold">被transient关键字修饰的变量真的不能被序列化吗？</span>若实现的是Externalizable接口，则没有任何东西可以自动序列化，需要在writeExternal方法中进行手工指定所要序列化的变量，这与是否被transient修饰无关。因此第二个例子输出的是变量content初始化的内容，而不是null</p>
                         </accordion-item>
                     </accordion>
                 </div>
