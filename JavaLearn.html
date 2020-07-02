@@ -466,12 +466,13 @@
                             <div><textarea id="singleDouble"></textarea></div>
                         </accordion-item>
                         <div class="item item-divider dividerFont">工厂模式</div>
-                        <accordion-item class="stableBack" title="简单工厂" content-height="400">
+                        <accordion-item class="stableBack" title="简单工厂" content-height="700">
                             <p><span class="redBold">一个工厂只生产一种产品：</span></p>
                             <p>1、工厂类角色：这是本模式的核心，含有一定的商业逻辑和判断逻辑。在java中它往往由一个具体类实现。</p>
                             <p>2、抽象产品角色：它一般是具体产品继承的父类或者实现的接口。在java中由接口或者抽象类来实现。</p>
                             <p>3、具体产品角色：工厂类所创建的对象就是此角色的实例。在java中由一个具体类实现。</p>
                             <div><img src="./img/simpleFactory.bmp" class="imgSize"></div>
+                            <div><textarea id="simpleFactory"></textarea></div>
                         </accordion-item>
                         <accordion-item class="stableBack" title="复杂工厂" content-height="470">
                             <p>将简单工厂模式的工厂抽象出来，<span class="redBold">多个工厂生产一个产品：</span></p>
@@ -552,6 +553,64 @@
                     "           }\n" +
                     "       }\n" +
                     "       return singleton;\n" +
+                    "    }\n" +
+                    "}",
+                simpleFactory:
+                    "public interface Toy {\n" +
+                    "    void playToy();\n" +
+                    "}\n" +
+                    "\n" +
+                    "/**\n" +
+                    " * @author Administrator\n" +
+                    " * @Description 简单工厂模式工厂角色类\n" +
+                    " * 简单工厂对于角色类和实现类可以属于框架也可以属于业务（这里放在业务）\n" +
+                    " * @Date 2020/7/2 14:15\n" +
+                    " */\n" +
+                    "public class ToyFactory {\n" +
+                    "    public enum ToyName {\n" +
+                    "        /**\n" +
+                    "         * 摇摇车\n" +
+                    "         */\n" +
+                    "        Yaoyaoche,\n" +
+                    "        /**\n" +
+                    "         * 滑板车\n" +
+                    "         */\n" +
+                    "        Huabanche\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public Toy createToy(ToyName toyName) {\n" +
+                    "        switch (toyName) {\n" +
+                    "            case Yaoyaoche:\n" +
+                    "                return new YaoyaocheToy();\n" +
+                    "            case Huabanche:\n" +
+                    "                return new HuabancheToy();\n" +
+                    "            default:\n" +
+                    "                return null;\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class HuabancheToy implements Toy {\n" +
+                    "    @Override\n" +
+                    "    public void playToy() {\n" +
+                    "        System.out.println(\"开始玩滑板车玩具\");\n" +
+                    "    }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class YaoyaocheToy implements Toy {\n" +
+                    "    @Override\n" +
+                    "    public void playToy() {\n" +
+                    "        System.out.println(\"开始玩摇摇车玩具\");\n" +
+                    "    }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class SimpleFactoryModeDemo {\n" +
+                    "    public static void execute() {\n" +
+                    "        ToyFactory toyFactory = new ToyFactory();\n" +
+                    "        Toy toyHuabanche = toyFactory.createToy(ToyFactory.ToyName.Huabanche);\n" +
+                    "        Toy toyYaoyaoche = toyFactory.createToy(ToyFactory.ToyName.Yaoyaoche);\n" +
+                    "        toyHuabanche.playToy();\n" +
+                    "        toyYaoyaoche.playToy();\n" +
                     "    }\n" +
                     "}",
                 abstractFactory:
@@ -659,6 +718,9 @@
             let editorSingleDouble = CodeMirror.fromTextArea(document.getElementById("singleDouble"), this.options)
             editorSingleDouble.setValue(this.singleDouble)
             editorSingleDouble.setSize('auto','290px');
+            let editorSimpleFactory = CodeMirror.fromTextArea(document.getElementById("simpleFactory"), this.options)
+            editorSimpleFactory.setValue(this.simpleFactory)
+            editorSimpleFactory.setSize('auto','290px');
             let editorAbstractFactory = CodeMirror.fromTextArea(document.getElementById("abstractFactory"), this.options)
             editorAbstractFactory.setValue(this.abstractFactory)
             editorAbstractFactory.setSize('auto','100px');
