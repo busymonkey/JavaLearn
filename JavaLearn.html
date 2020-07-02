@@ -464,14 +464,14 @@
                         </accordion-item>
                         <div class="item item-divider dividerFont">工厂模式</div>
                         <accordion-item class="stableBack" title="简单工厂" content-height="400">
-                            <p>一个工厂只生产一种产品：</p>
+                            <p><span class="redBold">一个工厂只生产一种产品：</span></p>
                             <p>1、工厂类角色：这是本模式的核心，含有一定的商业逻辑和判断逻辑。在java中它往往由一个具体类实现。</p>
                             <p>2、抽象产品角色：它一般是具体产品继承的父类或者实现的接口。在java中由接口或者抽象类来实现。</p>
                             <p>3、具体产品角色：工厂类所创建的对象就是此角色的实例。在java中由一个具体类实现。</p>
                             <div><img src="./img/simpleFactory.bmp" class="imgSize"></div>
                         </accordion-item>
                         <accordion-item class="stableBack" title="复杂工厂" content-height="470">
-                            <p>将简单工厂模式的工厂抽象出来，多个工厂生产一个产品：</p>
+                            <p>将简单工厂模式的工厂抽象出来，<span class="redBold">多个工厂生产一个产品：</span></p>
                             <p>1、抽象工厂角色：这是工厂方法模式的核心，它与应用程序无关。是具体工厂角色必须实现的接口或者必须继承的父类。在java中它由抽象类或者接口来实现。</p>
                             <p>2、具体工厂角色：它含有和具体业务逻辑有关的代码。由应用程序调用以创建对应的具体产品的对象。</p>
                             <p>3、抽象产品角色：它是具体产品继承的父类或者是实现的接口。在java中一般有抽象类或者接口来实现。</p>
@@ -479,13 +479,21 @@
                             <div><img src="./img/factory.bmp" class="imgSize"></div>
                         </accordion-item>
                         <accordion-item class="stableBack" title="抽象工厂" content-height="750">
-                            <p>将工厂模式的产品拓展为产品簇，即多个工厂生产多个产品，角色分类跟工厂模式相同</p>
+                            <p>将工厂模式的产品拓展为产品簇，即<span class="redBold">多个工厂生产多个产品</span>，角色分类跟工厂模式相同</p>
                             <div><img src="./img/abstractFactory.bmp" class="imgSize"></div>
                             <div><textarea id="abstractFactory"></textarea></div>
                             <p>在抽象工厂模式中增加一个工厂</p>
                             <div><img src="./img/addFactory.bmp" class="imgSize"></div>
                             <p>在抽象工厂模式中增加一个产品</p>
                             <div><img src="./img/addProduct.bmp" class="imgSize"></div>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">命令模式</div>
+                        <accordion-item class="stableBack" title="命令模式" content-height="630">
+                            <p>需要对某种行为进行记录、撤销或重做、事务等处理时，如果耦合性强就不太合适。认为是命令的地方都可以使用命令模式，比如： 1、GUI 中每一个按钮都是一条命令。 2、模拟 CMD</p>
+                            <p><span class="redBold">优点</span>：1、降低了系统耦合度。 2、新的命令可以很容易添加到系统中去（不需要修改任何代码，直接添加实现Order实体类）</p>
+                            <p><span class="redBold">缺点</span>：使用命令模式可能会导致某些系统有过多的具体命令类</p>
+                            <div><img src="./img/orderMode.bmp" class="imgSize"></div>
+                            <div><textarea id="orderMode"></textarea></div>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -547,6 +555,80 @@
                     "AbstractFactory shapeFactory = FactoryProducer.getFactory(\"SHAPE\");\n" +
                     "Shape shape1 = shapeFactory.getShape(\"CIRCLE\");\n" +
                     "shape1.draw();\n",
+                orderMode: "public interface Order {\n" +
+                    "   void execute();\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class Stock {\n" +
+                    "   private String name = \"ABC\";\n" +
+                    "   private int quantity = 10;\n" +
+                    " \n" +
+                    "   public void buy(){\n" +
+                    "      System.out.println(\"Stock [ Name: \"+name+\", \n" +
+                    "         Quantity: \" + quantity +\" ] bought\");\n" +
+                    "   }\n" +
+                    "   public void sell(){\n" +
+                    "      System.out.println(\"Stock [ Name: \"+name+\", \n" +
+                    "         Quantity: \" + quantity +\" ] sold\");\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class BuyStock implements Order {\n" +
+                    "   private Stock abcStock;\n" +
+                    " \n" +
+                    "   public BuyStock(Stock abcStock){\n" +
+                    "      this.abcStock = abcStock;\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   public void execute() {\n" +
+                    "      abcStock.buy();\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class SellStock implements Order {\n" +
+                    "   private Stock abcStock;\n" +
+                    " \n" +
+                    "   public SellStock(Stock abcStock){\n" +
+                    "      this.abcStock = abcStock;\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   public void execute() {\n" +
+                    "      abcStock.sell();\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "import java.util.ArrayList;\n" +
+                    "import java.util.List;\n" +
+                    " \n" +
+                    "   public class Broker {\n" +
+                    "   private List<Order> orderList = new ArrayList<Order>(); \n" +
+                    " \n" +
+                    "   public void takeOrder(Order order){\n" +
+                    "      orderList.add(order);      \n" +
+                    "   }\n" +
+                    " \n" +
+                    "   public void placeOrders(){\n" +
+                    "      for (Order order : orderList) {\n" +
+                    "         order.execute();\n" +
+                    "      }\n" +
+                    "      orderList.clear();\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class CommandPatternDemo {\n" +
+                    "   public static void main(String[] args) {\n" +
+                    "      Stock abcStock = new Stock();\n" +
+                    " \n" +
+                    "      BuyStock buyStockOrder = new BuyStock(abcStock);\n" +
+                    "      SellStock sellStockOrder = new SellStock(abcStock);\n" +
+                    " \n" +
+                    "      Broker broker = new Broker();\n" +
+                    "      broker.takeOrder(buyStockOrder);\n" +
+                    "      broker.takeOrder(sellStockOrder);\n" +
+                    " \n" +
+                    "      broker.placeOrders();\n" +
+                    "   }\n" +
+                    "}",
                 options: {
                     tabSize: 2,
                     theme: "dracula",
@@ -577,6 +659,9 @@
             let editorAbstractFactory = CodeMirror.fromTextArea(document.getElementById("abstractFactory"), this.options)
             editorAbstractFactory.setValue(this.abstractFactory)
             editorAbstractFactory.setSize('auto','100px');
+            let editorOrderMode = CodeMirror.fromTextArea(document.getElementById("orderMode"), this.options)
+            editorOrderMode.setValue(this.orderMode)
+            editorOrderMode.setSize('auto','250px');
         }
     }
     //// 二级 线程
