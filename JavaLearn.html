@@ -109,13 +109,13 @@
                         <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
                         <span slot="title"><h3 class="padding text-center headerTop">Java</h3></span>
                     </von-header>
-                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="4"></cells>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="3"></cells>
                 </div>
             </div>
         `,
         data() {
             return {
-                cells: ['集合','锁','并发','设计模式','线程','流式编程','JVM',' 类加载器','问题排查','杂项'],
+                cells: ['集合','锁','并发','设计模式','线程','JVM','流式编程','问题排查','杂项'],
             }
         },
         methods: {
@@ -126,11 +126,10 @@
                     case 2: this.$router.push({path: `/concurrent`}); break;
                     case 3: this.$router.push({path: `/designMode`}); break;
                     case 4: this.$router.push({path: `/thread`}); break;
-                    case 5: break;
-                    case 6: this.$router.push({path: `/jvm`}); break;
+                    case 5: this.$router.push({path: `/jvm`}); break;
+                    case 6: break;
                     case 7: break;
-                    case 8: break;
-                    case 9: this.$router.push({path: `/other`}); break;
+                    case 8: this.$router.push({path: `/other`}); break;
                     default: this.$router.push({path: `/demo`});
                 }
 
@@ -1134,17 +1133,101 @@
                             <p>Minor GC的触发条件为：当产生一个新对象，新对象优先在Eden区分配。如果Eden区放不下这个对象，虚拟机会使用复制算法发生一次Minor GC，清除掉无用对象，同时将存活对象移动到Survivor的其中一个区(fromspace区或者tospace区)。虚拟机会给每个对象定义一个对象年龄(Age)计数器，对象在Survivor区中每“熬过”一次GC，年龄就会+1。待到年龄到达一定岁数(默认是15岁)，虚拟机就会将对象移动到年老代。如果新生对象在Eden区无法分配空间时，此时发生Minor GC。发生MinorGC，对象会从Eden区进入Survivor区，如果Survivor区放不下从Eden区过来的对象时，此时会使用分配担保机制将对象直接移动到年老代。</p>
                             <p>我们知道在HotSpot虚拟机中存在三种垃圾回收现象，minor GC、major GC和full GC。对新生代进行垃圾回收叫做minor GC，对老年代进行垃圾回收叫做major GC，同时对新生代、老年代和永久代进行垃圾回收叫做full GC。许多major GC是由minor GC触发的，所以很难将这两种垃圾回收区分开。major GC和full GC通常是等价的，收集整个GC堆。但因为HotSpot VM发展了这么多年，外界对各种名词的解读已经完全混乱了，当有人说“major GC”的时候一定要问清楚他想要指的是上面的full GC还是major GC。</p>
                         </accordion-item>
+                        <div class="item item-divider dividerFont">类加载</div>
+                        <accordion-item class="stableBack" title="加载流程" content-height="360">
+                            <p>双亲委派模型工作过程是：如果一个类加载器收到类加载的请求，它首先不会自己去尝试加载这个类，而是把这个请求委派给父类加载器完成。每个类加载器都是如此，只有当父加载器在自己的搜索范围内找不到指定的类时（即ClassNotFoundException），子加载器才会尝试自己去加载。</p>
+                            <div><img src="./img/classLoader.bmp" width="100%" height="200px"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="打破双亲委派" content-height="400">
+                            <p>打破双亲委派机制则不仅要继承ClassLoader类，还要重写loadClass和findClass方法</p>
+                            <div><textarea id="classLoader"></textarea></div>
+                        </accordion-item>
                     </accordion>
                 </div>
             </div>
         `,
         data() {
             return {
-
+                classLoader:
+                    "public class TestClassLoaderN extends ClassLoader {\n" +
+                    "  private String name;\n" +
+                    "\n" +
+                    "  public TestClassLoaderN(ClassLoader parent, String name) {\n" +
+                    "    super(parent);\n" +
+                    "    this.name = name;\n" +
+                    "  }\n" +
+                    "\n" +
+                    "  @Override\n" +
+                    "  public String toString() {\n" +
+                    "    return this.name;\n" +
+                    "  }\n" +
+                    "\n" +
+                    "  @Override\n" +
+                    "  public Class<?> loadClass(String name) throws ClassNotFoundException {\n" +
+                    "    Class<?> clazz = null;\n" +
+                    "    ClassLoader system = getSystemClassLoader();\n" +
+                    "    try {\n" +
+                    "      clazz = system.loadClass(name);\n" +
+                    "    } catch (Exception e) {\n" +
+                    "      // ignore\n" +
+                    "    }\n" +
+                    "    if (clazz != null)\n" +
+                    "      return clazz;\n" +
+                    "    clazz = findClass(name);\n" +
+                    "    return clazz;\n" +
+                    "  }\n" +
+                    "\n" +
+                    "  @Override\n" +
+                    "  public Class<?> findClass(String name) {\n" +
+                    "    InputStream is = null;\n" +
+                    "    byte[] data = null;\n" +
+                    "    ByteArrayOutputStream baos = new ByteArrayOutputStream();\n" +
+                    "    try {\n" +
+                    "      is = new FileInputStream(new File(\"d:/Test.class\"));\n" +
+                    "      int c = 0;\n" +
+                    "      while (-1 != (c = is.read())) {\n" +
+                    "        baos.write(c);\n" +
+                    "      }\n" +
+                    "      data = baos.toByteArray();\n" +
+                    "    } catch (Exception e) {\n" +
+                    "      e.printStackTrace();\n" +
+                    "    } finally {\n" +
+                    "      try {\n" +
+                    "        is.close();\n" +
+                    "        baos.close();\n" +
+                    "      } catch (IOException e) {\n" +
+                    "        e.printStackTrace();\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    return this.defineClass(name, data, 0, data.length);\n" +
+                    "  }\n" +
+                    "\n" +
+                    "  public static void main(String[] args) {\n" +
+                    "    TestClassLoaderN loader = new TestClassLoaderN(\n" +
+                    "        TestClassLoaderN.class.getClassLoader(), \"TestLoaderN\");\n" +
+                    "    Class clazz;\n" +
+                    "    try {\n" +
+                    "      clazz = loader.loadClass(\"test.classloader.Test\");\n" +
+                    "      Object object = clazz.newInstance();\n" +
+                    "    } catch (Exception e) {\n" +
+                    "      e.printStackTrace();\n" +
+                    "    }\n" +
+                    "  }\n" +
+                    "\n" +
+                    "}",
+                options: {
+                    tabSize: 4,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
             }
         },
-        methods: {
-
+        mounted() {
+            let editorClassLoader = CodeMirror.fromTextArea(document.getElementById("classLoader"), this.options)
+            editorClassLoader.setValue(this.classLoader)
+            editorClassLoader.setSize('auto','300px')
         }
     }
     //// 二级 杂项
