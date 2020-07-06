@@ -1286,7 +1286,7 @@
         `,
         data() {
             return {
-                cells: ['事务','索引概念','设计范式','MYSQL','Oracle',''],
+                cells: ['事务','索引概念','设计范式','MySQL','Oracle',''],
             }
         },
         methods: {
@@ -1378,14 +1378,14 @@
     //// 二级 索引概念
     const Index = {
         template: `
-            <div class="page has-navbar" v-nav="{hidenavbar: true}">
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
                 <div class="page-content">
                     <von-header :theme="'stable'">
-                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/database')"></button>
-                        <span slot="title"><h3 class="padding text-center headertop">索引概念</h3></span>
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/dataBase')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">索引概念</h3></span>
                     </von-header>
                     <accordion default-index="0">
-                        <accordion-item class="stableback" title="b树" content-height="200">
+                        <accordion-item class="stableback" title="b树" content-height="150">
                             <p>m阶平衡树：m阶为一节点至多有m棵子树 ，也就是说b树上的结点最多只能有m棵子树</p>
                             <p>每个非根节点所包含的关键字个数 j 满足：m/2 - 1 <= j <= m - 1（分割标志）</p>
                         </accordion-item>
@@ -1421,10 +1421,8 @@
 
         }
     }
-    //// 二级 设计范式
-    const Design = {}
     //// 二级 MySQL
-    const MYSQL = {
+    const MySQL = {
         template: `
             <div class="page has-navbar" v-nav="{hideNavbar: true}">
                 <div class="page-content">
@@ -2184,8 +2182,7 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         { path: '/dataBase', component: DataBase },
         { path: '/transaction', component: Transaction }, //// 二级菜单 事务
         { path: '/index', component: Index }, //// 二级菜单 索引
-        { path: '/design', component: Design }, //// 二级菜单 设计范式
-        { path: '/mysql', component: MYSQL }, //// 二级菜单 MYSQL
+        { path: '/mysql', component: MySQL }, //// 二级菜单 MYSQL
         { path: '/oracle', component: Oracle }, //// 二级菜单 Oracle
 
         //// 一级菜单 网络
