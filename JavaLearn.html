@@ -1304,6 +1304,77 @@
             },
         }
     }
+    //// 二级 事务
+    const Transaction = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/dataBase')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">事务</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="ACID" content-height="600">
+                            <p>原子性（Atomicity）：事务必须是原子工作单元；对于其数据修改，要么全都执行，要么全都不执行。通常，与某个事务关联的操作具有共同的目标，并且是相互依赖的。如果系统只执行这些操作的一个子集，则可能会破坏事务的总体目标。原子性消除了系统处理操作子集的可能性。<span class="redBold">实现事务的原子性，是基于日志的Redo/Undo机制。</span> </p>
+                            <p>一致性（Consistency）：事务在完成时，必须使所有的数据都保持一致状态。在相关数据库中，所有规则都必须应用于事务的修改，以保持所有数据的完整性。事务结束时，所有的内部数据结构（如 B 树索引或双向链表）都必须是正确的。某些维护一致性的责任由应用程序开发人员承担，他们必须确保应用程序已强制所有已知的完整性约束。例如，当开发用于转帐的应用程序时，应避免在转帐过程中任意移动小数点</p>
+                            <p>隔离性（Isolation）：由并发事务所作的修改必须与任何其它并发事务所作的修改隔离。事务查看数据时数据所处的状态，要么是另一并发事务修改它之前的状态，要么是另一事务修改它之后的状态，事务不会查看中间状态的数据。这称为可串行性，因为它能够重新装载起始数据，并且重播一系列事务，以使数据结束时的状态与原始事务执行的状态相同。当事务可序列化时将获得最高的隔离级别。在此级别上，从一组可并行执行的事务获得的结果与通过连续运行每个事务所获得的结果相同。由于高度隔离会限制可并行执行的事务数，所以一些应用程序降低隔离级别以换取更大的吞吐量</p>
+                            <p>持久性（Durability）：事务完成之后，它对于系统的影响是永久性的。该修改即使出现致命的系统故障也将一直保持</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="隔离级别" content-height="250">
+                            <p>读未提交：会造成脏读、不可重复读、幻读</p>
+                            <p>读已提交：会造成不可重复读、幻读</p>
+                            <p>可重复读：会造成幻读</p>
+                            <p>可串行化：</p>
+                            <p>Mysql支持四种隔离级别（默认是可重复读），Oracle支持读已提交和可串行化（默认是读已提交）</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="脏读" content-height="100">
+                            <p>某个事务已更新一份数据，另一个事务在此时读取了同一份数据，由于某些原因，前一个RollBack了操作，则后一个事务所读取的数据就会是不正确的</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="幻读" content-height="100">
+                            <p>在一个事务的两次查询之中数据不一致，这可能是两次查询过程中间插入了一个事务更新的原有的数据</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="不可重复读" content-height="130">
+                            <p>在一个事务的两次查询中数据笔数不一致，例如有一个事务查询了几列(Row)数据，而另一个事务却在此时插入了新的几列数据，先前的事务在接下来的查询中，就会发现有几列数据是它先前所没有的</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="MySQL锁" content-height="370">
+                            <p>数据库使用到的锁概念：乐观锁、悲观锁、共享锁</p>
+                            <p>乐观锁：无锁机制，<span class="redBold">MVCC是乐观锁的一种实现</span>；悲观锁：写锁；共享锁：读锁；</p>
+                            <p>早期数据库不论读取还是写入，都用锁来实现。但是锁会带来性能的问题。人们尝试各种优化方案。写入和读取的优化方式不同。对于数据库写入操作，没有特别好的办法，因为无论如何要避免并发修改一个数据，就得靠锁。不同的数据库对于写入操作都会加悲观锁（比如MySQL是X锁）。为了避免X锁带来的性能问题，人们在合适的场合会选择用乐观锁来优化。有的数据库内建乐观锁，但是有的没有（比如MySQL就没有），所以需要开发人员自己在数据表里加version列，自己写业务代码实现。</p>
+                            <p><span class="redBold">注意：</span>乐观锁并不一定总是比悲观锁性能表现更好，这要看竞争的程度。如果数据访问竞争的非常厉害，乐观锁只会让CPU和IO白白浪费而已。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="MVCC" content-height="1060">
+                            <p>Multi-Version Concurrency Control 多版本并发控制。对于读取，优化就是MVCC。现在主流的商业数据库都是基于MVCC，如MySQL InnoDB和Postgres。MVCC的意思用简单的话讲就是<span class="redBold">对数据库的任何修改的提交都不会直接覆盖之前的数据，而是产生一个新的版本与老版本共存，使得读取时可以完全不加锁</span>。这样读某一个数据时，事务可以根据隔离级别选择要读取哪个版本的数据。过程中完全不需要加锁。</p>
+                            <p>MVCC只针对RC和RR，read uncommitted可以直接读脏数据，读版本链最开始的记录就可以了，不需要读旧版本信息。serializable需要对读加锁，不需要应用多版本信息。</p>
+                            <p><span class="redBold">Read Committed：</span>一个事务读取数据时总是读这个数据最近一次被commit的版本</p>
+                            <p><span class="redBold">Repeatable Read：</span>一个事务读取数据时总是读取当前事务开始之前最后一次被commit的版本（所以底层实现时需要比较当前事务和数据被commit的版本号）</p>
+                            <p>例子：</p>
+                            <p><span class="redBold">1、</span>一个事务A（txnId=100）修改了数据X，使得X=1，并且commit了</p>
+                            <p><span class="redBold">2、</span>另外一个事务B（txnId=101）开始尝试读取X，但是还X=1。但B没有提交。</p>
+                            <p><span class="redBold">3、</span>第三个事务C（txnId=102）修改了数据X，使得X=2。并且提交了</p>
+                            <p><span class="redBold">4、</span>事务B又一次读取了X。这时</p>
+                            <p>如果事务B是Read Committed。那么就读取X的最新commit的版本，也就是X=2</p>
+                            <p>如果事务B是Repeatable Read。那么读取的就是当前事务（txnId=101）之前X的最新版本，也就是X被txnId=100提交的版本，即X=1</p>
+                            <p>注意，这里B不论是Read Committed，还是Repeatable Read，都不会被锁，都能立刻拿到结果。这也就是MVCC存在的意义。</p>
+                            <p><span class="redBold">注意，这里B不论是Read Committed，还是Repeatable Read，都不会被锁，都能立刻拿到结果。这也就是MVCC存在的意义。</span></p>
+                            <p>在基于MVCC的数据库实现中，根本就不需要出现Read Uncommitted这种情况。Read Uncommitted是早期数据库，读写都基于锁进行实现的产物。在实际业务中Read Uncommitted毫无意义（如果真有意义，你咋不去用NoSQL数据库？）因此：</p>
+                            <p>对于Postgres，Read Committed和Read Uncommitted是一样的。对于Oracle，压根就没有Read Uncommitted这个级别。所以从实际的角度出发，我想所有人都忘记有“Read Uncommitted”这件事。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="undo/redo log" content-height="100">
+                            <p>预留</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+            }
+        },
+        methods: {
+
+        }
+    }
     //// 二级 执行计划
     const ExecutionPlan = {
         template: `
@@ -1334,51 +1405,6 @@
                         <div class="item item-divider dividerFont">执行计划</div>
                         <accordion-item class="stableBack" title="预留" content-height="108">
                             <p>预留</p>
-                        </accordion-item>
-                    </accordion>
-                </div>
-            </div>
-        `,
-        data() {
-            return {
-
-            }
-        },
-        methods: {
-
-        }
-    }
-    //// 二级 事务
-    const Transaction = {
-        template: `
-            <div class="page has-navbar" v-nav="{hideNavbar: true}">
-                <div class="page-content">
-                    <von-header :theme="'stable'">
-                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/dataBase')"></button>
-                        <span slot="title"><h3 class="padding text-center headerTop">事务</h3></span>
-                    </von-header>
-                    <accordion default-index="0">
-                        <accordion-item class="stableBack" title="ACID" content-height="600">
-                            <p>原子性（Atomicity）：事务必须是原子工作单元；对于其数据修改，要么全都执行，要么全都不执行。通常，与某个事务关联的操作具有共同的目标，并且是相互依赖的。如果系统只执行这些操作的一个子集，则可能会破坏事务的总体目标。原子性消除了系统处理操作子集的可能性</p>
-                            <p>一致性（Consistency）：事务在完成时，必须使所有的数据都保持一致状态。在相关数据库中，所有规则都必须应用于事务的修改，以保持所有数据的完整性。事务结束时，所有的内部数据结构（如 B 树索引或双向链表）都必须是正确的。某些维护一致性的责任由应用程序开发人员承担，他们必须确保应用程序已强制所有已知的完整性约束。例如，当开发用于转帐的应用程序时，应避免在转帐过程中任意移动小数点</p>
-                            <p>隔离性（Isolation）：由并发事务所作的修改必须与任何其它并发事务所作的修改隔离。事务查看数据时数据所处的状态，要么是另一并发事务修改它之前的状态，要么是另一事务修改它之后的状态，事务不会查看中间状态的数据。这称为可串行性，因为它能够重新装载起始数据，并且重播一系列事务，以使数据结束时的状态与原始事务执行的状态相同。当事务可序列化时将获得最高的隔离级别。在此级别上，从一组可并行执行的事务获得的结果与通过连续运行每个事务所获得的结果相同。由于高度隔离会限制可并行执行的事务数，所以一些应用程序降低隔离级别以换取更大的吞吐量</p>
-                            <p>持久性（Durability）：事务完成之后，它对于系统的影响是永久性的。该修改即使出现致命的系统故障也将一直保持</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="隔离级别" content-height="300">
-                            <p>读未提交：会造成脏读、不可重复读、幻读</p>
-                            <p>读已提交：会造成不可重复读、幻读</p>
-                            <p>可重复读：会造成幻读</p>
-                            <p>可串行化：</p>
-                            <p>Mysql支持四种隔离级别（默认是可重复读），Oracle支持读已提交和可串行化（默认是读已提交）</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="脏读" content-height="100">
-                            <p>某个事务已更新一份数据，另一个事务在此时读取了同一份数据，由于某些原因，前一个RollBack了操作，则后一个事务所读取的数据就会是不正确的</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="幻读" content-height="100">
-                            <p>在一个事务的两次查询之中数据不一致，这可能是两次查询过程中间插入了一个事务更新的原有的数据</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="不可重复读" content-height="130">
-                            <p>在一个事务的两次查询中数据笔数不一致，例如有一个事务查询了几列(Row)数据，而另一个事务却在此时插入了新的几列数据，先前的事务在接下来的查询中，就会发现有几列数据是它先前所没有的</p>
                         </accordion-item>
                     </accordion>
                 </div>
