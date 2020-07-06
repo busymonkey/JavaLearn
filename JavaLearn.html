@@ -1286,17 +1286,17 @@
         `,
         data() {
             return {
-                cells: ['事务','执行计划','索引','Mysql','Oracle','设计范式'],
+                cells: ['事务','索引概念','设计范式','MYSQL','Oracle',''],
             }
         },
         methods: {
             onCellClick(cellIndex) {
                 switch (cellIndex) {
                     case 0: this.$router.push({path: `/transaction`}); break;
-                    case 1: this.$router.push({path: `/executionPlan`}); break;
-                    case 2: this.$router.push({path: `/index`}); break;
-                    case 3: break;
-                    case 4: break;
+                    case 1: this.$router.push({path: `/index`}); break;
+                    case 2: break;
+                    case 3: this.$router.push({path: `/mysql`}); break;
+                    case 4: this.$router.push({path: `/oracle`}); break;
                     case 5: break;
                     default: this.$router.push({path: `/demo`});
                 }
@@ -1336,7 +1336,7 @@
                         <accordion-item class="stableBack" title="不可重复读" content-height="130">
                             <p>在一个事务的两次查询中数据笔数不一致，例如有一个事务查询了几列(Row)数据，而另一个事务却在此时插入了新的几列数据，先前的事务在接下来的查询中，就会发现有几列数据是它先前所没有的</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="MySQL锁" content-height="370">
+                        <accordion-item class="stableBack" title="锁" content-height="370">
                             <p>数据库使用到的锁概念：乐观锁、悲观锁、共享锁</p>
                             <p>乐观锁：无锁机制，<span class="redBold">MVCC是乐观锁的一种实现</span>；悲观锁：写锁；共享锁：读锁；</p>
                             <p>早期数据库不论读取还是写入，都用锁来实现。但是锁会带来性能的问题。人们尝试各种优化方案。写入和读取的优化方式不同。对于数据库写入操作，没有特别好的办法，因为无论如何要避免并发修改一个数据，就得靠锁。不同的数据库对于写入操作都会加悲观锁（比如MySQL是X锁）。为了避免X锁带来的性能问题，人们在合适的场合会选择用乐观锁来优化。有的数据库内建乐观锁，但是有的没有（比如MySQL就没有），所以需要开发人员自己在数据表里加version列，自己写业务代码实现。</p>
@@ -1375,14 +1375,62 @@
 
         }
     }
-    //// 二级 执行计划
-    const ExecutionPlan = {
+    //// 二级 索引概念
+    const Index = {
+        template: `
+            <div class="page has-navbar" v-nav="{hidenavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/database')"></button>
+                        <span slot="title"><h3 class="padding text-center headertop">索引概念</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableback" title="b树" content-height="200">
+                            <p>m阶平衡树：m阶为一节点至多有m棵子树 ，也就是说b树上的结点最多只能有m棵子树</p>
+                            <p>每个非根节点所包含的关键字个数 j 满足：m/2 - 1 <= j <= m - 1（分割标志）</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="b+树" content-height="120">
+                            <p>叶子节点增加横向索引</p>
+                            <p>内部节点只保存索引，不保存实际数据，实际数据都在叶子节点</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="b*树" content-height="60">
+                            <p>内部节点增加横向索引</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="聚簇索引" content-height="60">
+                            <p>已主键构造出的一个b+树索引</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="非聚簇索引" content-height="90">
+                            <p>非聚集索引又叫辅助索引，叶子节点并不包含行记录数据，而是存储了聚集索引键</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="全文索引" content-height="90">
+                            <p>只有字段的数据类型为 char、varchar、text 及其系列才可以建全文索引</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="回表" content-height="90">
+                            <p>数据库根据索引找到了指定的记录所在行后，还需要根据rowid再次到数据块里取数据的操作</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+            }
+        },
+        methods: {
+
+        }
+    }
+    //// 二级 设计范式
+    const Design = {}
+    //// 二级 MySQL
+    const MYSQL = {
         template: `
             <div class="page has-navbar" v-nav="{hideNavbar: true}">
                 <div class="page-content">
                     <von-header :theme="'stable'">
                         <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/dataBase')"></button>
-                        <span slot="title"><h3 class="padding text-center headerTop">执行计划</h3></span>
+                        <span slot="title"><h3 class="padding text-center headerTop">MySQL</h3></span>
                     </von-header>
                     <accordion default-index="0">
                         <div class="item item-divider dividerFont">索引命中</div>
@@ -1419,38 +1467,36 @@
 
         }
     }
-    //// 二级 索引
-    const Index = {
+    //// 二级 Oracle
+    const Oracle = {
         template: `
             <div class="page has-navbar" v-nav="{hideNavbar: true}">
                 <div class="page-content">
                     <von-header :theme="'stable'">
                         <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/dataBase')"></button>
-                        <span slot="title"><h3 class="padding text-center headerTop">索引</h3></span>
+                        <span slot="title"><h3 class="padding text-center headerTop">Oracle</h3></span>
                     </von-header>
                     <accordion default-index="0">
-                        <accordion-item class="stableBack" title="B树" content-height="200">
-                            <p>m阶平衡树：m阶为一节点至多有m棵子树 ，也就是说B树上的结点最多只能有m棵子树</p>
-                            <p>每个非根节点所包含的关键字个数 j 满足：m/2 - 1 <= j <= m - 1（分割标志）</p>
+                        <div class="item item-divider dividerFont">索引命中</div>
+                        <accordion-item class="stableBack" title="or" content-height="80">
+                            <p>列a，列b只有当独立索引时才会命中，联合索引是不会命中</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="B+树" content-height="120">
-                            <p>叶子节点增加横向索引</p>
-                            <p>内部节点只保存索引，不保存实际数据，实际数据都在叶子节点</p>
+                        <accordion-item class="stableBack" title="like" content-height="80">
+                            <p>通配符在右边，或者无通配符可以命中索引，通配符在左边无法命中索引</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="B*树" content-height="60">
-                            <p>内部节点增加横向索引</p>
+                        <accordion-item class="stableBack" title="最左原则" content-height="230">
+                            <p>联合索引index(a, b, c)</p>
+                            <p>where a = 1 and b = 1 and c = 1 是可以命中索引，类型为 ref 类型</p>
+                            <p>where b = 1 and c = 1 是无法命中索引，类型为 ALL</p>
+                            <p>where a > 1 and b = 1 and c = 1 是可以命中索引的（只要有最左的a索引），索引类型是 range</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="聚簇索引" content-height="60">
-                            <p>已主键构造出的一个B+树索引</p>
+                        <accordion-item class="stableBack" title="其他" content-height="120">
+                            <p>关联条件是不走索引的</p>
+                            <p>范围索引数据库会衡量效率，如果走索引效率更低，也不会走索引</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="非聚簇索引" content-height="90">
-                            <p>非聚集索引又叫辅助索引，叶子节点并不包含行记录数据，而是存储了聚集索引键</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="全文索引" content-height="90">
-                            <p>只有字段的数据类型为 char、varchar、text 及其系列才可以建全文索引</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="回表" content-height="90">
-                            <p>数据库根据索引找到了指定的记录所在行后，还需要根据rowid再次到数据块里取数据的操作</p>
+                        <div class="item item-divider dividerFont">执行计划</div>
+                        <accordion-item class="stableBack" title="预留" content-height="108">
+                            <p>预留</p>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -1952,9 +1998,11 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
 
         //// 一级菜单 数据库
         { path: '/dataBase', component: DataBase },
-        { path: '/executionPlan', component: ExecutionPlan }, //// 二级菜单 执行计划
         { path: '/transaction', component: Transaction }, //// 二级菜单 事务
         { path: '/index', component: Index }, //// 二级菜单 索引
+        { path: '/design', component: Design }, //// 二级菜单 设计范式
+        { path: '/mysql', component: MYSQL }, //// 二级菜单 MYSQL
+        { path: '/oracle', component: Oracle }, //// 二级菜单 Oracle
 
         //// 一级菜单 网络
         { path: '/netWork', component: NetWork },
