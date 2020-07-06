@@ -1429,15 +1429,39 @@
             <div class="page has-navbar" v-nav="{hideNavbar: true}">
                 <div class="page-content">
                     <von-header :theme="'stable'">
-                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/dataBase')"></button>
+                        <button class="button button-icon ion-ios-arrow-back" slot="left"
+                                @click="$router.back('/dataBase')"></button>
                         <span slot="title"><h3 class="padding text-center headerTop">MySQL</h3></span>
                     </von-header>
                     <accordion default-index="0">
                         <accordion-item class="stableBack" title="索引基数" content-height="320">
-                            <p>基数是数据列所包含的不同值的数量，例如，某个数据列包含值 1、3、7、4、7、3，那么它的基数就是 4。</p>
-                            <p>索引的基数相对于数据表行数较高（也就是说，列中包含很多不同的值，重复的值很少）的时候，它的工作效果最好。</p>
-                            <p>如果某数据列含有很多不同的年龄，索引会很快地分辨数据行；如果某个数据列用于记录性别（只有“M”和“F”两种值），那么索引的用处就不大；如果值出现的几率几乎相等，那么无论搜索哪个值都可能得到一半的数据行。</p>
-                            <p>在这些情况下，最好根本不要使用索引，因为查询优化器发现某个值出现在表的数据行中的百分比很高的时候，它一般会忽略索引，进行全表扫描。惯用的百分比界线是“30%”。</p>
+                            <p>基数是数据列所包含的不同值的数量，例如，某个数据列包含值 1、3、7、4、7、3，那么它的基数就是 4</p>
+                            <p>索引的基数相对于数据表行数较高（也就是说，列中包含很多不同的值，重复的值很少）的时候，它的工作效果最好</p>
+                            <p>如果某数据列含有很多不同的年龄，索引会很快地分辨数据行；如果某个数据列用于记录性别（只有“M”和“F”两种值），那么索引的用处就不大；如果值出现的几率几乎相等，那么无论搜索哪个值都可能得到一半的数据行</p>
+                            <p>在这些情况下，最好根本不要使用索引，因为查询优化器发现某个值出现在表的数据行中的百分比很高的时候，它一般会忽略索引，进行全表扫描。惯用的百分比界线是“30%”</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="索引失效" content-height="460">
+                            <p>对索引列运算，运算包括（+、-、*、/、！、<>、%、like'%_'（% 放在前面）</p>
+                            <p>类型错误，如字段类型为 varchar，where 条件用 number</p>
+                            <p>对索引应用内部函数，这种情况下应该要建立基于函数的索引。例如 select * from template t where ROUND (t.logicdb_id) = 1，此时应该建 ROUND (t.logicdb_id) 为索引。MySQL 8.0 开始支持函数索引，5.7 可以通过虚拟列的方式来支持，之前只能新建一个 ROUND (t.logicdb_id) 列然后去维护</p>
+                            <p>如果条件有 or，即使其中有条件带索引也不会使用（这也是为什么建议少使用 or 的原因），如果想使用 or，又想索引有效，只能将 or 条件中的每个列加上索引</p>
+                            <p>如果列类型是字符串，那一定要在条件中数据使用引号，否则不使用索引</p>
+                            <p>B-tree 索引 is null 不会走，is not null 会走，位图索引 is null，is not null 都会走</p>
+                            <p>组合索引遵循最左原则</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="索引建立注意" content-height="200">
+                            <p>最重要的肯定是根据业务经常查询的语句</p>
+                            <p>尽量选择区分度高的列作为索引，区分度的公式是 COUNT(DISTINCT col) / COUNT(*)，表示字段不重复的比率，比率越大我们扫描的记录数就越少</p>
+                            <p>如果业务中唯一特性最好建立唯一键，一方面可以保证数据的正确性，另一方面索引的效率能大大提高</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="基本语法" content-height="450">
+                            <div><textarea id="MySQL"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="锁" content-height="150">
+                            <div><textarea id="MySQLlock"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="分组聚合函数" content-height="180">
+                            <div><textarea id="MySQLfunc"></textarea></div>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -1445,11 +1469,178 @@
         `,
         data() {
             return {
-
+                MySQL:
+                    "//// 显示所有数据库\n" +
+                    "show databases;\n" +
+                    "\n" +
+                    "//// 创建名字为 db_book 的数据库\n" +
+                    "create databases db_book; \n" +
+                    "\n" +
+                    "//// 删除名字为 db_book 的数据库\n" +
+                    "drop databases db_book; \n" +
+                    "\n" +
+                    "//// 创建表\n" +
+                    "CREATE TABLE t_bookType(\n" +
+                    "\tid int primary key auto_increment,\n" +
+                    "\tbookTypeName varchar(20),\n" +
+                    "\tbookTypeDesc varchar(200)\n" +
+                    ");\n" +
+                    "\n" +
+                    "//// 外键\n" +
+                    "CREATE TABLE t_bookType(\n" +
+                    "\tid int primary key auto_increment,\n" +
+                    "\tbookTypeName varchar(20),\n" +
+                    "\tbookTypeDesc varchar(200)\n" +
+                    ");\n" +
+                    "CREATE TABLE t_book(\n" +
+                    "\tid int primary key auto_increment,\n" +
+                    "\tbookName varchar(20),\n" +
+                    "\tauthor varchar(10),\n" +
+                    "\tprice decimal(6,2),\n" +
+                    "\tbookTypeId int,\n" +
+                    "\tconstraint `fk` foreign key (`bookTypeId`) references `t_bookType`(`id`)\n" +
+                    ");\n" +
+                    "\n" +
+                    "//// 查看表\n" +
+                    "desc t_bookType;\n" +
+                    "\n" +
+                    "//// 表详细信息\n" +
+                    "show create table t_bookType;\n" +
+                    "\n" +
+                    "//// 修改表名\n" +
+                    "alter table 旧表名 rename 新表名;\n" +
+                    "\n" +
+                    "//// 修改字段\n" +
+                    "alter table 表名 change 旧属性名 新属性名 新数据类型;\n" +
+                    "\n" +
+                    "//// 增加字段\n" +
+                    "alter table 表名 add 属性名1 数据类型  [ 完整性约束条件 ]  [ first | alter 属性名2 ];\n" +
+                    "\n" +
+                    "//// 删除字段\n" +
+                    "alter table 表名 drop 属性名;\n" +
+                    "\n" +
+                    "//// 删除表\n" +
+                    "drop table 表名;\n" +
+                    "\n" +
+                    "//// 插入\n" +
+                    "INSERT INTO `t_student` (`id`, `stuName`, `age`, `sex`, `gradeName`) VALUES('1','张三','23','男','一年级');\n" +
+                    "//// 如果有主键或者唯一键冲突则不插入\n" +
+                    "insert ignore into\n" +
+                    "//// 如果有主键或者唯一键冲突则更新，注意这个会影响自增的增量\n" +
+                    "INSERT INTO room_remarks(room_id,room_remarks)VALUE(1,\"sdf\") ON DUPLICATE KEY UPDATE room_remarks = \"234\"\n" +
+                    "//// 如果有就用新的替代，values 如果不包含自增列，自增列的值会变化\n" +
+                    "REPLACE INTO room_remarks(room_id,room_remarks) VALUE(1,\"sdf\")\n" +
+                    "\n" +
+                    "//// 查询\n" +
+                    "SELECT * FROM t_student WHERE id=1;\n" +
+                    "SELECT * FROM t_student WHERE age>22;\n" +
+                    "SELECT * FROM t_student WHERE age IN (21,23);\n" +
+                    "SELECT * FROM t_student WHERE age NOT IN (21,23);\n" +
+                    "SELECT * FROM t_student WHERE age BETWEEN 21 AND 24;\n" +
+                    "SELECT * FROM t_student WHERE age NOT BETWEEN 21 AND 24;\n" +
+                    "SELECT * FROM t_student WHERE stuName LIKE '张三';\n" +
+                    "SELECT * FROM t_student WHERE stuName LIKE '张三_'; //// 下划线任意字符\n" +
+                    "SELECT * FROM t_student WHERE stuName LIKE '%张三%'; //// 模糊查询\n" +
+                    "SELECT * FROM t_student WHERE sex IS NULL;\n" +
+                    "SELECT * FROM t_student WHERE sex IS NOT NULL;\n" +
+                    "SELECT * FROM t_student WHERE gradeName='一年级' AND age=23\n" +
+                    "SELECT * FROM t_student WHERE gradeName='一年级' OR age=23\n" +
+                    "SELECT DISTINCT gradeName FROM t_student; //// 去重\n" +
+                    "SELECT * FROM t_student ORDER BY age ASC; //// 升序\n" +
+                    "SELECT * FROM t_student ORDER BY age DESC; //// 降序\n" +
+                    "SELECT gradeName,GROUP_CONCAT(stuName) FROM t_student GROUP BY gradeName; //// 分组查询\n" +
+                    "SELECT gradeName,COUNT(stuName) FROM t_student GROUP BY gradeName; //// 聚合函数查询\n" +
+                    "SELECT gradeName,COUNT(stuName) FROM t_student GROUP BY gradeName HAVING COUNT(stuName)>3; //// 计数大于3的\n" +
+                    "SELECT gradeName,COUNT(stuName) FROM t_student GROUP BY gradeName WITH ROLLUP; //// 统计\n" +
+                    "SELECT gradeName,GROUP_CONCAT(stuName) FROM t_student GROUP BY gradeName WITH ROLLUP;\n" +
+                    "SELECT * FROM t_student LIMIT 0,5; //// 分页查询\n" +
+                    "SELECT * FROM t_student LIMIT 5,5;\n" +
+                    "SELECT * FROM t_student LIMIT 10,5;\n" +
+                    "\n" +
+                    "//// 删除\n" +
+                    "DELETE FROM table_name [WHERE Clause]\n" +
+                    "//// 连表删除\n" +
+                    "DELETE user FROM user,black WHERE user.id=black.id\n" +
+                    "\n" +
+                    "//// 更新\n" +
+                    "UPDATE table_name SET field1=new-value1, field2=new-value2 [WHERE Clause]\n" +
+                    "//// 连表更新\n" +
+                    "UPDATE user a, room b SET a.num=a.num+1 WHERE a.room_id=b.id\n" +
+                    "\n" +
+                    "//// 临时关系\n" +
+                    "WITH test2 (W1, W2, W3, W4) AS (SELECT F1, F2, F3, F5 FROM test1)SELECT * FROM test2; \n" +
+                    "\n" +
+                    "//// 创建索引\n" +
+                    "alter table table_name add index index_name (column_list);\n" +
+                    "alter table table_name add unique (column_list);\n" +
+                    "alter table table_name add primary key (column_list);\n" +
+                    "\n" +
+                    "create index index_name on table_name (column_list);\n" +
+                    "create unique index index_name on table_name (column_list);\n" +
+                    "\n" +
+                    "//// 全文索引\n" +
+                    "CREATE TABLE article (\n" +
+                    "    id INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,\n" +
+                    "    title VARCHAR(200),\n" +
+                    "    content TEXT,\n" +
+                    "    FULLTEXT (title, content) --在title和content列上创建全文索引\n" +
+                    ");\n" +
+                    "//// 使用\n" +
+                    "SELECT * FROM article WHERE MATCH(title, content) AGAINST('查询字符串')\n" +
+                    "\n" +
+                    "//// 删除索引\n" +
+                    "drop index index_name on table_name ;\n" +
+                    "alter table table_name drop index index_name ;\n" +
+                    "alter table table_name drop primary key ;\n" +
+                    "\n" +
+                    "//// 查看索引\n" +
+                    "SHOW INDEX FROM [tableName];\n" +
+                    "\n" +
+                    "//// 全文索引\n" +
+                    "//// 只有字段的数据类型为 char、varchar、text 及其系列才可以建全文索引\n" +
+                    "create fulltext index content_tag_fulltext\n" +
+                    "    on fulltext_test(content,tag);\n" +
+                    "\n" +
+                    "select * from fulltext_test \n" +
+                    "    where match(content,tag) against('xxx xxx');\n" +
+                    "\n" +
+                    "//// 备份表\n" +
+                    "CREATE TABLE user_info SELECT * FROM user_info\n" +
+                    "\n" +
+                    "//// 复制表结构\n" +
+                    "CREATE TABLE user_v2 LIKE user\n" +
+                    "\n" +
+                    "//// 从查询语句中导入\n" +
+                    "INSERT INTO user_v2 SELECT * FROM user 或者 INSERT INTO user_v2(id,num) SELECT id,num FROM user",
+                MySQLlock:
+                    "--读锁：允许其他线程上读锁，但是不允许上写锁。\n" +
+                    "select * from user where user_name='wzzf' lock in share mode\n" +
+                    "--写锁：不允许其他线程上任何锁。\n" +
+                    "select * from user where user_name='wzzf' for update",
+                MySQLfunc:
+                    "AVG([distinct] expr) //// 求平均值\n" +
+                    "COUNT({*|[distinct] } expr) //// 统计行的数量\n" +
+                    "MAX([distinct] expr) //// 求最大值\n" +
+                    "MIN([distinct] expr) //// 求最小值\n" +
+                    "SUM([distinct] expr) //// 求累加和",
+                options: {
+                    tabSize: 4,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
             }
         },
-        methods: {
-
+        mounted() {
+            let editorMySQL = CodeMirror.fromTextArea(document.getElementById("MySQL"), this.options)
+            editorMySQL.setValue(this.MySQL)
+            editorMySQL.setSize('auto','400px')
+            let editorMySQLlock = CodeMirror.fromTextArea(document.getElementById("MySQLlock"), this.options)
+            editorMySQLlock.setValue(this.MySQLlock)
+            editorMySQLlock.setSize('auto','100px')
+            let editorMySQLfunc = CodeMirror.fromTextArea(document.getElementById("MySQLfunc"), this.options)
+            editorMySQLfunc.setValue(this.MySQLfunc)
+            editorMySQLfunc.setSize('auto','130px')
         }
     }
     //// 二级 Oracle
