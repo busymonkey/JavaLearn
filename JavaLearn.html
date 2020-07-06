@@ -1463,6 +1463,14 @@
                         <accordion-item class="stableBack" title="分组聚合函数" content-height="180">
                             <div><textarea id="MySQLfunc"></textarea></div>
                         </accordion-item>
+                        <div class="item item-divider dividerFont">explain</div>
+                        <accordion-item class="stableBack" title="特别关注" content-height="390">
+                            <p>首先看下<span class="redBold">type</span>这列的结果，如果有类型是 ALL 时，表示预计会进行全表扫描（full table scan）。通常全表扫描的代价是比较大的，建议创建适当的索引，通过索引检索避免全表扫描</p>
+                            <p>再来看下<span class="redBold">Extra</span>列的结果，如果有出现 Using temporary 或者 Using filesort 则要多加关注：</p>
+                            <p><span class="redBold">Using temporary</span>，表示需要创建临时表以满足需求，通常是因为GROUP BY的列没有索引，或者GROUP BY和ORDER BY的列不一样，也需要创建临时表，建议添加适当的索引。</p>
+                            <p><span class="redBold">Using filesort</span>，表示无法利用索引完成排序，也有可能是因为多表连接时，排序字段不是驱动表中的字段，因此也没办法利用索引完成排序，建议添加适当的索引</p>
+                            <p><span class="redBold">Using where，通常是因为全表扫描或全索引扫描时（type 列显示为 ALL 或 index），又加上了WHERE条件，建议添加适当的索引</span></p>
+                        </accordion-item>
                     </accordion>
                 </div>
             </div>
