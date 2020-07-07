@@ -1432,6 +1432,11 @@
                         <span slot="title"><h3 class="padding text-center headerTop">MySQL</h3></span>
                     </von-header>
                     <accordion default-index="0">
+                        <div class="item item-divider dividerFont">基本语法</div>
+                        <accordion-item class="stableBack" title="基本语法" content-height="450">
+                            <div><textarea id="MySQL"></textarea></div>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">基本概念</div>
                         <accordion-item class="stableBack" title="索引基数" content-height="320">
                             <p>基数是数据列所包含的不同值的数量，例如，某个数据列包含值 1、3、7、4、7、3，那么它的基数就是 4</p>
                             <p>索引的基数相对于数据表行数较高（也就是说，列中包含很多不同的值，重复的值很少）的时候，它的工作效果最好</p>
@@ -1452,16 +1457,13 @@
                             <p>尽量选择区分度高的列作为索引，区分度的公式是 COUNT(DISTINCT col) / COUNT(*)，表示字段不重复的比率，比率越大我们扫描的记录数就越少</p>
                             <p>如果业务中唯一特性最好建立唯一键，一方面可以保证数据的正确性，另一方面索引的效率能大大提高</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="基本语法" content-height="450">
-                            <div><textarea id="MySQL"></textarea></div>
-                        </accordion-item>
                         <accordion-item class="stableBack" title="锁" content-height="150">
                             <div><textarea id="MySQLlock"></textarea></div>
                         </accordion-item>
                         <accordion-item class="stableBack" title="分组聚合函数" content-height="180">
                             <div><textarea id="MySQLfunc"></textarea></div>
                         </accordion-item>
-                        <div class="item item-divider dividerFont">explain</div>
+                        <div class="item item-divider dividerFont">执行计划</div>
                         <accordion-item class="stableBack" title="特别关注" content-height="390">
                             <p>首先看下<span class="redBold">type</span>这列的结果，如果有类型是 ALL 时，表示预计会进行全表扫描（full table scan）。通常全表扫描的代价是比较大的，建议创建适当的索引，通过索引检索避免全表扫描</p>
                             <p>再来看下<span class="redBold">Extra</span>列的结果，如果有出现 Using temporary 或者 Using filesort 则要多加关注：</p>
@@ -1659,26 +1661,80 @@
                         <span slot="title"><h3 class="padding text-center headerTop">Oracle</h3></span>
                     </von-header>
                     <accordion default-index="0">
-                        <div class="item item-divider dividerFont">索引命中</div>
-                        <accordion-item class="stableBack" title="or" content-height="80">
-                            <p>列a，列b只有当独立索引时才会命中，联合索引是不会命中</p>
+                        <div class="item item-divider dividerFont">基本语法</div>
+                        <accordion-item class="stableBack" title="select" content-height="300">
+                            <div><textarea id="OracleSelect"></textarea></div>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="like" content-height="80">
-                            <p>通配符在右边，或者无通配符可以命中索引，通配符在左边无法命中索引</p>
+                        <accordion-item class="stableBack" title="insert" content-height="300">
+                            <div><textarea id="OracleInsert"></textarea></div>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="最左原则" content-height="230">
-                            <p>联合索引index(a, b, c)</p>
-                            <p>where a = 1 and b = 1 and c = 1 是可以命中索引，类型为 ref 类型</p>
-                            <p>where b = 1 and c = 1 是无法命中索引，类型为 ALL</p>
-                            <p>where a > 1 and b = 1 and c = 1 是可以命中索引的（只要有最左的a索引），索引类型是 range</p>
+                        <accordion-item class="stableBack" title="delete/truncate" content-height="230">
+                            <p>注意：删除记录并不能释放ORACLE里被占用的数据块表空间。它只把那些被删除的数据块标成unused，如果确实要删除一个大表里的全部记录，可以用 TRUNCATE 命令，它可以释放占用的数据块表空间，<span class="redBold">TRUNCATE TABLE 表名。此操作不可回退</span></p>
+                            <div><textarea id="OracleDelete"></textarea></div>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="其他" content-height="120">
-                            <p>关联条件是不走索引的</p>
-                            <p>范围索引数据库会衡量效率，如果走索引效率更低，也不会走索引</p>
+                        <accordion-item class="stableBack" title="update" content-height="290">
+                            <p>如果修改的值N没有赋值或定义时，将把原来的记录内容清为NULL，最好在修改前进行非空校验，值N超过定义的长度会出错, 最好在插入前进行长度校验。</p>
+                            <p><span class="redBold">注意事项：</span>在运行INSERT、DELETE 和 UPDATE 语句前最好估算一下可能操作的记录范围，应该把它限定在较小 (一万条记录) 范围内,。否则ORACLE处理这个事物用到很大的回退段，程序响应慢甚至失去响应. 如果记录数上十万以上这些操作, 可以把这些SQL语句分段分次完成，其间加上COMMIT 确认事物处理</p>
+                            <div><textarea id="OracleUpdate"></textarea></div>
                         </accordion-item>
-                        <div class="item item-divider dividerFont">执行计划</div>
-                        <accordion-item class="stableBack" title="预留" content-height="108">
-                            <p>预留</p>
+                         <accordion-item class="stableBack" title="alter" content-height="300">
+                            <div><textarea id="OracleAlter"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="drop" content-height="150">
+                            <p>删除表, 索引, 视图, 同义词, 过程, 函数, 数据库链接等</p>
+                            <div><textarea id="OracleDrop"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="group by" content-height="120">
+                            <div><textarea id="OracleGroupBy"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="sequence" content-height="220">
+                            <div><textarea id="OracleSequence"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="comments" content-height="200">
+                            <div><textarea id="OracleComments"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="timestamp" content-height="240">
+                            <p><span class="redBold">Java 代码后台直接setObject   java.util.Date类型即可</span></p>
+                            <div><textarea id="OracleTimestamp"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="constraint" content-height="300">
+                            <div><textarea id="OracleConstraint"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="nvl" content-height="150">
+                            <p>返回其中不为null的字段，若都为null则返回null，若都不为null则返回第一个字段</p>
+                            <div><textarea id="OracleNVL"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="union" content-height="420">
+                            <p>如果我们需要将两个select语句的结果作为一个整体显示出来，我们就需要用到union或者union all关键字。union(或称为联合)的作用是将多个结果合并在一起显示出来。union和union all的区别是,union会自动压缩多个结果集合中的重复结果，而union all则将所有的结果全部显示出来，不管是不是重复。联合在Java代码中来拼接常量数据的办法（多字段的联合查询只能先建立临时表操作）：</p>
+                            <div><textarea id="OracleUnion"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="start with connect by" content-height="390">
+                            <p><span class="redBold">Level：</span>代表第N级节点</p>
+                            <p><span class="redBold">条件1：</span>是根结点的限定语句，当然可以放宽限定条件，以取得多个根结点，实际就是多棵树。</p>
+                            <p><span class="redBold">条件2：</span>是连接条件，其中用PRIOR表示上一条记录，比如 CONNECT BY PRIOR org_id = parent_id；就是说上一条记录的org_id 是本条记录的parent_id，即本记录的父亲是上一条记录。运算符PRIOR被放置于等号前后的位置，决定着查询时的检索顺序</p>
+                            <p><span class="redBold">条件3：</span>是过滤条件，用于对返回的所有记录进行过滤。</p>
+                            <div><textarea id="OracleConnectBy"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="exists" content-height="170">
+                            <div><textarea id="OracleExists"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="可重复执行SQL" content-height="350">
+                            <div><textarea id="OracleRepeatSQL"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="索引" content-height="250">
+                            <div><textarea id="OracleIndex"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="merge into" content-height="250">
+                            <div><textarea id="OracleMergeInto"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="for" content-height="220">
+                            <div><textarea id="OracleFor"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="decode" content-height="220">
+                            <div><textarea id="OracleDecode"></textarea></div>
+                        </accordion-item>
+                         <accordion-item class="stableBack" title="删除外键 删除所有表" content-height="220">
+                            <div><textarea id="OracleDeleteConstraint"></textarea></div>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -1686,11 +1742,359 @@
         `,
         data() {
             return {
-
+                OracleSelect:
+                    "//// 查看用户下所有的表\n" +
+                    "select * from user_tables;\n" +
+                    "//// 查看名称包含log字符的表\n" +
+                    "select object_name,object_id from user_objects where instr(object_name,'LOG')>0;\n" +
+                    "//// 查看某表的创建时间\n" +
+                    "select object_name,created from user_objects where object_name=upper('&table_name');\n" +
+                    "//// 查看某表的大小\n" +
+                    "select sum(bytes)/(1024*1024) as \"size(M)\" from user_segments where segment_name=upper('&table_name');\n" +
+                    "//// 查看放在ORACLE的内存区里的表\n" +
+                    "select table_name,cache from user_tables where instr(cache,'Y')>0;",
+                OracleInsert:
+                    "INSERT INTO 表名(字段名1, 字段名2, ……) VALUES ( 值1, 值2, ……);\n" +
+                    "INSERT INTO 表名(字段名1, 字段名2, ……) SELECT (字段名1, 字段名2, ……) FROM 另外的表名;\n" +
+                    "SEQ_NAME.NEXTVAL\n" +
+                    "\n" +
+                    "//// 批量插入\n" +
+                    "insert into t_s_fun_custom\n" +
+                    "  (c_iden,\n" +
+                    "   c_fun_code,\n" +
+                    "   c_fun_name,\n" +
+                    "   c_fun_code_p,\n" +
+                    "   n_fun_type,\n" +
+                    "   n_order,\n" +
+                    "   n_default,\n" +
+                    "   c_ico_file,\n" +
+                    "   c_plan_code)\n" +
+                    "  select SEQU_S_FUN_CUSTOM.NEXTVAL,\n" +
+                    "         c_fun_code,\n" +
+                    "         c_fun_name,\n" +
+                    "         c_fun_code_p,\n" +
+                    "         n_fun_type,\n" +
+                    "         n_order,\n" +
+                    "         n_default + 2 as n_default,\n" +
+                    "         c_ico_file,\n" +
+                    "         replace(c_plan_code, ' ', '') || 'DefaultOldBiz' as c_plan_code\n" +
+                    "    from t_s_fun_custom\n" +
+                    "   where c_dv_app_cls = 'FUN_BIZ'\n" +
+                    "     and c_plan_code = ' '\n" +
+                    "     and n_default = 0;",
+                OracleDelete:
+                    "DELETE FROM表名 WHERE 条件;\n" +
+                    "TRUNCATE 表名;",
+                OracleUpdate:
+                    "UPDATE表名 SET 字段名1=值1, 字段名2=值2, …… WHERE 条件;",
+                OracleAlter:
+                    "改变表的名称：ALTER TABLE 表名1 TO 表名2;\n" +
+                    "在表的后面增加字段：ALTER TABLE表名 ADD （字段名1 字段名描述1, 字段名2 字段名描述2）;\n" +
+                    "修改表里字段的定义描述：ALTER TABLE表名 MODIFY字段名 字段名描述;\n" +
+                    "给表里的字段加上约束条件：\n" +
+                    "ALTER TABLE 表名 ADD CONSTRAINT 约束名 PRIMARY KEY (字段名);\n" +
+                    "ALTER TABLE 表名 ADD CONSTRAINT 约束名 UNIQUE (字段名);\n" +
+                    "把表放在或取出数据库的内存区\n" +
+                    "ALTER TABLE 表名 CACHE;\n" +
+                    "ALTER TABLE 表名 NOCACHE;",
+                OracleDrop:
+                    "//// 删除表和它所有的约束条件\n" +
+                    "DROP TABLE 表名 CASCADE CONSTRAINTS;",
+                OracleGroupBy:
+                    "select c_plan_code, count(c_view_user) from t_s_Wf_Rela t where c_plan_code='11111' group by c_plan_code;",
+                OracleSequence:
+                    "create sequence SEQU_S_MT_SQL minvalue 1 maxvalue 9999999999999999999999999999 start\n" +
+                    "  with 1 increment by 1 cache 20;\n" +
+                    "\n" +
+                    "//// 获取序列\n" +
+                    "SELECT NCME_QUESTION_SEQ.nextval FROM dual \n" +
+                    "SELECT NCME_QUESTION_SEQ.CURRVAL FROM dual",
+                OracleComments:
+                    "-- Add comments to the table \n" +
+                    "comment on table T_S_MT_SQL is 'SQL监控管理';\n" +
+                    "-- Add comments to the columns \n" +
+                    "comment on column T_S_MT_SQL.c_iden is '系统流水号';\n" +
+                    "comment on column T_S_MT_SQL.c_ip is '被监控服务器的IP';",
+                OracleTimestamp:
+                    "//// 新建\n" +
+                    "create table T_S_MT_SQL(c_iden VARCHAR2(30) not null,\n" +
+                    "                        d_create_time    timestamp(9) default systimestamp not null);\n" +
+                    "//// timestamp 字段比较\n" +
+                    "D_CREATE_TIME >= to_timestamp(?, 'yyyy-mm-dd hh24:mi:ss.ff9')",
+                OracleConstraint:
+                    "建表后可以增加约束：\n" +
+                    "ALTER TABLE table_name  \n" +
+                    "ADD CONSTRAINT constraint_name  \n" +
+                    "UNIQUE (column1, column2, ... , column_n);\n" +
+                    "\n" +
+                    "建表语句中可以增加字段约束：\n" +
+                    "create table table_name\n" +
+                    "(  \n" +
+                    "  column1      number not null,  \n" +
+                    "  column2      number not null,  \n" +
+                    "  column3      varchar2(50),  \n" +
+                    "  CONSTRAINT constraint_name UNIQUE (column2) --定义唯一性约束  \n" +
+                    ");",
+                OracleNVL:
+                    "select NVL(c_iden, c_user_code) as ABC from t_s_user;",
+                OracleUnion:
+                    "select * from t_test1\n" +
+                    "union\n" +
+                    "select * from t_test2;\n" +
+                    "\n" +
+                    "select C_DATA_CODE from T_S_USER_POST_DATA x \n" +
+                    "                   where x.c_user_code = '111'\n" +
+                    "union \n" +
+                    "select * from table(?)\n" +
+                    "##  ? 中可塞入常量数组",
+                OracleConnectBy:
+                    "select level, * from table  ##  level\n" +
+                    "start with org_id = ‘HBHqfWGWPy’  ## 条件1\n" +
+                    "connect by prior org_id = parent_id;  ## 条件2\n" +
+                    "where ...  ##  条件3",
+                OracleExists:
+                    "select * from ttt t where not exists (select 1 from qqq q where t.ids = q.ids);\n" +
+                    "跟下面的等价\n" +
+                    "select * from ttt t where not exists (select * from qqq q where t.ids = q.ids);\n" +
+                    "\n" +
+                    "//// 理解：先通过条件建立连接，再将连接部分从主表剔除",
+                OracleRepeatSQL:
+                    "--1、创建表\n" +
+                    "DECLARE\n" +
+                    "  VC_STR           VARCHAR2(5000);\n" +
+                    "  VN_COUNT         NUMBER;\n" +
+                    "BEGIN\n" +
+                    "  SELECT COUNT(*) INTO VN_COUNT\n" +
+                    "    FROM USER_TABLES\n" +
+                    "   WHERE TABLE_NAME = 'TB_BALANCE';\n" +
+                    "  --如果没有则新增表，如果有就不处理\n" +
+                    "  IF VN_COUNT < 1 THEN\n" +
+                    "    VC_STR := 'create table TB_BALANCE (\n" +
+                    "          ID              NUMBER not null,\n" +
+                    "          BILL_TYPE       CHAR(1),\n" +
+                    "          CORP_SCALE_CODE CHAR(4),\n" +
+                    "          INDUSTRY_CODE   VARCHAR2(8),     \n" +
+                    "          BALANCE         NUMBER(18,2),\n" +
+                    "          END_DATE        DATE\n" +
+                    "        )';\n" +
+                    "    EXECUTE IMMEDIATE VC_STR;\n" +
+                    "  END IF;\n" +
+                    "END;\n" +
+                    "\n" +
+                    "\n" +
+                    "-- 2增加表字段\n" +
+                    "DECLARE\n" +
+                    "  VN_COUNT     NUMBER;\n" +
+                    "  V_STR        VARCHAR2(1000);\n" +
+                    "BEGIN\n" +
+                    "select COUNT(*) \n" +
+                    "  INTO VN_COUNT\n" +
+                    "  from USER_TAB_COLUMNS \n" +
+                    " where table_name = 'TB_BALANCE' AND COLUMN_NAME = 'CUR_CODE';\n" +
+                    "IF VN_COUNT < 1 THEN\n" +
+                    "  V_STR := ' alter table TB_BALANCEadd(CUR_CODE VARCHAR2(50) default ''01'' not null)';\n" +
+                    "  EXECUTE IMMEDIATE V_STR;\n" +
+                    "END IF;\n" +
+                    "END;\n" +
+                    "\n" +
+                    "\n" +
+                    "--3、判断表bis_acc_his_bal是否已经建有名为PK_BIS_ACC_HIS_BAL的主键，没有则新增\n" +
+                    "DECLARE\n" +
+                    "  VN_COUNT    NUMBER;\n" +
+                    "BEGIN\n" +
+                    "  SELECT COUNT(*)\n" +
+                    "    INTO VN_COUNT\n" +
+                    "    FROM user_constraints WHERE constraint_type = 'P' and constraint_name = 'PK_BIS_ACC_HIS_BAL' and table_name = 'BIS_ACC_HIS_BAL';\n" +
+                    "  IF VN_COUNT < 1 THEN\n" +
+                    "   EXECUTE IMMEDIATE 'alter table bis_acc_his_bal add constraint PK_BIS_ACC_HIS_BAL primary key(BANK_ACC, BAL_DATE)';\n" +
+                    "  END IF;\n" +
+                    "  COMMIT; \n" +
+                    "END;\n" +
+                    "\n" +
+                    "\n" +
+                    "--4、插入数据\n" +
+                    "DECLARE\n" +
+                    "VN_COUNT   NUMBER;\n" +
+                    "BEGIN\n" +
+                    "SELECT COUNT(*) INTO VN_COUNT FROM TB_BALANCE WHERE  FORMULA_CODE = 'GETTOPDKYE';\n" +
+                    "IF VN_COUNT <1 THEN\n" +
+                    "INSERT INTO TB_BALANCE(ID, FORMULA_NAME, HELP, FORMULA_CODE)VALUES\n" +
+                    "(NVL((SELECT MAX(ID) + 1 FROM RPT1104_REPORT_FORMULA),1),\n" +
+                    "   'GETTOPDKYE（****）',\n" +
+                    "   'GETTOPDKYE（*****）:<br>\n" +
+                    "    参数1:贷款科目的代码<br>\n" +
+                    "    参数2:数据项，1-10<br>\n" +
+                    "    参数3:第几列；包括：客户名称，客户代码，最高风险额，贷款余额<br>\n" +
+                    "    示例:GETTOPDKYE(1303,1,1)<br*********<br>',\n" +
+                    "   'GETTOPDKYE'\n" +
+                    " );\n" +
+                    "END IF;\n" +
+                    "   COMMIT;\n" +
+                    "END;\n" +
+                    "\n" +
+                    "\n" +
+                    "--5、判断表bis_acc_his_bal是否已经建有名为PK_BIS_ACC_HIS_BAL的索引，有则删除\n" +
+                    "DECLARE\n" +
+                    "  VN_COUNT    NUMBER;\n" +
+                    "BEGIN\n" +
+                    "  SELECT COUNT(*)\n" +
+                    "    INTO VN_COUNT\n" +
+                    "    FROM user_indexes WHERE index_name = 'PK_BIS_ACC_HIS_BAL' and table_name = 'BIS_ACC_HIS_BAL';\n" +
+                    "  IF VN_COUNT >= 1 THEN\n" +
+                    "   EXECUTE IMMEDIATE 'drop index PK_BIS_ACC_HIS_BAL';\n" +
+                    "  END IF;\n" +
+                    "  COMMIT; \n" +
+                    "END;",
+                OracleIndex:
+                    "单一索引:Create Index <Index-Name> On <Table_Name>(Column_Name);\n" +
+                    "复合索引: Create Index i_deptno_job on emp(deptno,job); —>在emp表的deptno、job列建立索引。\n" +
+                    "select * from emp where deptno=66 and job='sals' ->走索引。\n" +
+                    "select * from emp where deptno=66 OR job='sals' ->将进行全表扫描。不走索引\n" +
+                    "select * from emp where deptno=66 ->走索引。\n" +
+                    "select * from emp where job='sals' ->进行全表扫描、不走索引。\n" +
+                    "如果在where 子句中有OR 操作符或单独引用Job 列(索引列的后面列) 则将不会走索引，将会进行全表扫描。\n" +
+                    " \n" +
+                    "--全文索引\n" +
+                    "CREATE INDEX  myindex ON mytable(mycolumn) indextype is ctxsys.context  parameters('lexer my_lexer');\n",
+                OracleMergeInto:
+                    "qqq：ids, names\n" +
+                    "1    qqq1\n" +
+                    "2    qqq2\n" +
+                    "3    qqq3   \n" +
+                    "4    qqq4\n" +
+                    "5    qqq5\n" +
+                    "6    qqq6\n" +
+                    "7    qqq7\n" +
+                    "8    qqq8\n" +
+                    "\n" +
+                    "www: ids, names\n" +
+                    "1    www1\n" +
+                    "4    www4\n" +
+                    "6    www6\n" +
+                    "9    www9\n" +
+                    "10   www10\n" +
+                    "\n" +
+                    "MERGE INTO qqq t1\n" +
+                    "USING (select * from qqq where ids in ('1','4','9','10')) t2\n" +
+                    "ON (t1.ids = t2.ids)\n" +
+                    "WHEN MATCHED THEN\n" +
+                    "  UPDATE SET t1.names = t2.names\n" +
+                    "WHEN NOT MATCHED THEN\n" +
+                    "  INSERT (t1.ids, t1.names) VALUES (t2.ids, t2.names);\n" +
+                    "\n" +
+                    "结果：qqq\n" +
+                    "1    www1\n" +
+                    "2    qqq2\n" +
+                    "3    qqq3   \n" +
+                    "4    www4\n" +
+                    "5    qqq5\n" +
+                    "6    qqq6\n" +
+                    "7    qqq7\n" +
+                    "8    qqq8\n" +
+                    "9    www9\n" +
+                    "10   www10\n",
+                OracleFor:
+                    "declare\n" +
+                    " cursor my_cursors is \n" +
+                    "  select distinct c_fun_code from t_s_fun_rights where rownum < 3680;\n" +
+                    "begin\n" +
+                    "  for my_cursor in my_cursors loop\n" +
+                    "    insert into t_s_fun_rights values(my_cursor.c_fun_code, 'SealRelaInfo', '');\n" +
+                    "  end loop;\n" +
+                    "end;",
+                OracleDecode:
+                    "DECODE(value,if1,value1,if2,value2,if3,value3,...,else)\n" +
+                    "//// 含义为\n" +
+                    "IF 条件=值1 THEN\n" +
+                    "　　　　RETURN(value 1)\n" +
+                    "ELSIF 条件=值2 THEN\n" +
+                    "　　　　RETURN(value 2)\n" +
+                    "　　　　......\n" +
+                    "ELSIF 条件=值n THEN\n" +
+                    "　　　　RETURN(value 3)\n" +
+                    "ELSE\n" +
+                    "　　　　RETURN(default)\n" +
+                    "END IF",
+                OracleDeleteConstraint:
+                    "SELECT 'ALTER TABLE ' || table_name || ' disable CONSTRAINT ' || constraint_name || ';' FROM user_constraints where CONSTRAINT_TYPE = 'R';\n" +
+                    "//// 拿到的结果全部执行一遍，然后当前用户下所有表\n" +
+                    "begin\n" +
+                    "  for t in (select table_name from user_tables) loop\n" +
+                    "   execute immediate 'drop table '||t.table_name;\n" +
+                    "  end loop;\n" +
+                    "end;",
+                options: {
+                    tabSize: 4,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
             }
         },
-        methods: {
-
+        mounted() {
+            let editorOracleSelect = CodeMirror.fromTextArea(document.getElementById("OracleSelect"), this.options)
+            editorOracleSelect.setValue(this.OracleSelect)
+            editorOracleSelect.setSize('auto','250px')
+            let editorOracleInsert = CodeMirror.fromTextArea(document.getElementById("OracleInsert"), this.options)
+            editorOracleInsert.setValue(this.OracleInsert)
+            editorOracleInsert.setSize('auto','250px')
+            let editorOracleDelete = CodeMirror.fromTextArea(document.getElementById("OracleDelete"), this.options)
+            editorOracleDelete.setValue(this.OracleDelete)
+            editorOracleDelete.setSize('auto','70px')
+            let editorOracleUpdate = CodeMirror.fromTextArea(document.getElementById("OracleUpdate"), this.options)
+            editorOracleUpdate.setValue(this.OracleUpdate)
+            editorOracleUpdate.setSize('auto','50px')
+            let editorOracleAlter = CodeMirror.fromTextArea(document.getElementById("OracleAlter"), this.options)
+            editorOracleAlter.setValue(this.OracleAlter)
+            editorOracleAlter.setSize('auto','250px')
+            let editorOracleDrop = CodeMirror.fromTextArea(document.getElementById("OracleDrop"), this.options)
+            editorOracleDrop.setValue(this.OracleDrop)
+            editorOracleDrop.setSize('auto','70px')
+            let editorOracleGroupBy = CodeMirror.fromTextArea(document.getElementById("OracleGroupBy"), this.options)
+            editorOracleGroupBy.setValue(this.OracleGroupBy)
+            editorOracleGroupBy.setSize('auto','70px')
+            let editorOracleSequence = CodeMirror.fromTextArea(document.getElementById("OracleSequence"), this.options)
+            editorOracleSequence.setValue(this.OracleSequence)
+            editorOracleSequence.setSize('auto','170px')
+            let editorOracleComments = CodeMirror.fromTextArea(document.getElementById("OracleComments"), this.options)
+            editorOracleComments.setValue(this.OracleComments)
+            editorOracleComments.setSize('auto','150px')
+            let editorOracleTimestamp = CodeMirror.fromTextArea(document.getElementById("OracleTimestamp"), this.options)
+            editorOracleTimestamp.setValue(this.OracleTimestamp)
+            editorOracleTimestamp.setSize('auto','150px')
+            let editorOracleConstraint = CodeMirror.fromTextArea(document.getElementById("OracleConstraint"), this.options)
+            editorOracleConstraint.setValue(this.OracleConstraint)
+            editorOracleConstraint.setSize('auto','250px')
+            let editorOracleNVL = CodeMirror.fromTextArea(document.getElementById("OracleNVL"), this.options)
+            editorOracleNVL.setValue(this.OracleNVL)
+            editorOracleNVL.setSize('auto','50px')
+            let editorOracleUnion = CodeMirror.fromTextArea(document.getElementById("OracleUnion"), this.options)
+            editorOracleUnion.setValue(this.OracleUnion)
+            editorOracleUnion.setSize('auto','220px')
+            let editorOracleConnectBy = CodeMirror.fromTextArea(document.getElementById("OracleConnectBy"), this.options)
+            editorOracleConnectBy.setValue(this.OracleConnectBy)
+            editorOracleConnectBy.setSize('auto','100px')
+            let editorOracleExists = CodeMirror.fromTextArea(document.getElementById("OracleExists"), this.options)
+            editorOracleExists.setValue(this.OracleExists)
+            editorOracleExists.setSize('auto','130px')
+            let editorOracleRepeatSQL = CodeMirror.fromTextArea(document.getElementById("OracleRepeatSQL"), this.options)
+            editorOracleRepeatSQL.setValue(this.OracleRepeatSQL)
+            editorOracleRepeatSQL.setSize('auto','300px')
+            let editorOracleIndex = CodeMirror.fromTextArea(document.getElementById("OracleIndex"), this.options)
+            editorOracleIndex.setValue(this.OracleIndex)
+            editorOracleIndex.setSize('auto','200px')
+            let editorOracleMergeInto = CodeMirror.fromTextArea(document.getElementById("OracleMergeInto"), this.options)
+            editorOracleMergeInto.setValue(this.OracleMergeInto)
+            editorOracleMergeInto.setSize('auto','200px')
+            let editorOracleFor = CodeMirror.fromTextArea(document.getElementById("OracleFor"), this.options)
+            editorOracleFor.setValue(this.OracleFor)
+            editorOracleFor.setSize('auto','170px')
+            let editorOracleDecode = CodeMirror.fromTextArea(document.getElementById("OracleDecode"), this.options)
+            editorOracleDecode.setValue(this.OracleDecode)
+            editorOracleDecode.setSize('auto','170px')
+            let editorOracleDeleteConstraint = CodeMirror.fromTextArea(document.getElementById("OracleDeleteConstraint"), this.options)
+            editorOracleDeleteConstraint.setValue(this.OracleDeleteConstraint)
+            editorOracleDeleteConstraint.setSize('auto','170px')
         }
     }
 
