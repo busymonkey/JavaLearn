@@ -1286,7 +1286,7 @@
         `,
         data() {
             return {
-                cells: ['事务','索引概念','设计范式','MySQL','Oracle',''],
+                cells: ['事务','索引概念','设计范式','MySQL','Oracle','分库分表'],
             }
         },
         methods: {
@@ -1297,7 +1297,7 @@
                     case 2: break;
                     case 3: this.$router.push({path: `/mysql`}); break;
                     case 4: this.$router.push({path: `/oracle`}); break;
-                    case 5: break;
+                    case 5: this.$router.push({path: `/splitdb`}); break;
                     default: this.$router.push({path: `/demo`});
                 }
 
@@ -2111,6 +2111,69 @@
             editorOracleDeleteConstraint.setSize('auto','170px')
         }
     }
+    //// 二级 分库分表
+    const SplitDB = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/dataBase')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">分库分表</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableback" title="背景" content-height="80">
+                            <p>单表数据达到千万级别，甚至过亿的量</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="数据切分" content-height="800">
+                            <p><span class="redBold">垂直切分（纵向切分）：</span>强调的是<span class="redBold">业务的拆分</span>。一个数据库由多个表构成，每个表对应不同的业务，那么我们可以指按照业务的不同将表进行分类，并将其分布到不同的数据库上，这样就将数据分摊到了不同的库上面，做到专库专用</p>
+                            <p>举个例子，原数据库中有商品表、交易表、订单表，我们可以按照业务的不同进行垂直切分，把商品表、交易表、订单表分别拆分到商品库、交易库、订单库中去。</p>
+                            <p>优点：拆分规则明确，拆分后业务清晰；系统之间进行整合或扩展变的容易；数据维护变的容易；按照成本、应用的等级、应用的类型等将表放到不同的机器上，便于管理。</p>
+                            <p>缺点：部分业务表无法关联（Join），只能通过接口方式解决，提高了系统的复杂度；受每种业务的不同限制，存在单库性能瓶颈，不易进行数据扩展和提升性能；分布式事务处理复杂。</p>
+                            <p><span class="redBold">水平切分（横向切分）：</span>水平切分，强调的是<span class="redBold">技术的拆分</span>。她是将其按照一定的逻辑规则将一个表中的数据分散到多个库中，在每个表中包含一部分数据，所有表加起来就是全量的数据。简单来说，我们可以将对数据的水平切分理解为按照数据行进行切分，就是将表中的某些行切分到一个数据库表中，而将其他行切分到其他数据库表中。</p>
+                            <p>比如，原数据库有一张交易记录表，数据量非常大，其中表中有个地区字段，经过深入考证符合水平拆分的条件。我们就按照这个字段进行水平拆分，按不同的地区（北京、上海、江苏、浙江、广东等）拆分成10个库。高峰时段同时有100万次请求，如果是单库，数据库就会承受100万次的请求压力，拆分成100个表分别放入10个库中，每个表进行1万次请求，则每个数据库会承受10万次的请求压力，这样压力就减少了很多，并且是成倍减少的。</p>
+                            <p>优点：拆分规则抽象好，join 操作基本可以数据库做；不存在单库大数据，高并发的性能瓶颈；应用端改造较少；提高了系统的稳定性跟负载能力。</p>
+                            <p>缺点：拆分规则不好抽象；分片事务一致性难以解决；数据多次扩展难度大；跨库 join 性能较差。</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="跨节点Join问题" content-height="380">
+                            <p><span class="redBold">所谓全局表：</span>就是有可能系统中所有模块都可能会依赖到的一些表。比较类似我们理解的“数据字典”。为了避免跨库 join 查询，我们可以将这类表在其他每个数据库中均保存一份。同时，这类数据通常也很少发生修改（甚至几乎不会），所以也不用太担心“一致性”问题。</p>
+                            <p><span class="redBold">字段冗余：</span>这是一种典型的反范式设计，在互联网行业中比较常见，通常是为了性能来避免 join 查询。举个电商业务中很简单的场景：订单表”中保存“卖家 Id”的同时，将卖家的“Name”字段也冗余，这样查询订单详情的时候就不需要再去查询“卖家用户表”。</p>
+                            <p>字段冗余能带来便利，是一种“空间换时间”的体现。但其适用场景也比较有限，比较适合依赖字段较少的情况。最复杂的还是数据一致性问题，这点很难保证，可以借助数据库中的触发器或者在业务代码层面去保证。当然，也需要结合实际业务场景来看一致性的要求。就像上面例子，如果卖家修改了 Name 之后，是否需要在订单信息中同步更新呢？</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="分布式事务的问题" content-height="60">
+                            <p>预留</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="分布式全局ID" content-height="290">
+                            <p>在很多中小项目中，我们往往直接使用数据库自增特性来生成主键 ID，这样确实比较简单。而在分库分表的环境中，数据分布在不同的分片上，不能再借助数据库自增长特性直接生成，否则会造成不同分片上的数据表主键会重复。简单介绍下使用和了解过的几种 ID 生成算法。</p>
+                            <p>Twitter 的 Snowflake（又名“雪花算法”）</p>
+                            <p>UUID/GUID（一般应用程序和数据库均支持）</p>
+                            <p>MongoDB ObjectID（类似 UUID 的方式）</p>
+                            <p>Ticket Server（数据库生存方式，Flickr 采用的就是这种方式）</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="跨分片技术问题" content-height="200">
+                            <p><span class="redBold">跨分片的排序分页：</span>1、每个分片取前十条，分别limit 0,10，然后合并再limit 0,10。2、每个分片取前第91到100条，分别limit 0,100，然后合并再limit 0,100。</p>
+                            <p><span class="redBold">跨分片的函数处理：</span>在使用 Max、Min、Sum、Count 之类的函数进行统计和计算的时候，需要先在每个分片数据源上执行相应的函数处理，然后再将各个结果集进行二次处理，最终再将处理结果返回。</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="数据源管理的问题" content-height="320">
+                            <p>分库分表之后，数据源的管理是系统实现的关键。系统应用层面系统应用代码层面，目前主要有两种思路：</p>
+                            <p><span class="redBold">客户端模式：</span>也就是在每个应用程序模块中配置管理自己需要的一个（或者多个）数据源，直接访问各个数据库，在模块内完成数据的整合。比如可以依赖spring注解实现。中间代理模式，统一管理所有的数据源，后端数据库集群对前端应用程序透明。考虑到系统的复杂性和扩展性，建议第二种中间代理模式。虽然短期内需要付出的成本可能会相对更大一些，但是对整个系统的扩展性来说，是非常实用的。</p>
+                            <p><span class="redBold">中间件层面：</span>上面的系统层面，需要的代码实现比较复杂，中间件是在数据集群前面加一层代理，比如Cobar、Mycat等数据库中间件。实用数据库中间件，对代码层面的实现是很大的解放。</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="MyCAT" content-height="90">
+                            <p>预留</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+            }
+        },
+        methods: {
+
+        }
+    }
 
     //// 一级 网络
     const NetWork = {
@@ -2598,6 +2661,7 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         { path: '/index', component: Index }, //// 二级菜单 索引
         { path: '/mysql', component: MySQL }, //// 二级菜单 MYSQL
         { path: '/oracle', component: Oracle }, //// 二级菜单 Oracle
+        { path: '/splitdb', component: SplitDB }, //// 二级菜单 分库分表
 
         //// 一级菜单 网络
         { path: '/netWork', component: NetWork },
