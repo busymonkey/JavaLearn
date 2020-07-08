@@ -1375,7 +1375,7 @@
 
         }
     }
-    //// 二级 索引概念
+    //// 二级 索引
     const Index = {
         template: `
             <div class="page has-navbar" v-nav="{hideNavbar: true}">
@@ -1385,6 +1385,28 @@
                         <span slot="title"><h3 class="padding text-center headerTop">索引概念</h3></span>
                     </von-header>
                     <accordion default-index="0">
+                        <div class="item item-divider dividerFont">基本概念</div>
+                        <accordion-item class="stableBack" title="索引基数" content-height="320">
+                            <p>基数是数据列所包含的不同值的数量，例如，某个数据列包含值 1、3、7、4、7、3，那么它的基数就是 4</p>
+                            <p>索引的基数相对于数据表行数较高（也就是说，列中包含很多不同的值，重复的值很少）的时候，它的工作效果最好</p>
+                            <p>如果某数据列含有很多不同的年龄，索引会很快地分辨数据行；如果某个数据列用于记录性别（只有“M”和“F”两种值），那么索引的用处就不大；如果值出现的几率几乎相等，那么无论搜索哪个值都可能得到一半的数据行</p>
+                            <p>在这些情况下，最好根本不要使用索引，因为查询优化器发现某个值出现在表的数据行中的百分比很高的时候，它一般会忽略索引，进行全表扫描。惯用的百分比界线是“30%”</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="索引失效" content-height="460">
+                            <p>对索引列运算，运算包括（+、-、*、/、！、<>、%、like'%_'（% 放在前面）</p>
+                            <p>类型错误，如字段类型为 varchar，where 条件用 number</p>
+                            <p>对索引应用内部函数，这种情况下应该要建立基于函数的索引。例如 select * from template t where ROUND (t.logicdb_id) = 1，此时应该建 ROUND (t.logicdb_id) 为索引。MySQL 8.0 开始支持函数索引，5.7 可以通过虚拟列的方式来支持，之前只能新建一个 ROUND (t.logicdb_id) 列然后去维护</p>
+                            <p>如果条件有 or，即使其中有条件带索引也不会使用（这也是为什么建议少使用 or 的原因），如果想使用 or，又想索引有效，只能将 or 条件中的每个列加上索引</p>
+                            <p>如果列类型是字符串，那一定要在条件中数据使用引号，否则不使用索引</p>
+                            <p>B-tree 索引 is null 不会走，is not null 会走，位图索引 is null，is not null 都会走</p>
+                            <p>组合索引遵循最左原则</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="索引建立注意" content-height="200">
+                            <p>最重要的肯定是根据业务经常查询的语句</p>
+                            <p>尽量选择区分度高的列作为索引，区分度的公式是 COUNT(DISTINCT col) / COUNT(*)，表示字段不重复的比率，比率越大我们扫描的记录数就越少</p>
+                            <p>如果业务中唯一特性最好建立唯一键，一方面可以保证数据的正确性，另一方面索引的效率能大大提高</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">索引结构</div>
                         <accordion-item class="stableback" title="b树" content-height="150">
                             <p>m阶平衡树：m阶为一节点至多有m棵子树 ，也就是说b树上的结点最多只能有m棵子树</p>
                             <p>每个非根节点所包含的关键字个数 j 满足：m/2 - 1 <= j <= m - 1（分割标志）</p>
@@ -1474,30 +1496,9 @@
                         <span slot="title"><h3 class="padding text-center headerTop">MySQL</h3></span>
                     </von-header>
                     <accordion default-index="0">
-                        <div class="item item-divider dividerFont">基本语法</div>
+                        <div class="item item-divider dividerFont">基本概念</div>
                         <accordion-item class="stableBack" title="基本语法" content-height="450">
                             <div><textarea id="MySQL"></textarea></div>
-                        </accordion-item>
-                        <div class="item item-divider dividerFont">基本概念</div>
-                        <accordion-item class="stableBack" title="索引基数" content-height="320">
-                            <p>基数是数据列所包含的不同值的数量，例如，某个数据列包含值 1、3、7、4、7、3，那么它的基数就是 4</p>
-                            <p>索引的基数相对于数据表行数较高（也就是说，列中包含很多不同的值，重复的值很少）的时候，它的工作效果最好</p>
-                            <p>如果某数据列含有很多不同的年龄，索引会很快地分辨数据行；如果某个数据列用于记录性别（只有“M”和“F”两种值），那么索引的用处就不大；如果值出现的几率几乎相等，那么无论搜索哪个值都可能得到一半的数据行</p>
-                            <p>在这些情况下，最好根本不要使用索引，因为查询优化器发现某个值出现在表的数据行中的百分比很高的时候，它一般会忽略索引，进行全表扫描。惯用的百分比界线是“30%”</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="索引失效" content-height="460">
-                            <p>对索引列运算，运算包括（+、-、*、/、！、<>、%、like'%_'（% 放在前面）</p>
-                            <p>类型错误，如字段类型为 varchar，where 条件用 number</p>
-                            <p>对索引应用内部函数，这种情况下应该要建立基于函数的索引。例如 select * from template t where ROUND (t.logicdb_id) = 1，此时应该建 ROUND (t.logicdb_id) 为索引。MySQL 8.0 开始支持函数索引，5.7 可以通过虚拟列的方式来支持，之前只能新建一个 ROUND (t.logicdb_id) 列然后去维护</p>
-                            <p>如果条件有 or，即使其中有条件带索引也不会使用（这也是为什么建议少使用 or 的原因），如果想使用 or，又想索引有效，只能将 or 条件中的每个列加上索引</p>
-                            <p>如果列类型是字符串，那一定要在条件中数据使用引号，否则不使用索引</p>
-                            <p>B-tree 索引 is null 不会走，is not null 会走，位图索引 is null，is not null 都会走</p>
-                            <p>组合索引遵循最左原则</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="索引建立注意" content-height="200">
-                            <p>最重要的肯定是根据业务经常查询的语句</p>
-                            <p>尽量选择区分度高的列作为索引，区分度的公式是 COUNT(DISTINCT col) / COUNT(*)，表示字段不重复的比率，比率越大我们扫描的记录数就越少</p>
-                            <p>如果业务中唯一特性最好建立唯一键，一方面可以保证数据的正确性，另一方面索引的效率能大大提高</p>
                         </accordion-item>
                         <accordion-item class="stableBack" title="锁" content-height="150">
                             <div><textarea id="MySQLlock"></textarea></div>
