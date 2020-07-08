@@ -1294,7 +1294,7 @@
                 switch (cellIndex) {
                     case 0: this.$router.push({path: `/transaction`}); break;
                     case 1: this.$router.push({path: `/index`}); break;
-                    case 2: break;
+                    case 2: this.$router.push({path: `/designparadim`}); break;
                     case 3: this.$router.push({path: `/mysql`}); break;
                     case 4: this.$router.push({path: `/oracle`}); break;
                     case 5: this.$router.push({path: `/splitdb`}); break;
@@ -1407,6 +1407,48 @@
                         </accordion-item>
                         <accordion-item class="stableback" title="回表" content-height="90">
                             <p>数据库根据索引找到了指定的记录所在行后，还需要根据rowid再次到数据块里取数据的操作</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+            }
+        },
+        methods: {
+
+        }
+    }
+    //// 二级 设计范式
+    const DesignParadim = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/dataBase')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">设计范式</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableback" title="第一范式（1NF）" content-height="100">
+                            <p>数据表中的每一列(字段)，必须是不可拆分的最小单元，也就是确保每一列的原子性。满足第一范式是关系模式规范化的最低要求，否则，将有很多基本操作在这样的关系模式中实现不了</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="第二范式（2NF）" content-height="100">
+                            <p>满足1NF后要求表中的所有列，每一行的数据只能与其中一列相关，即一行数据只做一件事。只要数据列中出现数据重复，就要把表拆分开来。</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="第三范式（3NF）" content-height="80">
+                            <p>满足2NF后，要求：表中的每一列都要与主键直接相关，而不是间接相关（表中的每一列只能依赖于主键）。</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="五大约束" content-height="250">
+                            <p>主键约束（Primay Key Coustraint） 唯一性，非空性；</p>
+                            <p>唯一约束 （Unique Counstraint）唯一性，可以空，但只能有一个；</p>
+                            <p>默认约束 (Default Counstraint) 该数据的默认值；</p>
+                            <p>外键约束 (Foreign Key Counstraint) 需要建立两表间的关系；</p>
+                            <p>非空约束（Not Null Counstraint）设置非空约束，该字段不能为空。</p>
+                        </accordion-item>
+                        <accordion-item class="stableback" title="反范式设计" content-height="60">
+                            <p>可以减少表得关联 缺点:数据冗余以及数据异常</p>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -2659,6 +2701,7 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         { path: '/dataBase', component: DataBase },
         { path: '/transaction', component: Transaction }, //// 二级菜单 事务
         { path: '/index', component: Index }, //// 二级菜单 索引
+        { path: '/designparadim', component: DesignParadim }, //// 二级菜单 设计范式
         { path: '/mysql', component: MySQL }, //// 二级菜单 MYSQL
         { path: '/oracle', component: Oracle }, //// 二级菜单 Oracle
         { path: '/splitdb', component: SplitDB }, //// 二级菜单 分库分表
