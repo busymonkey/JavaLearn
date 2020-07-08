@@ -1401,10 +1401,14 @@
                             <p>B-tree 索引 is null 不会走，is not null 会走，位图索引 is null，is not null 都会走</p>
                             <p>组合索引遵循最左原则</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="索引建立注意" content-height="200">
+                        <accordion-item class="stableBack" title="索引建立注意" content-height="360">
                             <p>最重要的肯定是根据业务经常查询的语句</p>
                             <p>尽量选择区分度高的列作为索引，区分度的公式是 COUNT(DISTINCT col) / COUNT(*)，表示字段不重复的比率，比率越大我们扫描的记录数就越少</p>
                             <p>如果业务中唯一特性最好建立唯一键，一方面可以保证数据的正确性，另一方面索引的效率能大大提高</p>
+                            <p>查询中与其它表关联的字段，外键关系建立索引</p>
+                            <p>查询中排序的字段，排序字段若通过索引去访问将大大提高排序速度</p>
+                            <p>查询中统计或者分组字段</p>
+                            <p>频繁更新的字段不适合创建索引</p>
                         </accordion-item>
                         <div class="item item-divider dividerFont">索引结构</div>
                         <accordion-item class="stableback" title="b树" content-height="150">
