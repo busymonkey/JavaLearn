@@ -66,6 +66,7 @@
 
 
 
+
 <script type="text/javascript">
     //// 首页
     const Home = {
@@ -1749,7 +1750,7 @@
                             <p><span class="redBold">注意事项：</span>在运行INSERT、DELETE 和 UPDATE 语句前最好估算一下可能操作的记录范围，应该把它限定在较小 (一万条记录) 范围内,。否则ORACLE处理这个事物用到很大的回退段，程序响应慢甚至失去响应. 如果记录数上十万以上这些操作, 可以把这些SQL语句分段分次完成，其间加上COMMIT 确认事物处理</p>
                             <div><textarea id="OracleUpdate"></textarea></div>
                         </accordion-item>
-                         <accordion-item class="stableBack" title="alter" content-height="300">
+                        <accordion-item class="stableBack" title="alter" content-height="300">
                             <div><textarea id="OracleAlter"></textarea></div>
                         </accordion-item>
                         <accordion-item class="stableBack" title="drop" content-height="150">
@@ -1805,7 +1806,7 @@
                         <accordion-item class="stableBack" title="decode" content-height="220">
                             <div><textarea id="OracleDecode"></textarea></div>
                         </accordion-item>
-                         <accordion-item class="stableBack" title="删除外键 删除所有表" content-height="220">
+                        <accordion-item class="stableBack" title="删除外键 删除所有表" content-height="220">
                             <div><textarea id="OracleDeleteConstraint"></textarea></div>
                         </accordion-item>
                     </accordion>
@@ -2315,10 +2316,59 @@
                     </von-header>
                     <accordion default-index="0">
                         <div class="item item-divider dividerFont">Redis</div>
-                        <accordion-item class="stableBack" title="volatile" content-height="220">
-                            <p>volatile让变量每次在使用的时候，都从<span class="redBold">主存</span>中取。而不是从各个线程的“工作内存”</p>
-                            <p>volatile具有synchronized关键字的“可见性”，但是没有synchronized关键字的“并发正确性”，就是说<span class="redBold">不保证线程执行的有序性</span></p>
-                            <p>volatile变量对于每次使用，线程都能得到当前volatile变量的最新值。</p>
+                        <accordion-item class="stableBack" title="key和string" content-height="200">
+                            <p><span class="redBold">key区分大小写</span></p>
+                            <div><textarea id="RedisKey"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="hash" content-height="170">
+                            <p><span class="redBold">hash是hashtable结构</span></p>
+                            <div><textarea id="RedisHash"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="list" content-height="1160">
+                            <div><textarea id="RedisList"></textarea></div>
+                            <p><span class="redBold">版本区别：版本3.2之前</span>，Redis 列表list使用两种数据结构作为底层实现：压缩列表ziplist、双向链表linkedlist。因为双向链表占用的内存比压缩列表要多， 所以当创建新的列表键时， 列表会优先考虑使用压缩列表， 并且在有需要的时候， 才从压缩列表实现转换到双向链表实现。<span class="redBold">版本3.2之后</span>，重新引入 quicklist，列表的底层都由quicklist实现。</p>
+                            <p><span class="redBold">压缩列表转化成双向链表条件：</span>创建新列表时 redis 默认使用 redis_encoding_ziplist 编码， 当以下任意一个条件被满足时， 列表会被转换成 redis_encoding_linkedlist 编码：•试图往列表新添加一个字符串值，且这个字符串的长度超过 server.list_max_ziplist_value （默认值为 64 ）。•ziplist 包含的节点超过 server.list_max_ziplist_entries （默认值为 512 ）。注意：这两个条件是可以修改的，在 redis.conf 中：list-max-ziplist-value 64；list-max-ziplist-entries 512。</p>
+                            <p><span class="redBold">linkedlist：</span>当链表entry数据超过512、或单个value 长度超过64，底层就会转化成linkedlist编码；linkedlist是标准的双向链表，Node节点包含prev和next指针，可以进行双向遍历；还保存了 head 和 tail 两个指针，因此，对链表的表头和表尾进行插入的复杂度都为 (1) —— 这是高效实现 LPUSH 、 RPOP、 RPOPLPUSH 等命令的关键。</p>
+                            <p><span class="redBold">ziplist：ziplist 是一个特殊的双向链表。</span>特殊之处在于：没有维护双向指针:prev next；而是存储上一个 entry的长度和 当前entry的长度，通过长度推算下一个元素在什么地方。牺牲读取的性能，获得高效的存储空间，因为(简短字符串的情况)存储指针比存储entry长度 更费内存。这是典型的“时间换空间”。<span class="redBold">ziplist使用局限性：</span>字段、值比较小，才会用ziplist。<span class="redBold">如何通过一个节点向前跳转到另一个节点？</span>用指向当前节点的指针 e ， 减去 前一个 entry的长度， 得出的结果就是指向前一个节点的地址 p。<span class="redBold">ziplist连锁更新问题：</span>因为在ziplist中，每个zlentry都存储着前一个节点所占的字节数，而这个数值又是变长编码的。假设存在一个压缩列表，其包含e1、e2、e3、e4…..，e1节点的大小为253字节，那么e2.prevrawlen的大小为1字节，如果此时在e2与e1之间插入了一个新节点e_new，e_new编码后的整体长度（包含e1的长度）为254字节，此时e2.prevrawlen就需要扩充为5字节；如果e2的整体长度变化又引起了e3.prevrawlen的存储长度变化，那么e3也需要扩…….如此递归直到表尾节点或者某一个节点的prevrawlen本身长度可以容纳前一个节点的变化。<span class="redBold">其中每一次扩充都需要进行空间再分配操作。</span>删除节点亦是如此，只要引起了操作节点之后的节点的prevrawlen的变化，都可能引起连锁更新。</p>
+                            <p><span class="redBold">quickList：</span>quickList是一个ziplist组成的双向链表。每个节点使用ziplist来保存数据。本质上来说，quicklist里面保存着一个一个小的ziplist。quickList就是一个标准的双向链表的配置，有head 有tail;每一个节点是一个quicklistNode，包含prev和next指针。每一个quicklistNode 包含 一个ziplist，*zp 压缩链表里存储键值。所以quicklist是对ziplist进行一次封装，使用小块的ziplist来既保证了少使用内存，也保证了性能。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="set" content-height="360">
+                            <div><textarea id="RedisSet"></textarea></div>
+                            <p>集合对象的编码可以是intset和hashtable之一。<span class="redBold">intset编码</span>的集合对象底层实现是整数集合，所有元素都保存在整数集合中。<span class="redBold">hashtable编码</span>的集合对象底层实现是字典，字典的每个键都是一个字符串对象，保存一个集合元素，不同的是字典的值都是NULL。具体参考哈希类型。</p>
+                            <p><span class="redBold">集合对象编码转换：</span>集合对象使用intset编码需要满足两个条件：一是所有元素都是整数值；二是元素个数小于等于512个；不满足任意一条都将使用hashtable编码。以上第二个条件可以在Redis配置文件中修改et-max-intset-entries选项。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="sortset" content-height="720">
+                            <div><textarea id="RedisSortSet"></textarea></div>
+                            <p>考虑一个有序表：</p>
+                            <div><img src="./img/skiplist1.bmp" width="100%"></div>
+                            <p>从该有序表中搜索元素 < 23, 43, 59 > ，需要比较的次数分别为 < 2, 4, 6 >，总共比较的次数为 2 + 4 + 6 = 12 次。有没有优化的算法吗?  链表是有序的，但不能使用二分查找。类似二叉搜索树，我们把一些节点提取出来，作为索引。得到如下结构：</p>
+                            <div><img src="./img/skiplist2.bmp" width="100%"></div>
+                            <p>这里我们把 < 14, 34, 50, 72 > 提取出来作为一级索引，这样搜索的时候就可以减少比较次数了。我们还可以再从一级索引提取一些元素出来，作为二级索引，变成如下结构：</p>
+                            <div><img src="./img/skiplist3.bmp" width="100%"></div>
+                            <p>这里元素不多，体现不出优势，如果元素足够多，这种索引结构就能体现出优势来了。这基本上就是跳表的核心思想，其实也是一种通过“空间来换取时间”的一个算法，通过在每个节点中增加了向前的指针，从而提升查找的效率。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="TTL（Tme to Live）" content-height="170">
+                            <p>expire 按照相对时间且以秒为单位的过期策略</p>
+                            <p>expireat 按照绝对时间且以秒为单位的过期策略</p>
+                            <p>pexpire 按照相对时间且以毫秒为单位的过期策略</p>
+                            <p>pexpireat 按照绝对时间且以毫秒为单位的过期策略</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="淘汰机制" content-height="850">
+                            <p>redis采用的是定期删除+惰性删除策略。</p>
+                            <p><span class="redBold">为什么不用定时删除策略：</span>定时删除,用一个定时器来负责监视key,过期则自动删除。虽然内存及时释放，但是十分消耗CPU资源。在大并发请求下，CPU要将时间应用在处理请求，而不是删除key,因此没有采用这一策略.</p>
+                            <p><span class="redBold">定期删除+惰性删除是如何工作的呢：</span>定期删除，redis默认每个100ms检查，是否有过期的key,有过期key则删除。需要说明的是，redis不是每个100ms将所有的key检查一次，而是随机抽取进行检查(如果每隔100ms,全部key进行检查，redis岂不是卡死)。因此，如果只采用定期删除策略，会导致很多key到时间没有删除。于是，惰性删除派上用场。也就是说在你获取某个key的时候，redis会检查一下，这个key如果设置了过期时间那么是否过期了？如果过期了此时就会删除。</p>
+                            <p><span class="redBold">采用定期删除+惰性删除就没其他问题了么：</span>不是的，如果定期删除没删除key。然后你也没即时去请求key，也就是说惰性删除也没生效。这样，redis的内存会越来越高。那么就应该采用内存淘汰机制。在redis.conf中有一行配置：maxmemory-policy volatile-lru</p>
+                            <p><span class="redBold">volatile-lru：</span>从设置过期时间的数据集（server.db[i].expires）中挑选出使用频率最小的数据淘汰。没有设置过期时间的key不会被淘汰，这样就可以在增加内存空间的同时保证需要持久化的数据不会丢失</p>
+                            <p><span class="redBold">volatile-ttl：</span>从已设置过期时间的数据集中挑选将要过期的数据淘汰</p>
+                            <p><span class="redBold">volatile-random：</span>从已设置过期时间的数据集中任意选择数据淘汰</p>
+                            <p><span class="redBold">allkeys-lru：</span>从数据集（server.db[i].dict）中挑选使用频率最小的数据淘汰，该策略要淘汰的key面向的是全体key集合，而非过期的key集合</p>
+                            <p><span class="redBold">allkeys-random：</span>从数据集中任意选择数据淘汰，当内存达到限制的时候，对所有数据集挑选随机淘汰，可写入新的数据集。</p>
+                            <p><span class="redBold">no-enviction：</span>当内存达到限制的时候，不淘汰任何数据，不可写入任何数据集，所有引起申请内存的命令会报错。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="集群模式" content-height="300">
+                            <p><span class="redBold">主从模式：</span>（一主两从）主机可以读写操作；从机只能读操作、不能写操作；•当关掉主机节点后、从机上会显示主机doiwn状态、从机节点也不会自动成为主节点，但是可以读数据</p>
+                            <p><span class="redBold">哨兵模式：</span>（基于主从模式，增加三个哨兵）主实例判断为失效<span class="redBold">至少需要2个 Sentinel进程的同意</span>，只要同意Sentinel的数量不达标，自动failover就不会执行</p>
+                            <p><span class="redBold">Cluster模式：</span>Redis Cluster 集群节点最小配置 6 个节点以上(3 主 3 从)，其中主节点提供读写操作，从节点作为备用节点，不提供请求，只作为故障转移使用。Redis Cluster 采用虚拟槽分区，所有的键根据哈希函数映射到 0～16383 个整数槽内，每个节点负责维护一部分槽以及槽所印映射的键值数据。</p>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -2326,11 +2376,62 @@
         `,
         data() {
             return {
-
+                RedisKey:
+                    "//// 插入(key:value)，其中value是string\n" +
+                    "set key value\n" +
+                    "//// 删除key\n" +
+                    "del key\n" +
+                    "//// 获取key（value需要是string类型）\n" +
+                    "get key",
+                RedisHash:
+                    "//// 插入hash(key:{age:23})\n" +
+                    "hset key age 23\n" +
+                    "//// 获取hash值\n" +
+                    "hget key age",
+                RedisList:
+                    "//// 插入list（双向链表，左右都可以插入/取出）\n" +
+                    "lpush key value1\n" +
+                    "lpush key value2\n" +
+                    "lpush key value3\n" +
+                    "//// 范围获取list\n" +
+                    "lrange key 0 10",
+                RedisSet:
+                    "//// 插入set\n" +
+                    "sadd key set1\n" +
+                    "sadd key set2\n" +
+                    "//// 获取set\n" +
+                    "smembers key",
+                RedisSortSet:
+                    "//// 插入有序set\n" +
+                    "zadd SortSet 1 set1\n" +
+                    "zadd SortSet 1 set2\n" +
+                    "zadd SortSet 0 set3\n" +
+                    "//// 获取范围内的数据（带上分数，分数相同的按升序排列，总体按分数升序排列）\n" +
+                    "zrange SortSet 0 3 withscores",
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
             }
         },
         mounted() {
-
+            let editorRedisKey = CodeMirror.fromTextArea(document.getElementById("RedisKey"), this.options)
+            editorRedisKey.setValue(this.RedisKey)
+            editorRedisKey.setSize('auto','130px');
+            let editorRedisHash = CodeMirror.fromTextArea(document.getElementById("RedisHash"), this.options)
+            editorRedisHash.setValue(this.RedisHash)
+            editorRedisHash.setSize('auto','100px');
+            let editorRedisList = CodeMirror.fromTextArea(document.getElementById("RedisList"), this.options)
+            editorRedisList.setValue(this.RedisList)
+            editorRedisList.setSize('auto','130px');
+            let editorRedisSet = CodeMirror.fromTextArea(document.getElementById("RedisSet"), this.options)
+            editorRedisSet.setValue(this.RedisSet)
+            editorRedisSet.setSize('auto','110px');
+            let editorRedisSortSet = CodeMirror.fromTextArea(document.getElementById("RedisSortSet"), this.options)
+            editorRedisSortSet.setValue(this.RedisSortSet)
+            editorRedisSortSet.setSize('auto','110px');
         }
     }
 
