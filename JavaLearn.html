@@ -2315,6 +2315,18 @@
                         <span slot="title"><h3 class="padding text-center headerTop">缓存</h3></span>
                     </von-header>
                     <accordion default-index="0">
+                        <div class="item item-divider dividerFont">缓存概念</div>
+                        <accordion-item class="stableBack" title="缓存崩溃" content-height="540">
+                            <p><span class="redBold">缓存穿透：</span>缓存穿透是指缓存和数据库中都没有的数据，而用户不断发起请求，如发起为id为“-1”的数据或id为特别大不存在的数据。这时的用户很可能是攻击者，攻击会导致<span class="redBold">数据库压力过大</span>。</p>
+                            <p>解决：接口层增加校验，如用户鉴权校验，id做基础校验，id<=0的直接拦截；从缓存取不到的数据，在数据库中也没有取到，这时也可以将key-value对写为key-null，缓存有效时间可以设置短点，如30秒（设置太长会导致正常情况也没法使用）。这样可以防止攻击用户反复用同一个id暴力攻击</p>
+                            <p><span class="redBold">缓存击穿：</span>缓存击穿是指缓存中没有但数据库中有的数据（一般是缓存时间到期），这时由于并发用户特别多，同时读缓存没读到数据，又同时去数据库去取数据，引起数据库压力瞬间增大，造成过大压力</p>
+                            <p>解决：设置热点数据永远不过期；加互斥锁</p>
+                            <p><span class="redBold">缓存雪崩：</span>缓存雪崩是指缓存中数据大批量到过期时间，而查询数据量巨大，引起数据库压力过大甚至down机。和缓存击穿不同的是，缓存击穿指并发查同一条数据，缓存雪崩是不同数据都过期了，很多数据都查不到从而查数据库。</p>
+                            <p>解决：缓存数据的过期时间设置随机，防止同一时间大量数据过期现象发生。如果缓存数据库是分布式部署，将热点数据均匀分布在不同搞得缓存数据库中。设置热点数据永远不过期。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="缓存对比" content-height="650">
+                            <div style="transform: rotate(90deg);"><img src="./img/cacheCompare.bmp" height="350px" width="600px"></div>
+                        </accordion-item>
                         <div class="item item-divider dividerFont">Redis</div>
                         <accordion-item class="stableBack" title="key和string" content-height="200">
                             <p><span class="redBold">key区分大小写</span></p>
@@ -2370,6 +2382,26 @@
                             <p><span class="redBold">哨兵模式：</span>（基于主从模式，增加三个哨兵）主实例判断为失效<span class="redBold">至少需要2个 Sentinel进程的同意</span>，只要同意Sentinel的数量不达标，自动failover就不会执行</p>
                             <p><span class="redBold">Cluster模式：</span>Redis Cluster 集群节点最小配置 6 个节点以上(3 主 3 从)，其中主节点提供读写操作，从节点作为备用节点，不提供请求，只作为故障转移使用。Redis Cluster 采用虚拟槽分区，所有的键根据哈希函数映射到 0～16383 个整数槽内，每个节点负责维护一部分槽以及槽所印映射的键值数据。</p>
                         </accordion-item>
+                        <accordion-item class="stableBack" title="RDB和AOF" content-height="180">
+                            <p><span class="redBold">RDB优点：</span>在恢复大数据集时的速度比 AOF 的恢复速度要快。</p>
+                            <p><span class="redBold">RDB缺点：</span>服务器故障时容易丢失数据（备份频率不高）。过程耗时大</p>
+                            <p><span class="redBold">AOF优点：</span>服务器故障时不容易丢失数据（备份频率高）</p>
+                            <p><span class="redBold">AOF缺点：</span>AOF 文件的体积通常要大于 RDB 文件的体积。</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">Ehcache</div>
+                        <accordion-item class="stableBack" title="配置" content-height="950">
+                            <div><textarea id="Ehcache"></textarea></div>
+                            <p><span class="redBold">diskStore：</span>指定数据存储位置，可指定磁盘中的文件夹位置<br><span class="redBold">defaultCache：</span>默认的管理策略</p>
+                            <p>必填配置：</p>
+                            <p><span class="redBold">name：</span>Cache的名称，必须是唯一的(ehcache会把这个cache放到HashMap里)。<br><span class="redBold">maxElementsInMemory：</span>在内存中缓存的element的最大数目。<br><span class="redBold">eternal：</span>设定缓存的elements是否永远不过期。如果为true，则缓存的数据始终有效，如果为false那么还要根据timeToIdleSeconds，timeToLiveSeconds判断。<br><span class="redBold">maxElementsInMemory：</span>cache 中最多可以存放的元素的数量。如果放入cache中的元素超过这个数值，有两种情况：<span class="redBold">1、</span>若overflowToDisk的属性值为true，会将cache中多出的元素放入磁盘文件中。<span class="redBold">2、</span>若overflowToDisk的属性值为false，会根据memoryStoreEvictionPolicy的策略替换cache中原有的元素。<br><span class="redBold">overflowToDisk：</span>如果内存中数据超过内存限制，是否要缓存到磁盘上。<br><span class="redBold">maxElementsOnDisk：</span>在磁盘上缓存的element的最大数目，默认值为0，表示不限制。</p>
+                            <p>选填配置：</p>
+                            <p><span class="redBold">timeToIdleSeconds：</span>对象空闲时间，指对象在多长时间没有被访问就会失效。只对eternal为false的有效。默认值0，表示一直可以访问。以秒为单位。<br><span class="redBold">timeToLiveSeconds：</span>对象存活时间，指对象从创建到失效所需要的时间。只对eternal为false的有效。默认值0，表示一直可以访问。以秒为单位。<br><span class="redBold">diskPersistent：</span>是否在磁盘上持久化。指重启jvm后，数据是否有效。默认为false。<br><span class="redBold">diskExpiryThreadIntervalSeconds：</span>对象检测线程运行时间间隔。标识对象状态的线程多长时间运行一次。以秒为单位。<br><span class="redBold">diskSpoolBufferSizeMB：</span>DiskStore使用的磁盘大小，默认值30MB。每个cache使用各自的DiskStore。<br><span class="redBold">memoryStoreEvictionPolicy：</span>如果内存中数据超过内存限制，向磁盘缓存时的策略。默认值LRU，可选FIFO、LFU。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="清空策略" content-height="220">
+                            <p><span class="redBold">FIFO：</span>first in first out (先进先出). </p>
+                            <p><span class="redBold">LFU：</span>Less Frequently Used (最少使用).意思是一直以来最少被使用的。缓存的元素有一个hit 属性，hit 值最小的将会被清出缓存。</p>
+                            <p><span class="redBold">LRU：</span>Least Recently Used(最近最少使用). (ehcache 默认值).缓存的元素有一个时间戳，当缓存容量满了，而又需要腾出地方来缓存新的元素的时候，那么现有缓存元素中时间戳离当前时间最远的元素将被清出缓存。</p>
+                        </accordion-item>
                     </accordion>
                 </div>
             </div>
@@ -2408,6 +2440,17 @@
                     "zadd SortSet 0 set3\n" +
                     "//// 获取范围内的数据（带上分数，分数相同的按升序排列，总体按分数升序排列）\n" +
                     "zrange SortSet 0 3 withscores",
+                Ehcache:
+                    "<diskStore path=\"java.io.tmpdir\" />  \n" +
+                    "  \n" +
+                    "    <defaultCache eternal=\"false\" maxElementsInMemory=\"3000\"  \n" +
+                    "        overflowToDisk=\"false\" diskPersistent=\"false\" timeToIdleSeconds=\"0\"  \n" +
+                    "        timeToLiveSeconds=\"43200\" memoryStoreEvictionPolicy=\"LRU\"/>  \n" +
+                    "  \n" +
+                    "    <cache name=\"allAreasCache\" eternal=\"false\"  \n" +
+                    "        maxElementsInMemory=\"3000\" overflowToDisk=\"false\" diskPersistent=\"false\"  \n" +
+                    "        timeToIdleSeconds=\"0\" timeToLiveSeconds=\"43200\"  \n" +
+                    "        memoryStoreEvictionPolicy=\"LRU\" />",
                 options: {
                     tabSize: 2,
                     theme: "dracula",
@@ -2432,6 +2475,9 @@
             let editorRedisSortSet = CodeMirror.fromTextArea(document.getElementById("RedisSortSet"), this.options)
             editorRedisSortSet.setValue(this.RedisSortSet)
             editorRedisSortSet.setSize('auto','110px');
+            let editorEhcache = CodeMirror.fromTextArea(document.getElementById("Ehcache"), this.options)
+            editorEhcache.setValue(this.Ehcache)
+            editorEhcache.setSize('auto','180px');
         }
     }
 
