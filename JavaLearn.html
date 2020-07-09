@@ -1295,10 +1295,10 @@
                 switch (cellIndex) {
                     case 0: this.$router.push({path: `/transaction`}); break;
                     case 1: this.$router.push({path: `/index`}); break;
-                    case 2: this.$router.push({path: `/designparadim`}); break;
+                    case 2: this.$router.push({path: `/designParadigm`}); break;
                     case 3: this.$router.push({path: `/mysql`}); break;
                     case 4: this.$router.push({path: `/oracle`}); break;
-                    case 5: this.$router.push({path: `/splitdb`}); break;
+                    case 5: this.$router.push({path: `/splitDB`}); break;
                     default: this.$router.push({path: `/demo`});
                 }
 
@@ -1449,7 +1449,7 @@
         }
     }
     //// 二级 设计范式
-    const DesignParadim = {
+    const DesignParadigm = {
         template: `
             <div class="page has-navbar" v-nav="{hideNavbar: true}">
                 <div class="page-content">
@@ -2315,7 +2315,6 @@
                         <span slot="title"><h3 class="padding text-center headerTop">缓存</h3></span>
                     </von-header>
                     <accordion default-index="0">
-                        <div class="item item-divider dividerFont">缓存概念</div>
                         <accordion-item class="stableBack" title="缓存崩溃" content-height="540">
                             <p><span class="redBold">缓存穿透：</span>缓存穿透是指缓存和数据库中都没有的数据，而用户不断发起请求，如发起为id为“-1”的数据或id为特别大不存在的数据。这时的用户很可能是攻击者，攻击会导致<span class="redBold">数据库压力过大</span>。</p>
                             <p>解决：接口层增加校验，如用户鉴权校验，id做基础校验，id<=0的直接拦截；从缓存取不到的数据，在数据库中也没有取到，这时也可以将key-value对写为key-null，缓存有效时间可以设置短点，如30秒（设置太长会导致正常情况也没法使用）。这样可以防止攻击用户反复用同一个id暴力攻击</p>
@@ -2327,7 +2326,63 @@
                         <accordion-item class="stableBack" title="缓存对比" content-height="650">
                             <div style="transform: rotate(90deg);"><img src="./img/cacheCompare.bmp" height="350px" width="600px"></div>
                         </accordion-item>
-                        <div class="item item-divider dividerFont">Redis</div>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+            }
+        },
+        mounted() {
+
+        }
+    }
+
+    //// 一级 中间件
+    const MiddleWare = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">中间件</h3></span>
+                    </von-header>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="2"></cells>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+                cells: ['Redis','Ehcache','null','null','null','null'],
+            }
+        },
+        methods: {
+            onCellClick(cellIndex) {
+                switch (cellIndex) {
+                    case 0: this.$router.push({path: `/redis`}); break;
+                    case 1: this.$router.push({path: `/ehcache`}); break;
+                    case 2: break;
+                    case 3: break;
+                    case 4: break;
+                    case 5: break;
+                    default: this.$router.push({path: `/demo`});
+                }
+
+            },
+        }
+    }
+    //// 二级 Redis
+    const Redis = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/middleWare')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">Redis</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
                         <accordion-item class="stableBack" title="key和string" content-height="200">
                             <p><span class="redBold">key区分大小写</span></p>
                             <div><textarea id="RedisKey"></textarea></div>
@@ -2388,20 +2443,6 @@
                             <p><span class="redBold">AOF优点：</span>服务器故障时不容易丢失数据（备份频率高）</p>
                             <p><span class="redBold">AOF缺点：</span>AOF 文件的体积通常要大于 RDB 文件的体积。</p>
                         </accordion-item>
-                        <div class="item item-divider dividerFont">Ehcache</div>
-                        <accordion-item class="stableBack" title="配置" content-height="950">
-                            <div><textarea id="Ehcache"></textarea></div>
-                            <p><span class="redBold">diskStore：</span>指定数据存储位置，可指定磁盘中的文件夹位置<br><span class="redBold">defaultCache：</span>默认的管理策略</p>
-                            <p>必填配置：</p>
-                            <p><span class="redBold">name：</span>Cache的名称，必须是唯一的(ehcache会把这个cache放到HashMap里)。<br><span class="redBold">maxElementsInMemory：</span>在内存中缓存的element的最大数目。<br><span class="redBold">eternal：</span>设定缓存的elements是否永远不过期。如果为true，则缓存的数据始终有效，如果为false那么还要根据timeToIdleSeconds，timeToLiveSeconds判断。<br><span class="redBold">maxElementsInMemory：</span>cache 中最多可以存放的元素的数量。如果放入cache中的元素超过这个数值，有两种情况：<span class="redBold">1、</span>若overflowToDisk的属性值为true，会将cache中多出的元素放入磁盘文件中。<span class="redBold">2、</span>若overflowToDisk的属性值为false，会根据memoryStoreEvictionPolicy的策略替换cache中原有的元素。<br><span class="redBold">overflowToDisk：</span>如果内存中数据超过内存限制，是否要缓存到磁盘上。<br><span class="redBold">maxElementsOnDisk：</span>在磁盘上缓存的element的最大数目，默认值为0，表示不限制。</p>
-                            <p>选填配置：</p>
-                            <p><span class="redBold">timeToIdleSeconds：</span>对象空闲时间，指对象在多长时间没有被访问就会失效。只对eternal为false的有效。默认值0，表示一直可以访问。以秒为单位。<br><span class="redBold">timeToLiveSeconds：</span>对象存活时间，指对象从创建到失效所需要的时间。只对eternal为false的有效。默认值0，表示一直可以访问。以秒为单位。<br><span class="redBold">diskPersistent：</span>是否在磁盘上持久化。指重启jvm后，数据是否有效。默认为false。<br><span class="redBold">diskExpiryThreadIntervalSeconds：</span>对象检测线程运行时间间隔。标识对象状态的线程多长时间运行一次。以秒为单位。<br><span class="redBold">diskSpoolBufferSizeMB：</span>DiskStore使用的磁盘大小，默认值30MB。每个cache使用各自的DiskStore。<br><span class="redBold">memoryStoreEvictionPolicy：</span>如果内存中数据超过内存限制，向磁盘缓存时的策略。默认值LRU，可选FIFO、LFU。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="清空策略" content-height="220">
-                            <p><span class="redBold">FIFO：</span>first in first out (先进先出). </p>
-                            <p><span class="redBold">LFU：</span>Less Frequently Used (最少使用).意思是一直以来最少被使用的。缓存的元素有一个hit 属性，hit 值最小的将会被清出缓存。</p>
-                            <p><span class="redBold">LRU：</span>Least Recently Used(最近最少使用). (ehcache 默认值).缓存的元素有一个时间戳，当缓存容量满了，而又需要腾出地方来缓存新的元素的时候，那么现有缓存元素中时间戳离当前时间最远的元素将被清出缓存。</p>
-                        </accordion-item>
                     </accordion>
                 </div>
             </div>
@@ -2440,17 +2481,6 @@
                     "zadd SortSet 0 set3\n" +
                     "//// 获取范围内的数据（带上分数，分数相同的按升序排列，总体按分数升序排列）\n" +
                     "zrange SortSet 0 3 withscores",
-                Ehcache:
-                    "<diskStore path=\"java.io.tmpdir\" />  \n" +
-                    "  \n" +
-                    "    <defaultCache eternal=\"false\" maxElementsInMemory=\"3000\"  \n" +
-                    "        overflowToDisk=\"false\" diskPersistent=\"false\" timeToIdleSeconds=\"0\"  \n" +
-                    "        timeToLiveSeconds=\"43200\" memoryStoreEvictionPolicy=\"LRU\"/>  \n" +
-                    "  \n" +
-                    "    <cache name=\"allAreasCache\" eternal=\"false\"  \n" +
-                    "        maxElementsInMemory=\"3000\" overflowToDisk=\"false\" diskPersistent=\"false\"  \n" +
-                    "        timeToIdleSeconds=\"0\" timeToLiveSeconds=\"43200\"  \n" +
-                    "        memoryStoreEvictionPolicy=\"LRU\" />",
                 options: {
                     tabSize: 2,
                     theme: "dracula",
@@ -2475,45 +2505,63 @@
             let editorRedisSortSet = CodeMirror.fromTextArea(document.getElementById("RedisSortSet"), this.options)
             editorRedisSortSet.setValue(this.RedisSortSet)
             editorRedisSortSet.setSize('auto','110px');
+        }
+    }
+    //// 二级 Ehcache
+    const Ehcache = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/middleWare')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">Ehcache</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="配置" content-height="950">
+                            <div><textarea id="Ehcache"></textarea></div>
+                            <p><span class="redBold">diskStore：</span>指定数据存储位置，可指定磁盘中的文件夹位置<br><span class="redBold">defaultCache：</span>默认的管理策略</p>
+                            <p>必填配置：</p>
+                            <p><span class="redBold">name：</span>Cache的名称，必须是唯一的(ehcache会把这个cache放到HashMap里)。<br><span class="redBold">maxElementsInMemory：</span>在内存中缓存的element的最大数目。<br><span class="redBold">eternal：</span>设定缓存的elements是否永远不过期。如果为true，则缓存的数据始终有效，如果为false那么还要根据timeToIdleSeconds，timeToLiveSeconds判断。<br><span class="redBold">maxElementsInMemory：</span>cache 中最多可以存放的元素的数量。如果放入cache中的元素超过这个数值，有两种情况：<span class="redBold">1、</span>若overflowToDisk的属性值为true，会将cache中多出的元素放入磁盘文件中。<span class="redBold">2、</span>若overflowToDisk的属性值为false，会根据memoryStoreEvictionPolicy的策略替换cache中原有的元素。<br><span class="redBold">overflowToDisk：</span>如果内存中数据超过内存限制，是否要缓存到磁盘上。<br><span class="redBold">maxElementsOnDisk：</span>在磁盘上缓存的element的最大数目，默认值为0，表示不限制。</p>
+                            <p>选填配置：</p>
+                            <p><span class="redBold">timeToIdleSeconds：</span>对象空闲时间，指对象在多长时间没有被访问就会失效。只对eternal为false的有效。默认值0，表示一直可以访问。以秒为单位。<br><span class="redBold">timeToLiveSeconds：</span>对象存活时间，指对象从创建到失效所需要的时间。只对eternal为false的有效。默认值0，表示一直可以访问。以秒为单位。<br><span class="redBold">diskPersistent：</span>是否在磁盘上持久化。指重启jvm后，数据是否有效。默认为false。<br><span class="redBold">diskExpiryThreadIntervalSeconds：</span>对象检测线程运行时间间隔。标识对象状态的线程多长时间运行一次。以秒为单位。<br><span class="redBold">diskSpoolBufferSizeMB：</span>DiskStore使用的磁盘大小，默认值30MB。每个cache使用各自的DiskStore。<br><span class="redBold">memoryStoreEvictionPolicy：</span>如果内存中数据超过内存限制，向磁盘缓存时的策略。默认值LRU，可选FIFO、LFU。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="清空策略" content-height="220">
+                            <p><span class="redBold">FIFO：</span>first in first out (先进先出). </p>
+                            <p><span class="redBold">LFU：</span>Less Frequently Used (最少使用).意思是一直以来最少被使用的。缓存的元素有一个hit 属性，hit 值最小的将会被清出缓存。</p>
+                            <p><span class="redBold">LRU：</span>Least Recently Used(最近最少使用). (ehcache 默认值).缓存的元素有一个时间戳，当缓存容量满了，而又需要腾出地方来缓存新的元素的时候，那么现有缓存元素中时间戳离当前时间最远的元素将被清出缓存。</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+                Ehcache:
+                    "<diskStore path=\"java.io.tmpdir\" />  \n" +
+                    "  \n" +
+                    "    <defaultCache eternal=\"false\" maxElementsInMemory=\"3000\"  \n" +
+                    "        overflowToDisk=\"false\" diskPersistent=\"false\" timeToIdleSeconds=\"0\"  \n" +
+                    "        timeToLiveSeconds=\"43200\" memoryStoreEvictionPolicy=\"LRU\"/>  \n" +
+                    "  \n" +
+                    "    <cache name=\"allAreasCache\" eternal=\"false\"  \n" +
+                    "        maxElementsInMemory=\"3000\" overflowToDisk=\"false\" diskPersistent=\"false\"  \n" +
+                    "        timeToIdleSeconds=\"0\" timeToLiveSeconds=\"43200\"  \n" +
+                    "        memoryStoreEvictionPolicy=\"LRU\" />",
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        mounted() {
             let editorEhcache = CodeMirror.fromTextArea(document.getElementById("Ehcache"), this.options)
             editorEhcache.setValue(this.Ehcache)
             editorEhcache.setSize('auto','180px');
         }
     }
 
-    //// 一级 中间件
-    const MiddleWare = {
-        template: `
-            <div class="page has-navbar" v-nav="{hideNavbar: true}">
-                <div class="page-content">
-                    <von-header :theme="'stable'">
-                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
-                        <span slot="title"><h3 class="padding text-center headerTop">中间件</h3></span>
-                    </von-header>
-                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="2"></cells>
-                </div>
-            </div>
-        `,
-        data() {
-            return {
-                cells: ['null','null','null','null','null','null'],
-            }
-        },
-        methods: {
-            onCellClick(cellIndex) {
-                switch (cellIndex) {
-                    case 0: break;
-                    case 1: break;
-                    case 2: break;
-                    case 3: break;
-                    case 4: break;
-                    case 5: break;
-                    default: this.$router.push({path: `/demo`});
-                }
-
-            },
-        }
-    }
 
     //// 一级 微服务
     const MicroService = {
@@ -2864,10 +2912,10 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         { path: '/dataBase', component: DataBase },
         { path: '/transaction', component: Transaction }, //// 二级菜单 事务
         { path: '/index', component: Index }, //// 二级菜单 索引
-        { path: '/designparadim', component: DesignParadim }, //// 二级菜单 设计范式
+        { path: '/designParadigm', component: DesignParadigm }, //// 二级菜单 设计范式
         { path: '/mysql', component: MySQL }, //// 二级菜单 MYSQL
         { path: '/oracle', component: Oracle }, //// 二级菜单 Oracle
-        { path: '/splitdb', component: SplitDB }, //// 二级菜单 分库分表
+        { path: '/splitDB', component: SplitDB }, //// 二级菜单 分库分表
 
         //// 一级菜单 网络
         { path: '/netWork', component: NetWork },
@@ -2877,6 +2925,8 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
 
         //// 一级菜单 中间件
         { path: '/middleWare', component: MiddleWare },
+        { path: '/redis', component: Redis }, //// 二级菜单 Redis
+        { path: '/ehcache', component: Ehcache }, //// 二级菜单 Ehcache
 
         //// 一级菜单 微服务
         { path: '/microService', component: MicroService },
