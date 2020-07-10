@@ -670,12 +670,40 @@
                             <div><img src="./img/addProduct.bmp" class="imgSize"></div>
                         </accordion-item>
                         <div class="item item-divider dividerFont">其他模式</div>
-                        <accordion-item class="stableBack" title="命令模式" content-height="630">
+                        <accordion-item class="stableBack" title="命令模式" content-height="760">
                             <p>需要对某种行为进行记录、撤销或重做、事务等处理时，如果耦合性强就不太合适。认为是命令的地方都可以使用命令模式，比如： 1、GUI 中每一个按钮都是一条命令。 2、模拟 CMD</p>
                             <p><span class="redBold">优点</span>：1、降低了系统耦合度。 2、新的命令可以很容易添加到系统中去（不需要修改任何代码，直接添加实现Order实体类）</p>
                             <p><span class="redBold">缺点</span>：使用命令模式可能会导致某些系统有过多的具体命令类</p>
+                            <p>角色分类：<br><span class="redBold">抽象命令类：</span>与具体命令无关，具体命令必须继承和实现的接口或抽象类<br><span class="redBold">具体命令执行类：</span>与业务结构设计相关，封装命令，执行命令<br><span class="redBold">具体命令请求类：</span>与具体业务逻辑相关，所有的命令实现<br><span class="redBold">命令处理类：</span>接受命令，批量执行命令</p>
                             <div><img src="./img/orderMode.bmp" class="imgSize"></div>
                             <div><textarea id="orderMode"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="代理模式" content-height="860">
+                            <p>使用场景：</p>
+                            <p>1、在直接访问对象时带来的问题，比如说：要访问的对象在远程的机器上。在面向对象系统中，有些对象由于某些原因（比如对象创建开销很大，或者某些操作需要安全控制，或者需要进程外的访问），直接访问会给使用者或者系统结构带来很多麻烦，我们可以在访问此对象时加上一个对此对象的访问层。<br>2、需要在执行实体类的前后多执行一些控制</p>
+                            <p>我们将创建一个 Image 接口和实现了 Image 接口的实体类。ProxyImage 是一个代理类，减少 RealImage 对象加载的内存占用。ProxyPatternDemo，我们的演示类使用 ProxyImage 来获取要加载的 Image 对象，并按照需求进行显示。</p>
+                            <div><img src="./img/proxyMode.bmp" class="imgSize"></div>
+                            <div><textarea id="proxyMode"></textarea></div>
+                            <p><span class="redBold">这里在代理类中的执行方法直接是通过new RealImage()新建的实际类对象，这里可能还有其他操作：</span></p>
+                            <p>1、如果实体类跟代理类不在一个ClassLoader下，可以使用JDK的动态代理或者cglib来操作；<br>2、如果实体类跟代理类不在一个JVM下，即可能在远程主机上，这里可以使用Http请求远程主机，通过反射等操作获取执行结果；</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="观察者模式" content-height="620">
+                            <p>定义对象间的一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并被自动更新。一个对象状态改变给其他对象通知的问题，而且要考虑到易用和低耦合，保证高度的协作。</p>
+                            <div><img src="./img/watcherMode.bmp" height="230px" width="100%"></div>
+                            <div><textarea id="watcherMode"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="装饰器模式" content-height="690">
+                            <p>装饰器模式（Decorator Pattern）允许向一个现有的对象添加新的功能，同时又不改变其结构。这种类型的设计模式属于结构型模式，它是作为现有的类的一个包装。这种模式创建了一个装饰类，用来包装原有的类，并在保持类方法签名完整性的前提下，提供了额外的功能。我们通过下面的实例来演示装饰器模式的用法。其中，我们将把一个形状装饰上不同的颜色，同时又不改变形状类。</p>
+                            <div><img src="./img/decoratorMode.bmp" height="230px" width="100%"></div>
+                            <div><textarea id="decoratorMode"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="建造者模式" content-height="920">
+                            <p><span class="redBold">使用场景：一些基本部件不会变，而其组合经常变化的时候，如果工厂模式是制造零件，那建造者模式就是将零件组装成产品</span></p>
+                            <p>我们假设一个快餐店的商业案例，其中，一个典型的套餐可以是一个汉堡（Burger）和一杯冷饮（Cold drink）。汉堡（Burger）可以是素食汉堡（Veg Burger）或鸡肉汉堡（Chicken Burger），它们是包在纸盒中。冷饮（Cold drink）可以是可口可乐（coke）或百事可乐（pepsi），它们是装在瓶子中。</p>
+                            <p>我们将创建一个表示食物条目（比如汉堡和冷饮）的 Item 接口和实现 Item 接口的实体类，以及一个表示食物包装的 Packing 接口和实现 Packing接口的实体类，汉堡是包在纸盒中，冷饮是装在瓶子中。</p>
+                            <p>然后我们创建一个 Meal 类，带有 Item 的 ArrayList 和一个通过结合 Item 来创建不同类型的 Meal 对象的 MealBuilder。BuilderPatternDemo，我们的演示类使用 MealBuilder 来创建一个 Meal。</p>
+                            <div><img src="./img/builderMode.bmp" height="250px" width="100%"></div>
+                            <div><textarea id="builderMode"></textarea></div>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -870,6 +898,394 @@
                     "      broker.placeOrders();\n" +
                     "   }\n" +
                     "}",
+                proxyMode:
+                    "public interface Image {\n" +
+                    "   void display();\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class RealImage implements Image {\n" +
+                    " \n" +
+                    "   private String fileName;\n" +
+                    " \n" +
+                    "   public RealImage(String fileName){\n" +
+                    "      this.fileName = fileName;\n" +
+                    "      loadFromDisk(fileName);\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   @Override\n" +
+                    "   public void display() {\n" +
+                    "      System.out.println(\"Displaying \" + fileName);\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   private void loadFromDisk(String fileName){\n" +
+                    "      System.out.println(\"Loading \" + fileName);\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class ProxyImage implements Image{\n" +
+                    " \n" +
+                    "   private RealImage realImage;\n" +
+                    "   private String fileName;\n" +
+                    " \n" +
+                    "   public ProxyImage(String fileName){\n" +
+                    "      this.fileName = fileName;\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   @Override\n" +
+                    "   public void display() {\n" +
+                    "      if(realImage == null){\n" +
+                    "         realImage = new RealImage(fileName);\n" +
+                    "      }\n" +
+                    "      realImage.display();\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class ProxyPatternDemo {\n" +
+                    "   \n" +
+                    "   public static void main(String[] args) {\n" +
+                    "      Image image = new ProxyImage(\"test_10mb.jpg\");\n" +
+                    " \n" +
+                    "      // 图像将从磁盘加载\n" +
+                    "      image.display(); \n" +
+                    "      System.out.println(\"\");\n" +
+                    "      // 图像不需要从磁盘加载\n" +
+                    "      image.display();  \n" +
+                    "   }\n" +
+                    "}\n",
+                watcherMode:
+                    "import java.util.ArrayList;\n" +
+                    "import java.util.List;\n" +
+                    " \n" +
+                    "public class Subject {\n" +
+                    "   \n" +
+                    "   private List<Observer> observers \n" +
+                    "      = new ArrayList<Observer>();\n" +
+                    "   private int state;\n" +
+                    " \n" +
+                    "   public int getState() {\n" +
+                    "      return state;\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   public void setState(int state) {\n" +
+                    "      this.state = state;\n" +
+                    "      notifyAllObservers();\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   public void attach(Observer observer){\n" +
+                    "      observers.add(observer);      \n" +
+                    "   }\n" +
+                    " \n" +
+                    "   public void notifyAllObservers(){\n" +
+                    "      for (Observer observer : observers) {\n" +
+                    "         observer.update();\n" +
+                    "      }\n" +
+                    "   }  \n" +
+                    "}\n" +
+                    "\n" +
+                    "\n" +
+                    "public abstract class Observer {\n" +
+                    "   protected Subject subject;\n" +
+                    "   public abstract void update();\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class BinaryObserver extends Observer{\n" +
+                    " \n" +
+                    "   public BinaryObserver(Subject subject){\n" +
+                    "      this.subject = subject;\n" +
+                    "      this.subject.attach(this);\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   @Override\n" +
+                    "   public void update() {\n" +
+                    "      System.out.println( \"Binary String: \" \n" +
+                    "      + Integer.toBinaryString( subject.getState() ) ); \n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class OctalObserver extends Observer{\n" +
+                    " \n" +
+                    "   public OctalObserver(Subject subject){\n" +
+                    "      this.subject = subject;\n" +
+                    "      this.subject.attach(this);\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   @Override\n" +
+                    "   public void update() {\n" +
+                    "     System.out.println( \"Octal String: \" \n" +
+                    "     + Integer.toOctalString( subject.getState() ) ); \n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class HexaObserver extends Observer{\n" +
+                    " \n" +
+                    "   public HexaObserver(Subject subject){\n" +
+                    "      this.subject = subject;\n" +
+                    "      this.subject.attach(this);\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   @Override\n" +
+                    "   public void update() {\n" +
+                    "      System.out.println( \"Hex String: \" \n" +
+                    "      + Integer.toHexString( subject.getState() ).toUpperCase() ); \n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class ObserverPatternDemo {\n" +
+                    "   public static void main(String[] args) {\n" +
+                    "      Subject subject = new Subject();\n" +
+                    " \n" +
+                    "      new HexaObserver(subject);\n" +
+                    "      new OctalObserver(subject);\n" +
+                    "      new BinaryObserver(subject);\n" +
+                    " \n" +
+                    "      System.out.println(\"First state change: 15\");   \n" +
+                    "      subject.setState(15);\n" +
+                    "      System.out.println(\"Second state change: 10\");  \n" +
+                    "      subject.setState(10);\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "First state change: 15\n" +
+                    "Hex String: F\n" +
+                    "Octal String: 17\n" +
+                    "Binary String: 1111\n" +
+                    "Second state change: 10\n" +
+                    "Hex String: A\n" +
+                    "Octal String: 12\n" +
+                    "Binary String: 1010",
+                decoratorMode:
+                    "public interface Shape {\n" +
+                    "   void draw();\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class Rectangle implements Shape {\n" +
+                    " \n" +
+                    "   @Override\n" +
+                    "   public void draw() {\n" +
+                    "      System.out.println(\"Shape: Rectangle\");\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class Circle implements Shape {\n" +
+                    "   @Override\n" +
+                    "   public void draw() {\n" +
+                    "      System.out.println(\"Shape: Circle\");\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public abstract class ShapeDecorator implements Shape {\n" +
+                    "   protected Shape decoratedShape;\n" +
+                    " \n" +
+                    "   public ShapeDecorator(Shape decoratedShape){\n" +
+                    "      this.decoratedShape = decoratedShape;\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   public void draw(){\n" +
+                    "      decoratedShape.draw();\n" +
+                    "   }  \n" +
+                    "}\n" +
+                    "\n" +
+                    "public class RedShapeDecorator extends ShapeDecorator {\n" +
+                    " \n" +
+                    "   public RedShapeDecorator(Shape decoratedShape) {\n" +
+                    "      super(decoratedShape);     \n" +
+                    "   }\n" +
+                    " \n" +
+                    "   @Override\n" +
+                    "   public void draw() {\n" +
+                    "      decoratedShape.draw();         \n" +
+                    "      setRedBorder(decoratedShape);\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   private void setRedBorder(Shape decoratedShape){\n" +
+                    "      System.out.println(\"Border Color: Red\");\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class DecoratorPatternDemo {\n" +
+                    "   public static void main(String[] args) {\n" +
+                    " \n" +
+                    "      Shape circle = new Circle();\n" +
+                    "      ShapeDecorator redCircle = new RedShapeDecorator(new Circle());\n" +
+                    "      ShapeDecorator redRectangle = new RedShapeDecorator(new Rectangle());\n" +
+                    "      //Shape redCircle = new RedShapeDecorator(new Circle());\n" +
+                    "      //Shape redRectangle = new RedShapeDecorator(new Rectangle());\n" +
+                    "      System.out.println(\"Circle with normal border\");\n" +
+                    "      circle.draw();\n" +
+                    " \n" +
+                    "      System.out.println(\"\\nCircle of red border\");\n" +
+                    "      redCircle.draw();\n" +
+                    " \n" +
+                    "      System.out.println(\"\\nRectangle of red border\");\n" +
+                    "      redRectangle.draw();\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "Circle with normal border\n" +
+                    "Shape: Circle\n" +
+                    "\n" +
+                    "Circle of red border\n" +
+                    "Shape: Circle\n" +
+                    "Border Color: Red\n" +
+                    "\n" +
+                    "Rectangle of red border\n" +
+                    "Shape: Rectangle\n" +
+                    "Border Color: Red\n",
+                builderMode:
+                    "public interface Item {\n" +
+                    "   public String name();\n" +
+                    "   public Packing packing();\n" +
+                    "   public float price();    \n" +
+                    "}\n" +
+                    "\n" +
+                    "public interface Packing {\n" +
+                    "   public String pack();\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class Wrapper implements Packing {\n" +
+                    "   @Override\n" +
+                    "   public String pack() {\n" +
+                    "      return \"Wrapper\";\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class Bottle implements Packing {\n" +
+                    "   @Override\n" +
+                    "   public String pack() {\n" +
+                    "      return \"Bottle\";\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public abstract class Burger implements Item {\n" +
+                    " \n" +
+                    "   @Override\n" +
+                    "   public Packing packing() {\n" +
+                    "      return new Wrapper();\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   @Override\n" +
+                    "   public abstract float price();\n" +
+                    "}\n" +
+                    "\n" +
+                    "public abstract class ColdDrink implements Item {\n" +
+                    " \n" +
+                    "    @Override\n" +
+                    "    public Packing packing() {\n" +
+                    "       return new Bottle();\n" +
+                    "    }\n" +
+                    " \n" +
+                    "    @Override\n" +
+                    "    public abstract float price();\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class VegBurger extends Burger {\n" +
+                    " \n" +
+                    "   @Override\n" +
+                    "   public float price() {\n" +
+                    "      return 25.0f;\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   @Override\n" +
+                    "   public String name() {\n" +
+                    "      return \"Veg Burger\";\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class ChickenBurger extends Burger {\n" +
+                    " \n" +
+                    "   @Override\n" +
+                    "   public float price() {\n" +
+                    "      return 50.5f;\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   @Override\n" +
+                    "   public String name() {\n" +
+                    "      return \"Chicken Burger\";\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class Coke extends ColdDrink {\n" +
+                    " \n" +
+                    "   @Override\n" +
+                    "   public float price() {\n" +
+                    "      return 30.0f;\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   @Override\n" +
+                    "   public String name() {\n" +
+                    "      return \"Coke\";\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "import java.util.ArrayList;\n" +
+                    "import java.util.List;\n" +
+                    " \n" +
+                    "public class Meal {\n" +
+                    "   private List<Item> items = new ArrayList<Item>();    \n" +
+                    " \n" +
+                    "   public void addItem(Item item){\n" +
+                    "      items.add(item);\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   public float getCost(){\n" +
+                    "      float cost = 0.0f;\n" +
+                    "      for (Item item : items) {\n" +
+                    "         cost += item.price();\n" +
+                    "      }        \n" +
+                    "      return cost;\n" +
+                    "   }\n" +
+                    " \n" +
+                    "   public void showItems(){\n" +
+                    "      for (Item item : items) {\n" +
+                    "         System.out.print(\"Item : \"+item.name());\n" +
+                    "         System.out.print(\", Packing : \"+item.packing().pack());\n" +
+                    "         System.out.println(\", Price : \"+item.price());\n" +
+                    "      }        \n" +
+                    "   }    \n" +
+                    "}\n" +
+                    "\n" +
+                    "public class MealBuilder {\n" +
+                    " \n" +
+                    "   public Meal prepareVegMeal (){\n" +
+                    "      Meal meal = new Meal();\n" +
+                    "      meal.addItem(new VegBurger());\n" +
+                    "      meal.addItem(new Coke());\n" +
+                    "      return meal;\n" +
+                    "   }   \n" +
+                    " \n" +
+                    "   public Meal prepareNonVegMeal (){\n" +
+                    "      Meal meal = new Meal();\n" +
+                    "      meal.addItem(new ChickenBurger());\n" +
+                    "      meal.addItem(new Pepsi());\n" +
+                    "      return meal;\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class BuilderPatternDemo {\n" +
+                    "   public static void main(String[] args) {\n" +
+                    "      MealBuilder mealBuilder = new MealBuilder();\n" +
+                    " \n" +
+                    "      Meal vegMeal = mealBuilder.prepareVegMeal();\n" +
+                    "      System.out.println(\"Veg Meal\");\n" +
+                    "      vegMeal.showItems();\n" +
+                    "      System.out.println(\"Total Cost: \" +vegMeal.getCost());\n" +
+                    " \n" +
+                    "      Meal nonVegMeal = mealBuilder.prepareNonVegMeal();\n" +
+                    "      System.out.println(\"\\n\\nNon-Veg Meal\");\n" +
+                    "      nonVegMeal.showItems();\n" +
+                    "      System.out.println(\"Total Cost: \" +nonVegMeal.getCost());\n" +
+                    "   }\n" +
+                    "}\n" +
+                    "\n" +
+                    "Veg Meal\n" +
+                    "Item : Veg Burger, Packing : Wrapper, Price : 25.0\n" +
+                    "Item : Coke, Packing : Bottle, Price : 30.0\n" +
+                    "Total Cost: 55.0\n" +
+                    "\n" +
+                    "Non-Veg Meal\n" +
+                    "Item : Chicken Burger, Packing : Wrapper, Price : 50.5\n" +
+                    "Item : Pepsi, Packing : Bottle, Price : 35.0\n" +
+                    "Total Cost: 85.5\n",
                 options: {
                     tabSize: 2,
                     theme: "dracula",
@@ -903,6 +1319,18 @@
             let editorOrderMode = CodeMirror.fromTextArea(document.getElementById("orderMode"), this.options)
             editorOrderMode.setValue(this.orderMode)
             editorOrderMode.setSize('auto','250px');
+            let editorProxyMode = CodeMirror.fromTextArea(document.getElementById("proxyMode"), this.options)
+            editorProxyMode.setValue(this.proxyMode)
+            editorProxyMode.setSize('auto','250px');
+            let editorWatcherMode = CodeMirror.fromTextArea(document.getElementById("watcherMode"), this.options)
+            editorWatcherMode.setValue(this.watcherMode)
+            editorWatcherMode.setSize('auto','250px');
+            let editorDecoratorMode = CodeMirror.fromTextArea(document.getElementById("decoratorMode"), this.options)
+            editorDecoratorMode.setValue(this.decoratorMode)
+            editorDecoratorMode.setSize('auto','250px');
+            let editorBuilderMode = CodeMirror.fromTextArea(document.getElementById("builderMode"), this.options)
+            editorBuilderMode.setValue(this.builderMode)
+            editorBuilderMode.setSize('auto','250px');
         }
     }
     //// 二级 线程
