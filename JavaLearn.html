@@ -67,6 +67,11 @@
 
 
 
+
+
+
+
+
 <script type="text/javascript">
     //// 首页
     const Home = {
@@ -2355,7 +2360,7 @@
         `,
         data() {
             return {
-                cells: ['Redis','Ehcache','null','null','null','null'],
+                cells: ['Redis','Ehcache','Nginx','null','null','null'],
             }
         },
         methods: {
@@ -2363,7 +2368,7 @@
                 switch (cellIndex) {
                     case 0: this.$router.push({path: `/redis`}); break;
                     case 1: this.$router.push({path: `/ehcache`}); break;
-                    case 2: break;
+                    case 2: this.$router.push({path: `/nginx`}); break;
                     case 3: break;
                     case 4: break;
                     case 5: break;
@@ -2559,6 +2564,196 @@
             let editorEhcache = CodeMirror.fromTextArea(document.getElementById("Ehcache"), this.options)
             editorEhcache.setValue(this.Ehcache)
             editorEhcache.setSize('auto','180px');
+        }
+    }
+    //// 二级 Nginx
+    const Nginx = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/middleWare')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">Nginx</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="常用功能" content-height="350">
+                            <p><span class="redBold">Http代理，反向代理：</span>作为web服务器最常用的功能之一，尤其是反向代理。</p>
+                            <p><span class="redBold">负载均衡：</span>Nginx提供的负载均衡策略有2种：<span class="redBold">内置策略和扩展策略。</span>内置策略为轮询，加权轮询，Ip hash。扩展策略，就天马行空，只有你想不到的没有他做不到的啦，你可以参照所有的负载均衡算法，给他一一找出来做下实现。</p>
+                            <p><span class="redBold">Web缓存：</span>Nginx可以对不同的文件做不同的缓存处理，配置灵活，并且支持FastCGI_Cache，主要用于对FastCGI的动态程序进行缓存。配合着第三方的ngx_cache_purge，对制定的URL缓存内容可以的进行增删管理。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="nginx.conf 文件结构" content-height="970">
+                            <p><span class="redBold">全局块：</span>配置影响nginx全局的指令。一般有运行nginx服务器的用户组，nginx进程pid存放路径，日志存放路径，配置文件引入，允许生成worker process数等。<br><span class="redBold">events块：</span>配置影响nginx服务器或与用户的网络连接。有每个进程的最大连接数，选取哪种事件驱动模型处理连接请求，是否允许同时接受多个网路连接，开启多个网络连接序列化等。<br><span class="redBold">http块：</span>可以嵌套多个server，配置代理，缓存，日志定义等绝大多数功能和第三方模块的配置。如文件引入，mime-type定义，日志自定义，是否使用sendfile传输文件，连接超时时间，单连接请求数等。<br><span class="redBold">server块：</span>配置虚拟主机的相关参数，一个http中可以有多个server。<br><span class="redBold">location块：</span>配置请求的路由，以及各种页面的处理情况。</p>
+                            <div><textarea id="NginxConf"></textarea></div>
+                            <p>示例：</p>
+                            <div><textarea id="NginxConfDemo"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="Http代理（正向）和反向代理" content-height="500">
+                            <p>通过proxy_pass  来实现服务代理，无论是正向代理或是反向代理，nginx的配置都是类似的，都是代理，只是代理服务器nginx的目标不通而已</p>
+                            <div><textarea id="NginxProxy"></textarea></div>
+                            <p>通过nginx的代理配置，还能实现js的跨域问题，比如js需要访问 http://quotes.money.163.com/service/chddata.html接口的数据，可以通过以上配置来实现跨域，同时修改js中的接口为 http://localhost/service/chddata.html</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="负载均衡" content-height="1150">
+                            <p><span class="redBold">轮询（默认）：</span>每个请求按时间顺序逐一分配到不同的后端服务器，如果后端服务器down掉，能自动剔除。</p>
+                            <div><textarea id="NginxLists"></textarea></div>
+                            <p><span class="redBold">weight：</span>指定轮询几率，weight和访问比率成正比，用于后端服务器性能不均的情况。</p>
+                            <div><textarea id="NginxWeight"></textarea></div>
+                            <p><span class="redBold">ip _hash：</span>上述方式存在一个问题就是说，在负载均衡系统中，假如用户在某台服务器上登录了，那么该用户第二次请求的时候，因为我们是负载均衡系统，每次请求都会重新定位到服务器集群中的某一个，那么已经登录某一个服务器的用户再重新定位到另一个服务器，其登录信息将会丢失，这样显然是不妥的。我们可以采用ip_hash指令解决这个问题，如果客户已经访问了某个服务器，当用户再次访问时，会将该请求通过哈希算法，自动定位到该服务器。每个请求按访问ip的hash结果分配，这样每个访客固定访问一个后端服务器，可以解决session的问题。</p>
+                            <div><textarea id="NginxIpHash"></textarea></div>
+                            <p><span class="redBold">fair（第三方）：</span>按后端服务器的响应时间来分配请求，响应时间短的优先分配。</p>
+                            <div><textarea id="NginxFair"></textarea></div>
+                            <p><span class="redBold">url_hash（第三方）：</span>按访问url的hash结果来分配请求，使每个url定向到同一个后端服务器，后端服务器为缓存时比较有效。</p>
+                            <div><textarea id="NginxUrlHash"></textarea></div>
+                            <p>每个设备的状态设置为：</p>
+                            <p><span class="redBold">down：</span>表示单前的server暂时不参与负载<br><span class="redBold">weight：</span>默认为1.weight越大，负载的权重就越大。<br><span class="redBold">max_fails：</span>允许请求失败的次数默认为1.当超过最大次数时，返回proxy_next_upstream模块定义的错误fail_timeout:max_fails次失败后，暂停的时间。<br><span class="redBold">backup：</span>其它所有的非backup机器down或者忙的时候，请求backup机器。所以这台机器压力会最轻。</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+                NginxConf:
+                    "...              #全局块\n" +
+                    "\n" +
+                    "events {         #events块\n" +
+                    "}\n" +
+                    "\n" +
+                    "http      #http块\n" +
+                    "{\n" +
+                    "    ...   #http全局块\n" +
+                    "    server        #server块\n" +
+                    "    { \n" +
+                    "        ...       #server全局块\n" +
+                    "        location [PATTERN]   #location块\n" +
+                    "        {\n" +
+                    "        }\n" +
+                    "        location [PATTERN] \n" +
+                    "        {\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "    server\n" +
+                    "    {\n" +
+                    "    }\n" +
+                    "    ...     #http全局块\n" +
+                    "}",
+                NginxConfDemo:
+                    "########### 每个指令必须有分号结束。#################\n" +
+                    "#user administrator administrators;  #配置用户或者组，默认为nobody nobody。\n" +
+                    "#worker_processes 2;  #允许生成的进程数，默认为1\n" +
+                    "#pid /nginx/pid/nginx.pid;   #指定nginx进程运行文件存放地址\n" +
+                    "error_log log/error.log debug;  #制定日志路径，级别。这个设置可以放入全局块，http块，server块，级别以此为：debug|info|notice|warn|error|crit|alert|emerg\n" +
+                    "events {\n" +
+                    "    accept_mutex on;   #设置网路连接序列化，防止惊群现象发生，默认为on\n" +
+                    "    multi_accept on;  #设置一个进程是否同时接受多个网络连接，默认为off\n" +
+                    "    #use epoll;      #事件驱动模型，select|poll|kqueue|epoll|resig|/dev/poll|eventport\n" +
+                    "    worker_connections  1024;    #最大连接数，默认为512\n" +
+                    "}\n" +
+                    "http {\n" +
+                    "    include       mime.types;   #文件扩展名与文件类型映射表\n" +
+                    "    default_type  application/octet-stream; #默认文件类型，默认为text/plain\n" +
+                    "    #access_log off; #取消服务日志    \n" +
+                    "    log_format myFormat '$remote_addr–$remote_user [$time_local] $request $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for'; #自定义格式\n" +
+                    "    access_log log/access.log myFormat;  #combined为日志格式的默认值\n" +
+                    "    sendfile on;   #允许sendfile方式传输文件，默认为off，可以在http块，server块，location块。\n" +
+                    "    sendfile_max_chunk 100k;  #每个进程每次调用传输数量不能大于设定的值，默认为0，即不设上限。\n" +
+                    "    keepalive_timeout 65;  #连接超时时间，默认为75s，可以在http，server，location块。\n" +
+                    "\n" +
+                    "    upstream mysvr {   \n" +
+                    "      server 127.0.0.1:7878;\n" +
+                    "      server 192.168.10.121:3333 backup;  #热备\n" +
+                    "    }\n" +
+                    "    error_page 404 https://www.baidu.com; #错误页\n" +
+                    "    server {\n" +
+                    "        keepalive_requests 120; #单连接请求上限次数。\n" +
+                    "        listen       4545;   #监听端口\n" +
+                    "        server_name  127.0.0.1;   #监听地址       \n" +
+                    "        location  ~*^.+$ {       #请求的url过滤，正则匹配，~为区分大小写，~*为不区分大小写。\n" +
+                    "           #root path;  #根目录\n" +
+                    "           #index vv.txt;  #设置默认页\n" +
+                    "           proxy_pass  http://mysvr;  #请求转向mysvr 定义的服务器列表\n" +
+                    "           deny 127.0.0.1;  #拒绝的ip\n" +
+                    "           allow 172.18.5.54; #允许的ip           \n" +
+                    "        } \n" +
+                    "    }\n" +
+                    "}",
+                NginxProxy:
+                    "server {\n" +
+                    "        listen       80;\n" +
+                    "        server_name  localhost;\n" +
+                    "\n" +
+                    "        # 根路径，用来转到首页index.html\n" +
+                    "        location / {\n" +
+                    "            root   html;\n" +
+                    "            index  index.html index.htm;\n" +
+                    "        }\n" +
+                    "\t\t\n" +
+                    "        # 跳转页，对于http://localhost/service，会代理到http://quotes.money.163.com/service\n" +
+                    "        location /service{\n" +
+                    "            proxy_pass http://quotes.money.163.com;\n" +
+                    "        }\n" +
+                    "}",
+                NginxLists:
+                    "upstream backserver {\n" +
+                    "    server 192.168.0.14;\n" +
+                    "    server 192.168.0.15;\n" +
+                    "}",
+                NginxWeight:
+                    "upstream backserver {\n" +
+                    "    server 192.168.0.14 weight=3;\n" +
+                    "    server 192.168.0.15 weight=7;\n" +
+                    "}",
+                NginxIpHash:
+                    "upstream backserver {\n" +
+                    "    ip_hash;\n" +
+                    "    server 192.168.0.14:88;\n" +
+                    "    server 192.168.0.15:80;\n" +
+                    "}",
+                NginxFair:
+                    "upstream backserver {\n" +
+                    "    server server1;\n" +
+                    "    server server2;\n" +
+                    "    fair;\n" +
+                    "}",
+                NginxUrlHash:
+                    "upstream backserver {\n" +
+                    "    server squid1:3128;\n" +
+                    "    server squid2:3128;\n" +
+                    "    hash $request_uri;\n" +
+                    "    hash_method crc32;\n" +
+                    "}",
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        mounted() {
+            let editorNginxConf = CodeMirror.fromTextArea(document.getElementById("NginxConf"), this.options)
+            editorNginxConf.setValue(this.NginxConf)
+            editorNginxConf.setSize('auto','300px');
+            let editorNginxConfDemo = CodeMirror.fromTextArea(document.getElementById("NginxConfDemo"), this.options)
+            editorNginxConfDemo.setValue(this.NginxConfDemo)
+            editorNginxConfDemo.setSize('auto','300px');
+            let editorNginxProxy = CodeMirror.fromTextArea(document.getElementById("NginxProxy"), this.options)
+            editorNginxProxy.setValue(this.NginxProxy)
+            editorNginxProxy.setSize('auto','300px');
+            let editorNginxLists = CodeMirror.fromTextArea(document.getElementById("NginxLists"), this.options)
+            editorNginxLists.setValue(this.NginxLists)
+            editorNginxLists.setSize('auto','100px');
+            let editorNginxWeight = CodeMirror.fromTextArea(document.getElementById("NginxWeight"), this.options)
+            editorNginxWeight.setValue(this.NginxWeight)
+            editorNginxWeight.setSize('auto','100px');
+            let editorNginxIpHash = CodeMirror.fromTextArea(document.getElementById("NginxIpHash"), this.options)
+            editorNginxIpHash.setValue(this.NginxIpHash)
+            editorNginxIpHash.setSize('auto','100px');
+            let editorNginxFair = CodeMirror.fromTextArea(document.getElementById("NginxFair"), this.options)
+            editorNginxFair.setValue(this.NginxFair)
+            editorNginxFair.setSize('auto','100px');
+            let editorNginxUrlHash = CodeMirror.fromTextArea(document.getElementById("NginxUrlHash"), this.options)
+            editorNginxUrlHash.setValue(this.NginxUrlHash)
+            editorNginxUrlHash.setSize('auto','100px');
         }
     }
 
@@ -2927,6 +3122,7 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         { path: '/middleWare', component: MiddleWare },
         { path: '/redis', component: Redis }, //// 二级菜单 Redis
         { path: '/ehcache', component: Ehcache }, //// 二级菜单 Ehcache
+        { path: '/nginx', component: Nginx }, //// 二级菜单 Nginx
 
         //// 一级菜单 微服务
         { path: '/microService', component: MicroService },
