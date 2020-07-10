@@ -614,7 +614,7 @@
                         <span slot="title"><h3 class="padding text-center headerTop">设计模式</h3></span>
                     </von-header>
                     <accordion default-index="0">
-                        <accordion-item class="stableBack" title="业务和框架的封装" content-height="130">
+                        <accordion-item class="stableBack" title="业务和框架的封装" content-height="100">
                             <p>设计模式或代码封装中，抽象出来的接口或抽象类肯定是框架部分，实体类和实现类（如简单工厂）可以是框架部分，也可以是业务部分。</p>
                         </accordion-item>
                         <div class="item item-divider dividerFont">单例模式</div>
@@ -664,7 +664,7 @@
                             <p>在抽象工厂模式中增加一个产品</p>
                             <div><img src="./img/addProduct.bmp" class="imgSize"></div>
                         </accordion-item>
-                        <div class="item item-divider dividerFont">命令模式</div>
+                        <div class="item item-divider dividerFont">其他模式</div>
                         <accordion-item class="stableBack" title="命令模式" content-height="630">
                             <p>需要对某种行为进行记录、撤销或重做、事务等处理时，如果耦合性强就不太合适。认为是命令的地方都可以使用命令模式，比如： 1、GUI 中每一个按钮都是一条命令。 2、模拟 CMD</p>
                             <p><span class="redBold">优点</span>：1、降低了系统耦合度。 2、新的命令可以很容易添加到系统中去（不需要修改任何代码，直接添加实现Order实体类）</p>
@@ -872,9 +872,6 @@
                     scrollbarStyle: "simple",
                 }
             }
-        },
-        methods: {
-
         },
         mounted() {
             let editorSingleLazy = CodeMirror.fromTextArea(document.getElementById("singleLazy"), this.options)
@@ -1263,6 +1260,12 @@
                             <p>综合上面的分析，我们可以理解ThreadLocal内存泄漏的前因后果，那么怎么避免内存泄漏呢？</p>
                             <p>每次使用完ThreadLocal，都调用它的remove()方法，清除数据。在使用线程池的情况下，没有及时清理ThreadLocal，不仅是内存泄漏的问题，更严重的是可能导致业务逻辑出现问题。所以，使用ThreadLocal就跟加锁完要解锁一样，用完就清理。</p>
                         </accordion-item>
+                        <accordion-item class="stableBack" title="异常" content-height="830">
+                            <p><span class="redBold">错误：</span>Error类以及他的子类的实例，代表了JVM本身的错误。错误不能被程序员通过代码处理，Error很少出现。因此，程序员应该关注Exception为父类的分支下的各种异常类。<br><span class="redBold">异常：</span>Exception以及他的子类，代表程序运行时发送的各种不期望发生的事件。可以被Java异常处理机制使用，是异常处理的核心。</p>
+                            <div><img src="./img/exception.bmp" width="100%" height="250px"></div>
+                            <p><span class="redBold">非检查异常（unckecked exception）：</span>Error 和 RuntimeException 以及他们的子类。javac在编译时，不会提示和发现这样的异常，不要求在程序处理这些异常。所以如果愿意，我们可以编写代码处理（使用try…catch…finally）这样的异常，也可以不处理。<span class="redBold">对于这些异常，我们应该修正代码，而不是去通过异常处理器处理。</span>这样的异常发生的原因多半是代码写的有问题。如除0错误ArithmeticException，错误的强制类型转换错误ClassCastException，数组索引越界ArrayIndexOutOfBoundsException，使用了空对象NullPointerException等等。</p>
+                            <p><span class="redBold">检查异常（checked exception）：</span>除了Error 和 RuntimeException的其它异常。javac强制要求程序员为这样的异常做预备处理工作（使用try…catch…finally或者throws）。在方法中要么用try-catch语句捕获它并处理，要么用throws子句声明抛出它，否则编译不会通过。这样的异常一般是由程序的运行环境导致的。因为程序可能被运行在各种未知的环境下，而程序员无法干预用户如何使用他编写的程序，于是程序员就应该为这样的异常时刻准备着。如SQLException , IOException,ClassNotFoundException 等。</p>
+                        </accordion-item>
                     </accordion>
                 </div>
             </div>
@@ -1292,7 +1295,7 @@
         `,
         data() {
             return {
-                cells: ['事务','索引概念','设计范式','MySQL','Oracle','分库分表','杂项'],
+                cells: ['事务','索引概念','设计范式','MySQL','Oracle','MyBatis','分库分表','杂项'],
             }
         },
         methods: {
@@ -1303,8 +1306,9 @@
                     case 2: this.$router.push({path: `/designParadigm`}); break;
                     case 3: this.$router.push({path: `/mysql`}); break;
                     case 4: this.$router.push({path: `/oracle`}); break;
-                    case 5: this.$router.push({path: `/splitDB`}); break;
-                    case 6: this.$router.push({path: `/dbother`}); break;
+                    case 5: this.$router.push({path: `/mybatis`}); break;
+                    case 6: this.$router.push({path: `/splitDB`}); break;
+                    case 7: this.$router.push({path: `/dbother`}); break;
                     default: this.$router.push({path: `/demo`});
                 }
 
@@ -2174,6 +2178,32 @@
             let editorOracleDeleteConstraint = CodeMirror.fromTextArea(document.getElementById("OracleDeleteConstraint"), this.options)
             editorOracleDeleteConstraint.setValue(this.OracleDeleteConstraint)
             editorOracleDeleteConstraint.setSize('auto','170px')
+        }
+    }
+    //// 二级 MyBatis
+    const MyBatis = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/dataBase')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">MyBatis</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableback" title="常用操作" content-height="850">
+                            预留
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+            }
+        },
+        mounted() {
+
         }
     }
     //// 二级 分库分表
@@ -3188,6 +3218,7 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         { path: '/mysql', component: MySQL }, //// 二级菜单 MYSQL
         { path: '/oracle', component: Oracle }, //// 二级菜单 Oracle
         { path: '/splitDB', component: SplitDB }, //// 二级菜单 分库分表
+        { path: '/mybatis', component: MyBatis }, //// 二级菜单 MyBatis
         { path: '/dbother', component: DBOther }, //// 二级菜单 数据库杂项
 
         //// 一级菜单 网络
