@@ -156,26 +156,31 @@
                             <div style="transform: rotate(90deg);"><img src="./img/collection.bmp" height="350px" width="500px"></div>
                         </accordion-item>
                         <div class="item item-divider dividerFont">Map</div>
-                        <accordion-item class="stableBack" title="Map实现" content-height="280">
-                            <p>HashMap非线程安全，HashTable 和 ConcurrentHashMap线程安全</p>
-                            <p>Hashtable既不支持Null key也不支持Null value，Hashtable的put()方法的注释中有说明</p>
-                            <p>TreeMap是自然有序的，初始化时可以使用一些排序方法得到需要顺序的map</p>
-                            <p>ConcurrentHashMap不允许Null key，也不支持Null value</p>
-                            <p>ConcurrentHashMap 使用了分段锁，sychronized关键字（跟HashTable不同，HashTable是锁整个表）</p>
+                        <accordion-item class="stableBack" title="Map实现" content-height="310">
+                            <p><span class="redBold">Map不属于集合类collection，是顶级接口</span></p>
+                            <p><span class="redBold">HashMap</span>非线程安全，HashTable 和 ConcurrentHashMap线程安全</p>
+                            <p><span class="redBold">Hashtable</span>既不支持Null key也不支持Null value，Hashtable的put()方法的注释中有说明</p>
+                            <p><span class="redBold">TreeMap</span>是自然有序的，初始化时可以使用一些排序方法得到需要顺序的map</p>
+                            <p><span class="redBold">ConcurrentHashMap</span>使用了分段锁，sychronized关键字（跟HashTable不同，HashTable是锁整个表）。ConcurrentHashMap不允许Null key，也不支持Null value</p>
                         </accordion-item>
                         <span @click="$router.push('/hashMap')">
                             <item class="item-icon-right">HashMap<i class="icon ion-ios-arrow-right"></i></item>
                         </span>
                         <div class="item item-divider dividerFont">List</div>
                         <accordion-item class="stableBack" title="List实现" content-height="300">
-                            <p>Vector：底层数据结构是数组结构。 jdk1.0版本。 线程安全的。 无论增删还是查询都非常慢。默认扩充为原来的2倍。</p>
-                            <p>ArrayList：底层数据结构是动态数组结构。 线程不安全的。 所以ArrayList的出现替代了Vector， 但是查询的速度很快。默认扩充为原来的1.5倍。对于随机访问get和set，ArrayList觉得优于LinkedList。</p>
-                            <p>LinkedList：底层是链表数据结构。 线程不安全的， 同时对元素的增删操作效率很高。但查询慢。</p>
-                            <p>Vector 和  ArrayList都是基于存储元素的Object[ ] array来实现的。LinkedList是采用双向列表来实现的。</p>
+                            <p><span class="redBold">Vector：</span>底层数据结构是数组结构。 jdk1.0版本。 线程安全的。 无论增删还是查询都非常慢。默认扩充为原来的2倍。</p>
+                            <p><span class="redBold">ArrayList：</span>底层数据结构是动态数组结构。 线程不安全的。 所以ArrayList的出现替代了Vector， 但是查询的速度很快。默认扩充为原来的1.5倍。对于随机访问get和set，ArrayList觉得优于LinkedList。</p>
+                            <p><span class="redBold">LinkedList：</span>底层是链表数据结构。 线程不安全的， 同时对元素的增删操作效率很高。但查询慢。</p>
+                            <p>Vector 和 ArrayList都是基于存储元素的Object[] array来实现的。LinkedList是采用双向列表来实现的。</p>
                         </accordion-item>
                         <accordion-item class="stableBack" title="CopyOnWriteArrayList" content-height="380">
                             <p>CopyOnWriteArrayList是ArrayList 的一个线程安全的变体，其中所有可变操作（add、set等等）都是通过对底层数组进行一次新的复制来实现的</p>
                             <div><textarea id="copyOnWriteArrayList"></textarea></div>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">Set</div>
+                        <accordion-item class="stableBack" title="Set实现" content-height="180">
+                            <p><span class="redBold">HashSet：</span>HashSet是通过HasMap来实现的，HashMap的输入参数有Key、Value两个组成，在实现HashSet的时候，保持HashMap的Value为常量，相当于在HashMap中只对Key对象进行处理。</p>
+                            <p><span class="redBold">TreeSet：</span>TreeSet底层就是一个TreeMap，但是Value值为一个虚拟值，实现了Set接口。</p>
                         </accordion-item>
                     </accordion>
                 </div>
