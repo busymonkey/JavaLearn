@@ -87,7 +87,7 @@
         `,
         data() {
             return {
-                cells: ['Java基础','设计模式','数据库基础','网络基础','缓存','中间件','SSM','算法'],
+                cells: ['Java基础','设计模式','数据库基础','网络基础','中间件','SSM','算法'],
             }
         },
         methods: {
@@ -97,10 +97,9 @@
                     case 1: this.$router.push({path: '/designMode'}); break;
                     case 2: this.$router.push({path: '/dataBase'}); break;
                     case 3: this.$router.push({path: '/netWork'}); break;
-                    case 4: this.$router.push({path: '/cache'}); break;
-                    case 5: this.$router.push({path: '/middleWare'}); break;
-                    case 6: this.$router.push({path: '/SSM'}); break;
-                    case 7: this.$router.push({path: '/algorithm'}); break;
+                    case 4: this.$router.push({path: '/middleWare'}); break;
+                    case 5: this.$router.push({path: '/ssm'}); break;
+                    case 6: this.$router.push({path: '/algorithm'}); break;
                     default:
                 }
             },
@@ -2851,41 +2850,6 @@
         }
     }
 
-    //// 一级 缓存
-    const Cache = {
-        template: `
-            <div class="page has-navbar" v-nav="{hideNavbar: true}">
-                <div class="page-content">
-                    <von-header :theme="'stable'">
-                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
-                        <span slot="title"><h3 class="padding text-center headerTop">缓存</h3></span>
-                    </von-header>
-                    <accordion default-index="0">
-                        <accordion-item class="stableBack" title="缓存崩溃" content-height="540">
-                            <p><span class="redBold">缓存穿透：</span>缓存穿透是指缓存和数据库中都没有的数据，而用户不断发起请求，如发起为id为“-1”的数据或id为特别大不存在的数据。这时的用户很可能是攻击者，攻击会导致<span class="redBold">数据库压力过大</span>。</p>
-                            <p>解决：接口层增加校验，如用户鉴权校验，id做基础校验，id<=0的直接拦截；从缓存取不到的数据，在数据库中也没有取到，这时也可以将key-value对写为key-null，缓存有效时间可以设置短点，如30秒（设置太长会导致正常情况也没法使用）。这样可以防止攻击用户反复用同一个id暴力攻击</p>
-                            <p><span class="redBold">缓存击穿：</span>缓存击穿是指缓存中没有但数据库中有的数据（一般是缓存时间到期），这时由于并发用户特别多，同时读缓存没读到数据，又同时去数据库去取数据，引起数据库压力瞬间增大，造成过大压力</p>
-                            <p>解决：设置热点数据永远不过期；加互斥锁</p>
-                            <p><span class="redBold">缓存雪崩：</span>缓存雪崩是指缓存中数据大批量到过期时间，而查询数据量巨大，引起数据库压力过大甚至down机。和缓存击穿不同的是，缓存击穿指并发查同一条数据，缓存雪崩是不同数据都过期了，很多数据都查不到从而查数据库。</p>
-                            <p>解决：缓存数据的过期时间设置随机，防止同一时间大量数据过期现象发生。如果缓存数据库是分布式部署，将热点数据均匀分布在不同搞得缓存数据库中。设置热点数据永远不过期。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="缓存对比" content-height="650">
-                            <div style="transform: rotate(90deg);"><img src="./img/cacheCompare.bmp" height="350px" width="600px"></div>
-                        </accordion-item>
-                    </accordion>
-                </div>
-            </div>
-        `,
-        data() {
-            return {
-
-            }
-        },
-        mounted() {
-
-        }
-    }
-
     //// 一级 中间件
     const MiddleWare = {
         template: `
@@ -2901,22 +2865,81 @@
         `,
         data() {
             return {
-                cells: ['Redis','Ehcache','Nginx','null','null','null'],
+                cells: ['概念和对比','Redis','Ehcache','Nginx','null','null'],
             }
         },
         methods: {
             onCellClick(cellIndex) {
                 switch (cellIndex) {
-                    case 0: this.$router.push({path: `/redis`}); break;
-                    case 1: this.$router.push({path: `/ehcache`}); break;
-                    case 2: this.$router.push({path: `/nginx`}); break;
-                    case 3: break;
+                    case 0: this.$router.push({path: `/basicAndCompare`}); break;
+                    case 1: this.$router.push({path: `/redis`}); break;
+                    case 2: this.$router.push({path: `/ehcache`}); break;
+                    case 3: this.$router.push({path: `/nginx`}); break;
                     case 4: break;
                     case 5: break;
                     default: this.$router.push({path: `/demo`});
                 }
 
             },
+        }
+    }
+    //// 二级 概念和对比
+    const BasicAndCompare = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/middleWare')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">基本概念及框架对比</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <div class="item item-divider dividerFont">缓存</div>
+                        <accordion-item class="stableBack" title="缓存崩溃" content-height="540">
+                            <p><span class="redBold">缓存穿透：</span>缓存穿透是指缓存和数据库中都没有的数据，而用户不断发起请求，如发起为id为“-1”的数据或id为特别大不存在的数据。这时的用户很可能是攻击者，攻击会导致<span class="redBold">数据库压力过大</span>。</p>
+                            <p>解决：接口层增加校验，如用户鉴权校验，id做基础校验，id<=0的直接拦截；从缓存取不到的数据，在数据库中也没有取到，这时也可以将key-value对写为key-null，缓存有效时间可以设置短点，如30秒（设置太长会导致正常情况也没法使用）。这样可以防止攻击用户反复用同一个id暴力攻击</p>
+                            <p><span class="redBold">缓存击穿：</span>缓存击穿是指缓存中没有但数据库中有的数据（一般是缓存时间到期），这时由于并发用户特别多，同时读缓存没读到数据，又同时去数据库去取数据，引起数据库压力瞬间增大，造成过大压力</p>
+                            <p>解决：设置热点数据永远不过期；加互斥锁</p>
+                            <p><span class="redBold">缓存雪崩：</span>缓存雪崩是指缓存中数据大批量到过期时间，而查询数据量巨大，引起数据库压力过大甚至down机。和缓存击穿不同的是，缓存击穿指并发查同一条数据，缓存雪崩是不同数据都过期了，很多数据都查不到从而查数据库。</p>
+                            <p>解决：缓存数据的过期时间设置随机，防止同一时间大量数据过期现象发生。如果缓存数据库是分布式部署，将热点数据均匀分布在不同搞得缓存数据库中。设置热点数据永远不过期。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="缓存对比" content-height="650">
+                            <div style="transform: rotate(90deg);"><img src="./img/cacheCompare.bmp" height="350px" width="600px"></div>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">注册中心</div>
+                        <accordion-item class="stableBack" title="注册中心对比" content-height="650">
+                            <div style="transform: rotate(90deg);"><img src="./img/registrationCenter.bmp" height="350px" width="600px"></div>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">消息中心</div>
+                        <accordion-item class="stableBack" title="消息中心概念" content-height="370">
+                            <p>消息中间件，也可以叫做中央消息队列或者是消息队列（区别于本地消息队列，本地消息队列指的是JVM内的队列实现），是一种独立的队列系统，消息中间件经常用来解决内部服务之间的 异步调用问题 。请求服务方把请求队列放到队列中即可返回，然后等待服务提供方去队列中获取请求进行处理，之后通过回调等机制把结果返回给请求服务方。</p>
+                            <p>异步调用只是消息中间件一个非常常见的应用场景。此外，常用的消息队列应用场景还有如下几个：</p>
+                            <p><span class="redBold">解耦：</span>一个业务的非核心流程需要依赖其他系统，但结果并不重要，有通知即可。<br><span class="redBold">最终一致性：</span>指的是两个系统的状态保持一致，可以有一定的延迟，只要最终达到一致性即可。经常用在解决分布式事务上。<br><span class="redBold">广播：</span>消息队列最基本的功能。生产者只负责生产消息，订阅者接收消息。<br><span class="redBold">错峰和流控</span></p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="消息中心对比" content-height="680">
+                            <div><img src="./img/mqCompare1.bmp" width="100%"></div>
+                            <div><img src="./img/mqCompare2.bmp" width="100%"></div>
+                            <div><img src="./img/mqCompare3.bmp" width="100%"></div>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">RPC</div>
+                        <accordion-item class="stableBack" title="RPC概念" content-height="400">
+                            <p>RPC（Remote Procedure Call）远程过程调用 ，它是一种通过网络从远程计算机程序上请求服务，而不需要了解底层网络技术的协议。RPC协议假定某些传输协议的存在，如TCP或UDP，为通信程序之间携带信息数据。在OSI网络通信模型中，RPC跨越了传输层和应用层。RPC使得开发分布式程序就像开发本地程序一样简单。</p>
+                            <p>RPC采用客户端（服务调用方）/服务器端（服务提供方）模式， 都运行在自己的JVM中。客户端只需要引入要使用的接口，接口的实现和运行都在服务器端。RPC主要依赖的技术包括序列化、反序列化和数据传输协议，这是一种定义与实现相分离的设计。 </p>
+                            <p>RPC（Remote Procedure Call）远程过程调用 ，它是一种通过网络从远程计算机程序上请求服务，而不需要了解底层网络技术的协议。RPC协议假定某些传输协议的存在，如TCP或UDP，为通信程序之间携带信息数据。在OSI网络通信模型中，RPC跨越了传输层和应用层。RPC使得开发分布式程序就像开发本地程序一样简单。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="RPC对比" content-height="650">
+                            <div style="transform: rotate(90deg);"><img src="./img/rpcCompare.bmp" height="350px" width="600px"></div>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+            }
+        },
+        mounted() {
+
         }
     }
     //// 二级 Redis
@@ -3297,7 +3320,45 @@
             editorNginxUrlHash.setSize('auto','100px');
         }
     }
-    
+    //// 二级 Zookeeper
+    const Zookeeper = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/middleWare')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">Zookeeper</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="常用功能" content-height="350">
+                            <p><span class="redBold">Http代理，反向代理：</span>作为web服务器最常用的功能之一，尤其是反向代理。</p>
+                            <p><span class="redBold">负载均衡：</span>Nginx提供的负载均衡策略有2种：<span class="redBold">内置策略和扩展策略。</span>内置策略为轮询，加权轮询，Ip hash。扩展策略，就天马行空，只有你想不到的没有他做不到的啦，你可以参照所有的负载均衡算法，给他一一找出来做下实现。</p>
+                            <p><span class="redBold">Web缓存：</span>Nginx可以对不同的文件做不同的缓存处理，配置灵活，并且支持FastCGI_Cache，主要用于对FastCGI的动态程序进行缓存。配合着第三方的ngx_cache_purge，对制定的URL缓存内容可以的进行增删管理。</p>
+                        </accordion-item>
+
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        mounted() {
+            // let editorNginxConf = CodeMirror.fromTextArea(document.getElementById("NginxConf"), this.options)
+            // editorNginxConf.setValue(this.NginxConf)
+            // editorNginxConf.setSize('auto','300px');
+        }
+    }
+
+
     //// 一级 SSM
     const SSM = {
         template: `
@@ -3313,13 +3374,13 @@
         `,
         data() {
             return {
-                cells: ['null','null','null','null','null','null'],
+                cells: ['基础概念','null','null','null','null','null'],
             }
         },
         methods: {
             onCellClick(cellIndex) {
                 switch (cellIndex) {
-                    case 0: break;
+                    case 0: this.$router.push({path: `/basicSSM`}); break;
                     case 1: break;
                     case 2: break;
                     case 3: break;
@@ -3329,6 +3390,48 @@
                 }
 
             },
+        }
+    }
+    //// 二级 基本概念
+    const BasicSSM = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/ssm')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">基本概念</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="Java版本" content-height="70">
+                            <p>J2SE（标准版，客户端应用），J2EE（企业版，服务器应用），J2ME（微型版，嵌入式应用）</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="Spring" content-height="450">
+                            <p>Spring是一个生态体系（也可以说是技术体系），是集大成者，它包含了Spring Framework、Spring Boot、Spring Cloud等（还包括Spring Cloud data flow、spring data、spring integration、spring batch、spring security、spring hateoas）</p>
+                            <div><img src="./img/ssmBasic.bmp" width="100%"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="Spring Framework" content-height="400">
+                            <p>是一个开源容器框架，可以接管web层，业务层，dao层，持久层的组件，并且可以配置各种bean,和维护bean与bean之间的关系。其核心就是控制反转(IOC),和面向切面(AOP),简单的说就是一个分层的轻量级开源框架。</p>
+                            <div><img src="./img/springFramework.bmp" width="100%"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="SpringMVC" content-height="150">
+                            <p>Spring MVC属于SpringFrameWork的后续产品，已经融合在Spring Web Flow里面。SpringMVC是一种web层mvc框架，用于替代servlet（处理|响应请求，获取表单参数，表单校验等。SpringMVC是一个MVC的开源框架，SpringMVC=struts2+spring，springMVC就相当于是Struts2加上Spring的整合。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="SpringBoot" content-height="150">
+                            <p>Springboot是一个微服务框架，延续了spring框架的核心思想IOC和AOP，简化了应用的开发和部署。Spring Boot是为了简化Spring应用的创建、运行、调试、部署等而出现的，使用它可以做到专注于Spring应用的开发，而无需过多关注XML的配置。提供了一堆依赖打包，并已经按照使用习惯解决了依赖问题--->习惯大于约定。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="SpringCloud" content-height="120">
+                            <p>最后就是大名鼎鼎的Spring Cloud了，Spring Cloud事实上是一整套基于Spring Boot的微服务解决方案。它为开发者提供了很多工具，用于快速构建分布式系统的一些通用模式，例如：配置管理、注册中心、服务发现、限流、网关、链路追踪等。</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+            }
+        },
+        mounted() {
         }
     }
 
@@ -3659,17 +3762,16 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         //// 一级菜单 网络
         { path: '/netWork', component: NetWork },
 
-        //// 一级菜单 缓存
-        { path: '/cache', component: Cache },
-
         //// 一级菜单 中间件
         { path: '/middleWare', component: MiddleWare },
         { path: '/redis', component: Redis }, //// 二级菜单 Redis
         { path: '/ehcache', component: Ehcache }, //// 二级菜单 Ehcache
         { path: '/nginx', component: Nginx }, //// 二级菜单 Nginx
+        { path: '/basicAndCompare', component: BasicAndCompare }, //// 二级菜单 概念和对比
 
-        //// 一级菜单 微服务
-        { path: '/SSM', component: SSM },
+        //// 一级菜单 SSM
+        { path: '/ssm', component: SSM },
+        { path: '/basicSSM', component: BasicSSM }, //// 二级菜单 基本概念
 
         //// 一级菜单 算法
         { path: '/algorithm', component: Algorithm },
