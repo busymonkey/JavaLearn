@@ -2877,7 +2877,7 @@
         `,
         data() {
             return {
-                cells: ['概念和对比','Redis','Ehcache','Nginx','null','null'],
+                cells: ['概念和对比','Redis','Ehcache','Nginx','Zookeeper','null'],
             }
         },
         methods: {
@@ -2887,7 +2887,7 @@
                     case 1: this.$router.push({path: `/redis`}); break;
                     case 2: this.$router.push({path: `/ehcache`}); break;
                     case 3: this.$router.push({path: `/nginx`}); break;
-                    case 4: break;
+                    case 4: this.$router.push({path: `/zookeeper`}); break;
                     case 5: break;
                     default: this.$router.push({path: `/demo`});
                 }
@@ -3407,12 +3407,59 @@
                         <span slot="title"><h3 class="padding text-center headerTop">Zookeeper</h3></span>
                     </von-header>
                     <accordion default-index="0">
-                        <accordion-item class="stableBack" title="常用功能" content-height="350">
-                            <p><span class="redBold">Http代理，反向代理：</span>作为web服务器最常用的功能之一，尤其是反向代理。</p>
-                            <p><span class="redBold">负载均衡：</span>Nginx提供的负载均衡策略有2种：<span class="redBold">内置策略和扩展策略。</span>内置策略为轮询，加权轮询，Ip hash。扩展策略，就天马行空，只有你想不到的没有他做不到的啦，你可以参照所有的负载均衡算法，给他一一找出来做下实现。</p>
-                            <p><span class="redBold">Web缓存：</span>Nginx可以对不同的文件做不同的缓存处理，配置灵活，并且支持FastCGI_Cache，主要用于对FastCGI的动态程序进行缓存。配合着第三方的ngx_cache_purge，对制定的URL缓存内容可以的进行增删管理。</p>
+                        <accordion-item class="stableBack" title="分布式锁" content-height="270">
+                            <p>有了zookeeper的一致性文件系统，锁的问题变得容易。锁服务可以分为两类：<span class="redBold">一个是保持独占，另一个是控制时序。</span></p>
+                            <p>对于第一类，我们将zookeeper上的一个<span class="redBold">znode看作是一把锁</span>，通过createznode的方式来实现。所有客户端都去创建 /distribute_lock 节点，最终成功创建的那个客户端也即拥有了这把锁。用完删除掉自己创建的distribute_lock 节点就释放出锁。 </p>
+                            <p>对于第二类， /distribute_lock 已经预先存在，所有客户端在它下面创建临时顺序编号目录节点，和选master一样，<span class="redBold">编号最小的获得锁</span>，用完删除，依次方便。</p>
                         </accordion-item>
-
+                        <div class="item item-divider dividerFont">ZAB（ZooKeeper Atomic Broadcast）</div>
+                        <accordion-item class="stableBack" title="ZAB和Paxos" content-height="300">
+                            <p>很多人会误以为ZAB协议是Paxos的一种特殊实现，事实上他们是两种不同的协议。ZAB和Paxos最大的不同是，ZAB主要是为分布式主备系统设计的，而Paxos的实现是一致性状态机(state machine replication)</p>
+                            <p>尽管ZAB不是Paxos的实现，但是ZAB也参考了一些Paxos的一些设计思想，比如：</p>
+                            <p>leader向follows提出提案(proposal)<br>leader 需要在达到法定数量(半数以上)的follows确认之后才会进行commit<br>每一个proposal都有一个纪元(epoch)号，类似于Paxos中的选票(ballot)</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="ZAB特性" content-height="300">
+                            <p><span class="redBold">一致性保证：</span></p>
+                            <p>1.可靠提交(Reliable delivery) -如果一个事务 A 被一个server提交(committed)了，那么它最终一定会被所有的server提交<br>2.全局有序(Total order) - 假设有A、B两个事务，有一台server先执行A再执行B，那么可以保证所有server上A始终都被在B之前执行<br>3.因果有序(Causal order) - 如果发送者在事务A提交之后再发送B,那么B必将在A之后执行</p>
+                            <p><span class="redBold">只要大多数（法定数量）节点启动，系统就行正常运行</span></p>
+                            <p><span class="redBold">当节点下线后重启，它必须保证能恢复到当前正在执行的事务</span></p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="ZAB的具体实现" content-height="210">
+                            <p><span class="redBold">1、</span>ZooKeeper由client、server两部分构成</p>
+                            <p><span class="redBold">2、</span>client可以在任何一个server节点上进行读操作</p>
+                            <p><span class="redBold">3、</span>client可以在任何一个server节点上发起写请求，非leader节点会把此次写请求转发到leader节点上。由leader节点执行</p>
+                            <p><span class="redBold">4、</span>ZooKeeper使用改编的两阶段提交协议来保证server节点的事务一致性</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">工作原理</div>
+                        <accordion-item class="stableBack" title="广播(broadcast)模式" content-height="400">
+                            <p><span class="redBold">1、</span>leader从客户端收到一个写请求<br><span class="redBold">2、</span>leader生成一个新的事务并为这个事务生成一个唯一的ZXID<br><span class="redBold">3、</span>leader将这个事务发送给所有的follows节点<br><span class="redBold">4、</span>follower节点将收到的事务请求加入到历史队列(history queue)中,并发送ack给ack给leader<br><span class="redBold">5、</span>当leader收到大多数follower（超过法定数量）的ack消息，leader会发送commit请求<br><span class="redBold">6、</span>当follower收到commit请求时，会判断该事务的ZXID是不是比历史队列中的任何事务的ZXID都小，如果是则提交，如果不是则等待比它更小的事务的commit</p>
+                            <p>ZooKeeper会为每一个事务生成一个唯一且递增长度为64位的ZXID,ZXID由两部分组成：低32位表示计数器(counter)和高32位的纪元号(epoch)。epoch为当前leader在成为leader的时候生成的，且保证会比前一个leader的epoch大。实际上当新的leader选举成功后，会拿到当前集群中最大的一个ZXID，并去除这个ZXID的epoch,并将此epoch进行加1操作，作为自己的epoch。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="恢复(recovery)模式" content-height="450">
+                            <p><span class="redBold">1、</span>当leader崩溃后，集群进入选举阶段，开始选举出潜在的新leader(一般为集群中拥有最大ZXID的节点)</p>
+                            <p><span class="redBold">2、</span>进入发现阶段，follower与潜在的新leader进行沟通，如果发现超过法定人数的follower同意，则潜在的新leader将epoch加1，进入新的纪元。新的leader产生</p>
+                            <p><span class="redBold">3、</span>群间进行数据同步，保证集群中各个节点的事务一致</p>
+                            <p><span class="redBold">4、</span>集群恢复到广播模式，开始接受客户端的写请求</p>
+                            <p>当 leader在commit之后但在发出commit消息之前宕机，即只有老leader自己commit了，而其它follower都没有收到commit消息 新的leader也必须保证这个proposal被提交.(新的leader会重新发送该proprosal的commit消息)</p>
+                            <p>当 leader产生某个proprosal之后但在发出消息之前宕机，即只有老leader自己有这个proproal，当老的leader重启后(此时左右follower),新的leader必须保证老的leader必须丢弃这个proprosal.(新的leader会通知上线后的老leader截断其epoch对应的最后一个commit的位置)。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="工作状态" content-height="140">
+                            <p><span class="redBold">LOOKING：</span>当前Server不知道leader是谁，正在搜寻</p>
+                            <p><span class="redBold">LEADING：</span>当前Server即为选举出来的leader</p>
+                            <p><span class="redBold">FOLLOWING：</span>leader已经选举出来，当前Server与之同步</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">相关</div>
+                        <accordion-item class="stableBack" title="zookeeper不是为高可用性设计的" content-height="400">
+                            <p><span class="redBold">zookeeper的选举过程速度很慢：</span>这是一个很难从理论分析上看到的弱点，但是你一旦遇到就会痛不欲生。前面我们已经说过，网络实际上常常是会出现隔离等不完整状态的，而zookeeper对那种情况非常敏感。一旦出现网络隔离，zookeeper就要发起选举流程。zookeeper的选举流程通常耗时30到120秒，期间zookeeper由于没有master，都是不可用的。对于网络里面偶尔出现的，比如半秒一秒的网络隔离，zookeeper会由于选举过程，而把不可用时间放大几十倍。</p>
+                            <p><span class="redBold">zookeeper的性能是有限的：</span>典型的zookeeper的tps大概是一万多，无法覆盖系统内部每天动辄几十亿次的调用。因此每次请求都去zookeeper获取业务系统master信息是不可能的。因此zookeeper的client必须自己缓存业务系统的master地址。因此zookeeper提供的‘强一致性’实际上是不可用的。如果我们需要强一致性，还需要其他机制来进行保障：比如用自动化脚本把业务系统的old master给kill掉，但是那会有很多陷阱（这里先不展开这个议题，读者可以自己想想会有哪些陷阱）。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="为什么zookeeper节点是奇数" content-height="640">
+                            <p><span class="redBold">容错率：</span>首先从容错率来说明：（需要保证集群能够有半数进行投票）</p>
+                            <p>2台服务器，至少2台正常运行才行（2的半数为1，半数以上最少为2），正常运行1台服务器都不允许挂掉，但是相对于 单节点服务器，2台服务器还有两个单点故障，所以直接排除了。<br>3台服务器，至少2台正常运行才行（3的半数为1.5，半数以上最少为2），正常运行可以允许1台服务器挂掉<br>4台服务器，至少3台正常运行才行（4的半数为2，半数以上最少为3），正常运行可以允许1台服务器挂掉<br>•5台服务器，至少3台正常运行才行（5的半数为2.5，半数以上最少为3），正常运行可以允许2台服务器挂掉</p>
+                            <p><span class="redBold">防脑裂：</span>脑裂集群的脑裂通常是发生在节点之间通信不可达的情况下，集群会分裂成不同的小集群，小集群各自选出自己的leader节点，导致原有的集群出现多个leader节点的情况，这就是脑裂。</p>
+                            <p>3台服务器，投票选举半数为1.5，一台服务裂开，和另外两台服务器无法通行，这时候2台服务器的集群（2票大于半数1.5票），所以可以选举出leader，而 1 台服务器的集群无法选举。<br>4台服务器，投票选举半数为2，可以分成 1,3两个集群或者2,2两个集群，对于 1,3集群，3集群可以选举；对于2,2集群，则不能选择，造成没有leader节点。<br>5台服务器，投票选举半数为2.5，可以分成1,4两个集群，或者2,3两集群，这两个集群分别都只能选举一个集群，满足zookeeper集群搭建数目。</p>
+                            <p>以上分析，我们从容错率以及防止脑裂两方面说明了3台服务器是搭建集群的最少数目，4台发生脑裂时会造成没有leader节点的错误。</p>
+                        </accordion-item>
                     </accordion>
                 </div>
             </div>
@@ -3841,10 +3888,11 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
 
         //// 一级菜单 中间件
         { path: '/middleWare', component: MiddleWare },
+        { path: '/basicAndCompare', component: BasicAndCompare }, //// 二级菜单 概念和对比
         { path: '/redis', component: Redis }, //// 二级菜单 Redis
         { path: '/ehcache', component: Ehcache }, //// 二级菜单 Ehcache
         { path: '/nginx', component: Nginx }, //// 二级菜单 Nginx
-        { path: '/basicAndCompare', component: BasicAndCompare }, //// 二级菜单 概念和对比
+        { path: '/zookeeper', component: Zookeeper }, //// 二级菜单 Zookeeper
 
         //// 一级菜单 SSM
         { path: '/ssm', component: SSM },
