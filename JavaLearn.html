@@ -974,6 +974,18 @@
                             <p><span class="redBold">非检查异常（unckecked exception）：</span>Error 和 RuntimeException 以及他们的子类。javac在编译时，不会提示和发现这样的异常，不要求在程序处理这些异常。所以如果愿意，我们可以编写代码处理（使用try…catch…finally）这样的异常，也可以不处理。<span class="redBold">对于这些异常，我们应该修正代码，而不是去通过异常处理器处理。</span>这样的异常发生的原因多半是代码写的有问题。如除0错误ArithmeticException，错误的强制类型转换错误ClassCastException，数组索引越界ArrayIndexOutOfBoundsException，使用了空对象NullPointerException等等。</p>
                             <p><span class="redBold">检查异常（checked exception）：</span>除了Error 和 RuntimeException的其它异常。javac强制要求程序员为这样的异常做预备处理工作（使用try…catch…finally或者throws）。在方法中要么用try-catch语句捕获它并处理，要么用throws子句声明抛出它，否则编译不会通过。这样的异常一般是由程序的运行环境导致的。因为程序可能被运行在各种未知的环境下，而程序员无法干预用户如何使用他编写的程序，于是程序员就应该为这样的异常时刻准备着。如SQLException , IOException,ClassNotFoundException 等。</p>
                         </accordion-item>
+                        <accordion-item class="stableBack" title="happens-before" content-height="720">
+                            <p>解释：前一个操作的结果可以被后续的操作获取。讲白点就是前面一个操作把变量a赋值为1，那后面一个操作肯定能知道a已经变成了1。</p>
+                            <p><span class="redBold">规则：</span></p>
+                            <p><span class="redBold">程序次序规则：</span>在一个线程内一段代码的执行结果是有序的。就是还会指令重排，但是随便它怎么排，结果是按照我们代码的顺序生成的不会变！</p>
+                            <p><span class="redBold">线程锁定规则：</span>就是无论是在单线程环境还是多线程环境，对于同一个锁来说，一个线程对这个锁解锁之后，另一个线程获取了这个锁都能看到前一个线程的操作结果！(管程是一种通用的同步原语，synchronized就是管程的实现）</p>
+                            <p><span class="redBold">volatile变量规则：</span>就是如果一个线程先去写一个volatile变量，然后一个线程去读这个变量，那么这个写操作的结果一定对读的这个线程可见。</p>
+                            <p><span class="redBold">线程启动规则：</span>在主线程A执行过程中，启动子线程B，那么线程A在启动子线程B之前对共享变量的修改结果对线程B可见。</p>
+                            <p><span class="redBold">线程终止规则：</span>在主线程A执行过程中，子线程B终止，那么线程B在终止之前对共享变量的修改结果在线程A中可见。</p>
+                            <p><span class="redBold">线程中断规则：</span>对线程interrupt()方法的调用先行发生于被中断线程代码检测到中断事件的发生，可以通过Thread.interrupted()检测到是否发生中断。</p>
+                            <p><span class="redBold">传递规则：</span>这个简单的，就是happens-before原则具有传递性，即A happens-before B ， B happens-before C，那么A happens-before C。</p>
+                            <p><span class="redBold">对象终结规则：</span>这个也简单的，就是一个对象的初始化的完成，也就是构造函数执行的结束一定 happens-before它的finalize()方法。</p>
+                        </accordion-item>
                     </accordion>
                 </div>
             </div>
