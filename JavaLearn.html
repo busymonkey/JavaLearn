@@ -2871,13 +2871,13 @@
                         <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
                         <span slot="title"><h3 class="padding text-center headerTop">中间件</h3></span>
                     </von-header>
-                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="2"></cells>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="3"></cells>
                 </div>
             </div>
         `,
         data() {
             return {
-                cells: ['概念和对比','Redis','Ehcache','Nginx','Zookeeper','null'],
+                cells: ['概念和对比','Redis','Ehcache','Nginx','Zookeeper','RocketMQ','RabbitMQ'],
             }
         },
         methods: {
@@ -2888,7 +2888,8 @@
                     case 2: this.$router.push({path: `/ehcache`}); break;
                     case 3: this.$router.push({path: `/nginx`}); break;
                     case 4: this.$router.push({path: `/zookeeper`}); break;
-                    case 5: break;
+                    case 5: this.$router.push({path: `/rocketmq`}); break;
+                    case 6: this.$router.push({path: `/rabbitmq`}); break;
                     default: this.$router.push({path: `/demo`});
                 }
 
@@ -3481,7 +3482,109 @@
             // editorNginxConf.setSize('auto','300px');
         }
     }
+    //// 二级 RocketMQ
+    const RocketMQ = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/middleWare')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">RocketMQ</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="架构图" content-height="650">
+                            <div style="transform: rotate(90deg);"><img src="./img/rocketmqFrame.bmp" height="350px" width="600px"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="组件" content-height="530">
+                            <p><span class="redBold">namesrv集群：</span>负责接受broker注册的路由信息，并为producer和consumer提供路由查询服务。路由信息包括了broker自身的一些信息，如IP地址，brokerId，brokerName，broker所属集群等，还包括该broker中管理的每个topic对应的多个queue信息。有了路由信息，生产者就可以知道消息该往哪些broker上发，消费者就可以知道从哪些broker的哪些queue上可以拉到消息了。<span class="redBold">namesrv集群由一个或者多个namesrv机器组成，机器之间相互独立，不产生任何通信。</span></p>
+                            <p><span class="redBold">broker集群：</span>负责topic的创建，向namesrv注册路由信息，消息存储，消息查询，消息消费。broker由master broker和slave borker组成，master broker之间无通信，多个master broker用于分摊消息生产时的压力，每个topic对应的消息会被分配到一个broker集群下的所有master broker上，生产者在发送指定topic的消息时，会从所有可写queue中轮询一个queue进行消息发送，这里的queue对应于broker向namesrv注册的路由信息中的写队列数，不同能力的master broker机器可以配置不同数量的可写队列数，可以实现消息的权重分配。另外，由于topic上的消息可以被分配到任意个broker上，这就支持了方便的broker横向扩展。slave broker用于对master broker进行消息同步备份，对外只提供消息读取，不提供消息发送。</p>
+                            <p><span class="redBold">producer与consumer：</span>生产者与消费者，其实都属于rocketMq的客户端，一个应用程序中往往都是生产者与消费者都有的。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="顺序消费" content-height="100">
+                            <p>RocketMQ支持顺序消费。顺序消费分为全局顺序和局部顺序，全局顺序就只有一个orderId，局部顺序就是多个orderId（同一个orderId内保证顺序）</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="重复消费" content-height="340">
+                            <p>RocketMQ不保证消息不重复，如果你的业务需要保证严格的不重复消息，需要你自己在业务端去重。</p>
+                            <p><span class="redBold">1、</span>记录下每个消息的msgID<br><span class="redBold">2、</span>新消息来的时候，查看该消息的msgID是否已记录，是则抛弃，否则消费</p>
+                            <p>那么msgID记录在哪里呢？当然是缓存。所以我在解决这个问题的时候，使用了redis缓存。具体做法如下：</p>
+                            <p><span class="redBold">1、</span>消费端接收到消息的时候，调用redis提供的incr方法，以msgID作为key（具有唯一性），value则默认从1开始递增。<br><span class="redBold">2、</span>当incr返回值为1时，设置其失效时间为两分钟以后（每个msgID保留两分钟足矣！），并且该消息需要被消费。<br><span class="redBold">3、</span>当incr返回值大于1时，则忽略该消息。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="消息丢失" content-height="400">
+                            <p><span class="redBold">判断消息丢失：</span>1、分布式链路追踪系统：如果公司的基础技术建设比较完善，完全可以靠分布式链路追踪系统，来分析消息的全链路。常见有：Cat、Zipkin、Pinpoint、SkyWalking；2、发送有序性消息验证</p>
+                            <p><span class="redBold">消息生产端：</span>保证有消息返回</p>
+                            <p><span class="redBold">消息存储：</span>1、刷盘方式 flushDiskType 配置为 SYNC_FLUSH 同步刷盘（在收到消息后，将消息写入磁盘后再给Producer 返回确认响应，这样即使发生宕机，由于消息已经被写入磁盘，就不会丢失消息，恢复后还可以继续消费。）；2、broker为集群模式，配置消息复制（如果是 Broker 是由多个节点组成的集群，需要将 Broker 集群配置成：至少将消息发送到2个以上的节点，再给客户端回复发送确认响应。这样当某个 Broker 宕机时，其他的Broker 可以替代宕机的 Broker，也不会发生消息丢失。）</p>
+                            <p><span class="redBold">消息消费端：</span>不要在收到消息后就立即发送消费确认，而是应该在执行完所有消费业务逻辑之后，再发送消费确认。</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
 
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        mounted() {
+            // let editorNginxConf = CodeMirror.fromTextArea(document.getElementById("NginxConf"), this.options)
+            // editorNginxConf.setValue(this.NginxConf)
+            // editorNginxConf.setSize('auto','300px');
+        }
+    }
+    //// 二级 RabbitMQ
+    const RabbitMQ = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/middleWare')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">RabbitMQ</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="架构" content-height="650">
+                            <div style="transform: rotate(90deg);"><img src="./img/rabbitmqFrame.bmp" height="350px" width="600px"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="组件" content-height="400">
+                            <p><span class="redBold">Broker：</span>它提供一种传输服务,它的角色就是维护一条从生产者到消费者的路线，保证数据能按照指定的方式进行传输</p>
+                            <p><span class="redBold">Exchange：</span>消息交换机,它指定消息按什么规则,路由到哪个队列</p>
+                            <p><span class="redBold">Queue：</span>消息的载体,每个消息都会被投到一个或多个队列 </p>
+                            <p><span class="redBold">Binding：</span>绑定，它的作用就是把exchange和queue按照路由规则绑定起来</p>
+                            <p><span class="redBold">Routing Key：</span>路由关键字,exchange根据这个关键字进行消息投递</p>
+                            <p><span class="redBold">vhost：</span>虚拟主机,一个broker里可以有多个vhost，用作不同用户的权限分离</p>
+                            <p><span class="redBold">Producer：</span>消息生产者,就是投递消息的程序</p>
+                            <p><span class="redBold">Consumer：</span>消息消费者,就是接受消息的程序</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="序列化" content-height="280">
+                            <p>RabbitMQ使用ProtoBuf序列化消息,它可作为RabbitMQ的Message的数据格式进行传输,由于是结构化的数据,这样就极大的方便了Consumer的数据高效处理,当然也可以使用XML，与XML相比,ProtoBuf有以下优势：</p>
+                            <p>简单<br>size小了3-10倍<br>速度快了20-100倍<br>易于编程<br>减少了语义的歧</p>
+                            <p>ProtoBuf具有速度和空间的优势，使得它现在应用非常广泛</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        mounted() {
+            // let editorNginxConf = CodeMirror.fromTextArea(document.getElementById("NginxConf"), this.options)
+            // editorNginxConf.setValue(this.NginxConf)
+            // editorNginxConf.setSize('auto','300px');
+        }
+    }
 
     //// 一级 SSM
     const SSM = {
@@ -3893,6 +3996,8 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         { path: '/ehcache', component: Ehcache }, //// 二级菜单 Ehcache
         { path: '/nginx', component: Nginx }, //// 二级菜单 Nginx
         { path: '/zookeeper', component: Zookeeper }, //// 二级菜单 Zookeeper
+        { path: '/rocketmq', component: RocketMQ }, //// 二级菜单 RocketMQ
+        { path: '/rabbitmq', component: RabbitMQ }, //// 二级菜单 RabbitMQ
 
         //// 一级菜单 SSM
         { path: '/ssm', component: SSM },
