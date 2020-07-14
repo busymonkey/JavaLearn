@@ -87,7 +87,7 @@
         `,
         data() {
             return {
-                cells: ['Java基础','设计模式','数据库基础','网络基础','中间件','SSM','算法'],
+                cells: ['Java基础','设计模式','数据库基础','网络基础','中间件','SSM','算法','问题排查'],
             }
         },
         methods: {
@@ -100,6 +100,7 @@
                     case 4: this.$router.push({path: '/middleWare'}); break;
                     case 5: this.$router.push({path: '/ssm'}); break;
                     case 6: this.$router.push({path: '/algorithm'}); break;
+                    case 7: this.$router.push({path: '/solveProblem'}); break;
                     default:
                 }
             },
@@ -115,13 +116,13 @@
                         <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
                         <span slot="title"><h3 class="padding text-center headerTop">Java</h3></span>
                     </von-header>
-                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="3"></cells>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="2"></cells>
                 </div>
             </div>
         `,
         data() {
             return {
-                cells: ['集合','锁','并发','线程','JVM','流式编程','问题排查','杂项'],
+                cells: ['集合','锁','并发','线程','JVM','杂项'],
             }
         },
         methods: {
@@ -132,9 +133,7 @@
                     case 2: this.$router.push({path: `/concurrent`}); break;
                     case 3: this.$router.push({path: `/thread`}); break;
                     case 4: this.$router.push({path: `/jvm`}); break;
-                    case 5: break;
-                    case 6: break;
-                    case 7: this.$router.push({path: `/javaother`}); break;
+                    case 5: this.$router.push({path: `/javaother`}); break;
                     default: this.$router.push({path: `/demo`});
                 }
 
@@ -985,6 +984,9 @@
                             <p><span class="redBold">线程中断规则：</span>对线程interrupt()方法的调用先行发生于被中断线程代码检测到中断事件的发生，可以通过Thread.interrupted()检测到是否发生中断。</p>
                             <p><span class="redBold">传递规则：</span>这个简单的，就是happens-before原则具有传递性，即A happens-before B ， B happens-before C，那么A happens-before C。</p>
                             <p><span class="redBold">对象终结规则：</span>这个也简单的，就是一个对象的初始化的完成，也就是构造函数执行的结束一定 happens-before它的finalize()方法。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="流式编程" content-height="70">
+                            <p>预留</p>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -3517,6 +3519,9 @@
                             <p><span class="redBold">消息存储：</span>1、刷盘方式 flushDiskType 配置为 SYNC_FLUSH 同步刷盘（在收到消息后，将消息写入磁盘后再给Producer 返回确认响应，这样即使发生宕机，由于消息已经被写入磁盘，就不会丢失消息，恢复后还可以继续消费。）；2、broker为集群模式，配置消息复制（如果是 Broker 是由多个节点组成的集群，需要将 Broker 集群配置成：至少将消息发送到2个以上的节点，再给客户端回复发送确认响应。这样当某个 Broker 宕机时，其他的Broker 可以替代宕机的 Broker，也不会发生消息丢失。）</p>
                             <p><span class="redBold">消息消费端：</span>不要在收到消息后就立即发送消费确认，而是应该在执行完所有消费业务逻辑之后，再发送消费确认。</p>
                         </accordion-item>
+                        <accordion-item class="stableBack" title="高可用" content-height="650">
+                            <div style="transform: rotate(90deg);"><img src="./img/rocketmqHA.bmp" height="350px" width="600px"></div>
+                        </accordion-item>
                     </accordion>
                 </div>
             </div>
@@ -3678,6 +3683,40 @@
                     <von-header :theme="'stable'">
                         <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
                         <span slot="title"><h3 class="padding text-center headerTop">算法</h3></span>
+                    </von-header>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="2"></cells>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+                cells: ['null','null','null','null','null','null'],
+            }
+        },
+        methods: {
+            onCellClick(cellIndex) {
+                switch (cellIndex) {
+                    case 0: break;
+                    case 1: break;
+                    case 2: break;
+                    case 3: break;
+                    case 4: break;
+                    case 5: break;
+                    default: this.$router.push({path: `/demo`});
+                }
+
+            },
+        }
+    }
+
+    //// 一级 问题排查
+    const SolveProblem = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">问题排查</h3></span>
                     </von-header>
                     <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="2"></cells>
                 </div>
@@ -4013,6 +4052,9 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
 
         //// 一级菜单 算法
         { path: '/algorithm', component: Algorithm },
+
+        //// 一级菜单 问题排查
+        { path: '/solveProblem', component: SolveProblem },
 
         //// 代码段
         { path: '/hashMap', component: HashMap },
