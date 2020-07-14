@@ -3564,6 +3564,12 @@
                             <p>简单<br>size小了3-10倍<br>速度快了20-100倍<br>易于编程<br>减少了语义的歧</p>
                             <p>ProtoBuf具有速度和空间的优势，使得它现在应用非常广泛</p>
                         </accordion-item>
+                        <accordion-item class="stableBack" title="消息顺序" content-height="500">
+                            <p>场景：数据1、2、3按顺序发到一个queue，多个消费者消费同一个queue</p>
+                            <div><img src="./img/rabbitmqOrder1.bmp" height="140px" width="100%"></div>
+                            <p>解决方案：拆分为多个queue，每个queue由一个consumer消费；或者就一个queue但是对应一个consumer，然后这个consumer内部用内存队列做排队，然后分发给底层不同的worker来处理。</p>
+                            <div><img src="./img/rabbitmqOrder2.bmp" height="140px" width="100%"></div>
+                        </accordion-item>
                     </accordion>
                 </div>
             </div>
