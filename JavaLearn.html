@@ -2964,6 +2964,7 @@
                         <span slot="title"><h3 class="padding text-center headerTop">Redis</h3></span>
                     </von-header>
                     <accordion default-index="0">
+                        <div class="item item-divider dividerFont">数据类型</div>
                         <accordion-item class="stableBack" title="key和string" content-height="200">
                             <p><span class="redBold">key区分大小写</span></p>
                             <div><textarea id="RedisKey"></textarea></div>
@@ -2995,6 +2996,7 @@
                             <div><img src="./img/skiplist3.bmp" width="100%"></div>
                             <p>这里元素不多，体现不出优势，如果元素足够多，这种索引结构就能体现出优势来了。这基本上就是跳表的核心思想，其实也是一种通过“空间来换取时间”的一个算法，通过在每个节点中增加了向前的指针，从而提升查找的效率。</p>
                         </accordion-item>
+                        <div class="item item-divider dividerFont">基本概念</div>
                         <accordion-item class="stableBack" title="TTL（Tme to Live）" content-height="170">
                             <p>expire 按照相对时间且以秒为单位的过期策略</p>
                             <p>expireat 按照绝对时间且以秒为单位的过期策略</p>
@@ -3013,16 +3015,40 @@
                             <p><span class="redBold">allkeys-random：</span>从数据集中任意选择数据淘汰，当内存达到限制的时候，对所有数据集挑选随机淘汰，可写入新的数据集。</p>
                             <p><span class="redBold">no-enviction：</span>当内存达到限制的时候，不淘汰任何数据，不可写入任何数据集，所有引起申请内存的命令会报错。</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="集群模式" content-height="300">
-                            <p><span class="redBold">主从模式：</span>（一主两从）主机可以读写操作；从机只能读操作、不能写操作；•当关掉主机节点后、从机上会显示主机doiwn状态、从机节点也不会自动成为主节点，但是可以读数据</p>
-                            <p><span class="redBold">哨兵模式：</span>（基于主从模式，增加三个哨兵）主实例判断为失效<span class="redBold">至少需要2个 Sentinel进程的同意</span>，只要同意Sentinel的数量不达标，自动failover就不会执行</p>
-                            <p><span class="redBold">Cluster模式：</span>Redis Cluster 集群节点最小配置 6 个节点以上(3 主 3 从)，其中主节点提供读写操作，从节点作为备用节点，不提供请求，只作为故障转移使用。Redis Cluster 采用虚拟槽分区，所有的键根据哈希函数映射到 0～16383 个整数槽内，每个节点负责维护一部分槽以及槽所印映射的键值数据。</p>
-                        </accordion-item>
                         <accordion-item class="stableBack" title="RDB和AOF" content-height="180">
                             <p><span class="redBold">RDB优点：</span>在恢复大数据集时的速度比 AOF 的恢复速度要快。</p>
                             <p><span class="redBold">RDB缺点：</span>服务器故障时容易丢失数据（备份频率不高）。过程耗时大</p>
                             <p><span class="redBold">AOF优点：</span>服务器故障时不容易丢失数据（备份频率高）</p>
                             <p><span class="redBold">AOF缺点：</span>AOF 文件的体积通常要大于 RDB 文件的体积。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="集群模式" content-height="300">
+                            <p><span class="redBold">主从模式：</span>（一主两从）主机可以读写操作；从机只能读操作、不能写操作；•当关掉主机节点后、从机上会显示主机doiwn状态、从机节点也不会自动成为主节点，但是可以读数据</p>
+                            <p><span class="redBold">哨兵模式：</span>（基于主从模式，增加三个哨兵）主实例判断为失效<span class="redBold">至少需要2个 Sentinel进程的同意</span>，只要同意Sentinel的数量不达标，自动failover就不会执行</p>
+                            <p><span class="redBold">Cluster模式：</span>Redis Cluster 集群节点最小配置 6 个节点以上(3 主 3 从)，其中主节点提供读写操作，从节点作为备用节点，不提供请求，只作为故障转移使用。Redis Cluster 采用虚拟槽分区，所有的键根据哈希函数映射到 0～16383 个整数槽内，每个节点负责维护一部分槽以及槽所印映射的键值数据。</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">分布式锁</div>
+                        <accordion-item class="stableBack" title="setnx" content-height="880">
+                            <div><textarea id="RedisSetnx"></textarea></div>
+                            <p>EX seconds − 设置指定的到期时间(以秒为单位)。<br>PX milliseconds - 设置指定的到期时间(以毫秒为单位)。<br>NX - 仅在键不存在时设置键。<br>XX - 只有在键已存在时才设置。</p>
+                            <p><span class="redBold">1、</span>那么为什么要使用PX 30000去设置一个超时时间？是怕进程A不讲道理啊，锁没等释放呢，万一崩了，直接原地把锁带走了，导致系统中谁也拿不到锁。</p>
+                            <p><span class="redBold">2、</span>如果进程A又不讲道理，操作锁内资源超过笔者设置的超时时间，那么就会导致其他进程拿到锁，等进程A回来了，回手就是把其他进程的锁删了，那B进程就拿不到锁了（无法释放，此时C进程获得锁，B还会把C的释放）</p>
+                            <p><span class="redBold">3、</span>所以在用setnx的时候，key虽然是主要作用，但是value也不能闲着，可以设置一个唯一的客户端ID，或者用UUID这种随机数。</p>
+                            <p><span class="redBold">伪代码：</span></p>
+                            <div><textarea id="RedisFakeCode1"></textarea></div>
+                            <p>在finally代码块中，get和del并非原子操作，还是有进程安全问题。那么删除锁的正确姿势之一，就是可以使用lua脚本，通过redis的eval/evalsha命令来运行：</p>
+                            <div><textarea id="RedisFakeCode2"></textarea></div>
+                            <p>通过lua脚本能保证原子性的原因说的通俗一点：就算你在lua里写出花，执行也是一个命令(eval/evalsha)去执行的，一条命令没执行完，其他客户端是看不到的。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="Redssion" content-height="180">
+                            <p>Redisson普通的锁实现源码主要是RedissonLock这个类，还没有看过它源码的盆友，不妨去瞧一瞧。源码中加锁/释放锁操作都是用lua脚本完成的，封装的非常完善，开箱即用。</p>
+                            <p>这里有个小细节，加锁使用setnx就能实现，也采用lua脚本是不是多此一举？ 加锁解锁的lua脚本考虑的非常全面，其中就包括锁的重入性</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="RedLock" content-height="580">
+                            <p>redLock的中文是直译过来的，就叫红锁。红锁并非是一个工具，而是redis官方提出的一种分布式锁的算法。</p>
+                            <p>如果你不熟悉redis高可用部署，那么没关系。redLock算法虽然是需要多个实例，但是这些实例都是独自部署的，没有主从关系。RedLock作者指出，之所以要用独立的，是避免了redis异步复制造成的锁丢失，比如：主节点没来的及把刚刚set进来这条数据给从节点，就挂了。有些人是不是觉得大佬们都是杠精啊，天天就想着极端情况。其实高可用嘛，拼的就是99.999...% 中小数点后面的位数。</p>
+                            <p>红锁算法认为，只要2/N + 1个节点加锁成功，那么就认为获取了锁， 解锁时将所有实例解锁。 流程为：</p>
+                            <p>1、顺序向五个节点请求加锁<br>2、根据一定的超时时间来推断是不是跳过该节点<br>3、三个节点加锁成功并且花费时间小于锁的有效期<br>4、认定加锁成功</p>
+                            <p>也就是说，假设锁30秒过期，三个节点加锁花了31秒，自然是加锁失败了。这只是举个例子，实际上并不应该等每个节点那么长时间，就像官网所说的那样，假设有效期是10秒，那么单个redis实例操作超时时间，应该在5到50毫秒(注意时间单位)。还是假设我们设置有效期是30秒，图中超时了两个redis节点。 那么加锁成功的节点总共花费了3秒，所以锁的实际有效期是小于27秒的。即扣除加锁成功三个实例的3秒，还要扣除等待超时redis实例的总共时间。</p>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -3062,6 +3088,36 @@
                     "zadd SortSet 0 set3\n" +
                     "//// 获取范围内的数据（带上分数，分数相同的按升序排列，总体按分数升序排列）\n" +
                     "zrange SortSet 0 3 withscores",
+                RedisSetnx:
+                    "SET KEY VALUE [EX seconds] [PX milliseconds] [NX|XX]\n" +
+                    "\n" +
+                    "redis 127.0.0.1:6379> SET mykey \"redis\" EX 60 NX\n" +
+                    "OK",
+                RedisFakeCode1:
+                    "String uuid = xxxx;\n" +
+                    "// 伪代码，具体实现看项目中用的连接工具\n" +
+                    "// 有的提供的方法名为set 有的叫setIfAbsent\n" +
+                    "set Test uuid NX PX 3000\n" +
+                    "try{\n" +
+                    "// biz handle....\n" +
+                    "} finally {\n" +
+                    "    // unlock\n" +
+                    "    if(uuid.equals(redisTool.get('Test')){\n" +
+                    "        redisTool.del('Test');\n" +
+                    "    }\n" +
+                    "}",
+                RedisFakeCode2:
+                    "-- lua删除锁：\n" +
+                    "-- KEYS和ARGV分别是以集合方式传入的参数，对应上文的Test和uuid。\n" +
+                    "-- 如果对应的value等于传入的uuid。\n" +
+                    "if redis.call('get', KEYS[1]) == ARGV[1] \n" +
+                    "    then \n" +
+                    "\t-- 执行删除操作\n" +
+                    "        return redis.call('del', KEYS[1]) \n" +
+                    "    else \n" +
+                    "\t-- 不成功，返回0\n" +
+                    "        return 0 \n" +
+                    "end",
                 options: {
                     tabSize: 2,
                     theme: "dracula",
@@ -3086,6 +3142,15 @@
             let editorRedisSortSet = CodeMirror.fromTextArea(document.getElementById("RedisSortSet"), this.options)
             editorRedisSortSet.setValue(this.RedisSortSet)
             editorRedisSortSet.setSize('auto','110px');
+            let editorRedisSetnx = CodeMirror.fromTextArea(document.getElementById("RedisSetnx"), this.options)
+            editorRedisSetnx.setValue(this.RedisSetnx)
+            editorRedisSetnx.setSize('auto','110px');
+            let editorRedisFakeCode1 = CodeMirror.fromTextArea(document.getElementById("RedisFakeCode1"), this.options)
+            editorRedisFakeCode1.setValue(this.RedisFakeCode1)
+            editorRedisFakeCode1.setSize('auto','110px');
+            let editorRedisFakeCode2 = CodeMirror.fromTextArea(document.getElementById("RedisFakeCode2"), this.options)
+            editorRedisFakeCode2.setValue(this.RedisFakeCode2)
+            editorRedisFakeCode2.setSize('auto','110px');
         }
     }
     //// 二级 Ehcache
