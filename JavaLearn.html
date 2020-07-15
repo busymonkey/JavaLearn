@@ -46,6 +46,9 @@
         height: 150px;
         width: 100%;
     }
+    .imgRot {
+        transform: rotate(90deg);
+    }
     .redBold {
         font-weight: bold;
         color: red;
@@ -3690,14 +3693,14 @@
         `,
         data() {
             return {
-                cells: ['考题','null','null','null','null','null'],
+                cells: ['考题','排序','null','null','null','null'],
             }
         },
         methods: {
             onCellClick(cellIndex) {
                 switch (cellIndex) {
                     case 0: this.$router.push({path: `/question`}); break;
-                    case 1: break;
+                    case 1: this.$router.push({path: `/order`}); break;
                     case 2: break;
                     case 3: break;
                     case 4: break;
@@ -3749,6 +3752,10 @@
                         <accordion-item class="stableBack" title="用两个栈实现队列" content-height="100">
                             <p>题目：用两个栈实现一个队列。请实现它的两个函数appendTail和deleteHead，分别完成在队尾部插入节点和在队头部删除节点的功能</p>
                         </accordion-item>
+                        <accordion-item class="stableBack" title="斐波那契数列" content-height="140">
+                            <p>题目一：写一个函数，输入n，求斐波那契（F'ibonacci）数列的第n项。【O(n)，不能递归】</p>
+                            <p>题目二：【青蛙跳台阶】一只青蛙一次可跳上1级台阶，也可以跳上2级台阶。求该青蛙跳上一个n级台阶共多少总跳法。</p>
+                        </accordion-item>
                     </accordion>
                 </div>
             </div>
@@ -3758,6 +3765,212 @@
 
             }
         },
+    }
+    //// 一级 排序
+    const Order = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/algorithm')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">排序</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="比较" content-height="650">
+                            <div class="imgRot"><img src="./img/orderCompare.bmp" width="600px" height="350px"></div>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">具体实现</div>
+                        <accordion-item class="stableBack" title="插入排序" content-height="300">
+                            <p>基本逻辑是，把元素分为已排序的和未排序的。每次从未排序的元素取出第一个，与已排序的元素从尾到头逐一比较，找到插入点，将之后的元素都往后移一位，腾出位置给该元素。</p>
+                            <div><img src="./img/insertOrder.bmp" width="100%"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="选择排序" content-height="300">
+                            <p>算法中只是交换节点的val值，时间复杂度O（n^2）,空间复杂度O（1），每次选中最大/小进行插入</p>
+                            <div><img src="./img/selectOrder.bmp" width="100%"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="快速排序（重点）" content-height="1080">
+                            <p>算法只交换节点的val值，平均时间复杂度O（nlogn）,不考虑递归栈空间的话空间复杂度是O（1）</p>
+                            <div><img src="./img/quickOrder.bmp" width="100%"></div>
+                            <p>其实思想是蛮简单的，就是通过第一遍的遍历（让left和right指针重合）来找到数组的切割点。<span class="redBold">快排每次执行都能确定一个元素的最终的位置</span></p>
+                            <p><span class="redBold">第一步：</span>首先我们从数组的left位置取出该数（20）作为基准（base）参照物。</p>
+                            <p><span class="redBold">第二步：</span>从数组的right位置向前找，一直找到比（base）小的数，如果找到，将此数赋给left位置（也就是将10赋给20），此时数组为：10，40，50，10，60，left和right指针分别为前后的10。</p>
+                            <p><span class="redBold">第三步：</span>从数组的left位置向后找，一直找到比（base）大的数，如果找到，将此数赋给right的位置（也就是40赋给10），此时数组为：10，40，50，40，60，left和right指针分别为前后的40。</p>
+                            <p><span class="redBold">第四步：</span>重复“第二,第三“步骤，直到left和right指针重合，最后将（base）插入到40的位置，此时数组值为： 10，20，50，40，60，至此完成一次排序。</p>
+                            <p><span class="redBold">第五步：</span>此时20已经潜入到数组的内部，20的左侧一组数都比20小，20的右侧作为一组数都比20大，以20为切入点对左右两边数按照"第一，第二，第三，第四"步骤进行，最终快排大功告成。</p>
+                            <div><textarea id="QuickOrder"></textarea></div>
+                            <p><span class="redBold">快速排序算法在什么情况下效率最低：</span></p>
+                            <p>数组已经是正序（same order）排过序的。<br>数组已经是倒序排过序的。<br>所有的元素都相同（1、2的特殊情况）</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="归并排序（重点）" content-height="630">
+                            <p>时间复杂度O（nlogn）,不考虑递归栈空间的话空间复杂度是O（n）</p>
+                            <div><img src="./img/mergeOrder.bmp" width="100%"></div>
+                            <div><textarea id="MergeOrder"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="冒泡排序" content-height="1470">
+                            <p>基本的逻辑是，取第一个元素与后一个比较，如果大于后者，就与后者互换位置，不大于，就保持位置不变。再拿第二个元素与后者比较，如果大于后者，就与后者互换位置。一轮比较之后，最大的元素就移动到末尾。相当于最大的就冒出来了。再进行第二轮，第三轮，直到排序完毕。</p>
+                            <div><img src="./img/bubbleOrder.bmp" width="100%"></div>
+                            <p>改前：</p>
+                            <div><textarea id="BubbleOrder"></textarea></div>
+                            <p>改进1：加入flag标志位。整一次冒泡没有交换，则停止</p>
+                            <div><textarea id="BubbleOrder1"></textarea></div>
+                            <p>改进2：除了加入flag标志位，再加入边界，记录每次冒泡最后一次交换的位置</p>
+                            <div><textarea id="BubbleOrder2"></textarea></div>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+                QuickOrder:
+                    "#include <iostream>\n" +
+                    "\n" +
+                    "using namespace std;\n" +
+                    "\n" +
+                    "void QuickSort(int arr[], int l, int r) {\n" +
+                    "    if (l < r) {\n" +
+                    "        int i, j, base;\n" +
+                    "        i = l;\n" +
+                    "        j = r;\n" +
+                    "        base = arr[i];\n" +
+                    "        while (i < j) {\n" +
+                    "            while (i < j && arr[j] > base)\n" +
+                    "                j--; // 从右向左找第一个小于base的数\n" +
+                    "            if (i < j)\n" +
+                    "                arr[i++] = arr[j];\n" +
+                    "            while (i < j && arr[i] < base)\n" +
+                    "                i++; // 从左向右找第一个大于base的数\n" +
+                    "            if (i < j)\n" +
+                    "                arr[j--] = arr[i];\n" +
+                    "        }\n" +
+                    "        arr[i] = base;\n" +
+                    "        QuickSort(arr, l, i - 1); // 递归调用 base 左边\n" +
+                    "        QuickSort(arr, i + 1, r); // 递归调用 base 右边\n" +
+                    "    }\n" +
+                    "}\n" +
+                    "\n" +
+                    "int main(int argc, char *argv[]) {\n" +
+                    "    int dataArr[] = {9, 2, 7, 5, 6, 4, 3, 8, 1};\n" +
+                    "    QuickSort(dataArr, 0, 8);\n" +
+                    "    for (int i = 0; i < 9; i++) {\n" +
+                    "        cout << dataArr[i] << \",\";\n" +
+                    "    }\n" +
+                    "}",
+                MergeOrder:
+                    "\tpublic static void main(String[] args) {\n" +
+                    "\t\tint[] arr = {9,8,7,6,5,4,3,2,1};\n" +
+                    "\t\tmerginSort(arr);\n" +
+                    "\t\tfor (int i = 0; i < arr.length; i++) {\n" +
+                    "\t\t\tSystem.out.print(arr[i]+\",\");\n" +
+                    "\t\t}\n" +
+                    "\t}\n" +
+                    "\t\n" +
+                    "\tpublic static void merginSort(int[] arr) {\n" +
+                    "\t\tint[] temp = new int[arr.length];\n" +
+                    "\t\tseparate(arr, 0, arr.length-1, temp);\n" +
+                    "\t}\n" +
+                    "\n" +
+                    "\tpublic static void separate(int[] arr, int left, int right, int[] temp) {\n" +
+                    "\t\tif (left < right) {\n" +
+                    "\t\t\tint mid = (left + right) / 2;\n" +
+                    "\t\t\tseparate(arr, left, mid, temp);\n" +
+                    "\t\t\tseparate(arr, mid+1, right, temp);\n" +
+                    "\t\t\tmerging(arr, left, mid, right, temp);\n" +
+                    "\t\t}\n" +
+                    "\t}\n" +
+                    "\t\n" +
+                    "\tpublic static void merging(int[] arr, int left, int mid, int right, int[] temp) {\n" +
+                    "\t\tint i = left; //// 左序列指针\n" +
+                    "\t\tint j = mid + 1; //// 右序列指针\n" +
+                    "\t\tint t = 0; //// 临时数组指针\n" +
+                    "\t\twhile (i <= mid && j <= right) {\n" +
+                    "\t\t\tif (arr[i] < arr[j]) {\n" +
+                    "\t\t\t\ttemp[t++] = arr[i++];\n" +
+                    "\t\t\t} else {\n" +
+                    "\t\t\t\ttemp[t++] = arr[j++];\n" +
+                    "\t\t\t}\n" +
+                    "\t\t}\n" +
+                    "\t\t//// 将左边剩余元素填充进temp中\n" +
+                    "\t\twhile (i <= mid) { \n" +
+                    "\t\t\ttemp[t++] = arr[i++];\n" +
+                    "\t\t}\n" +
+                    "\t\t//// 将右序列剩余元素填充进temp中\n" +
+                    "\t\twhile (j <= right) { \n" +
+                    "\t\t\ttemp[t++] = arr[j++];\n" +
+                    "\t\t}\n" +
+                    "\t\tt = 0;\n" +
+                    "\t\t//// 将temp中的元素全部拷贝到原数组中\n" +
+                    "\t\twhile (left <= right) {\n" +
+                    "\t\t\tarr[left++] = temp[t++];\n" +
+                    "\t\t}\n" +
+                    "\t}",
+                BubbleOrder:
+                    "public static void bubbleSort(int[] arr) {\n" +
+                    "    for (int i = 0; i < arr.length-1; i++) {\n" +
+                    "        for (int j = 0; j < arr.length-i-1; j++) {\n" +
+                    "            if (arr[j] > arr[j+1]) {\n" +
+                    "                swap(arr, j, j+1);\n" +
+                    "            }\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}",
+                BubbleOrder1:
+                    "public static void bubbleSort1(int[] arr) {\n" +
+                    "    for (int i = 0; i < arr.length-1; i++) {\n" +
+                    "        int flag = 0;\n" +
+                    "        for (int j = 0; j < arr.length-i-1; j++) {\n" +
+                    "            if (arr[j] > arr[j+1]) {\n" +
+                    "                swap(arr, j, j+1);\n" +
+                    "                flag = j;\n" +
+                    "            }\n" +
+                    "        }\n" +
+                    "        if (flag == 0) {\n" +
+                    "            break;\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}",
+                BubbleOrder2:
+                    "public static void bubbleSort2(int[] arr) {\n" +
+                    "    int noSwapOffset = arr.length;\n" +
+                    "    for (int i = 0; i < arr.length-1; i++) {\n" +
+                    "        int flag = 0;\n" +
+                    "        for (int j = 0; j < noSwapOffset-1; j++) {\n" +
+                    "            if (arr[j] > arr[j+1]) {\n" +
+                    "                swap(arr, j, j+1);\n" +
+                    "                flag = j;\n" +
+                    "            }\n" +
+                    "        }\n" +
+                    "        if (flag == 0) {\n" +
+                    "            break;\n" +
+                    "        }\n" +
+                    "        noSwapOffset = flag + 1;\n" +
+                    "    }\n" +
+                    "}",
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        mounted() {
+            let editorQuickOrder = CodeMirror.fromTextArea(document.getElementById("QuickOrder"), this.options)
+            editorQuickOrder.setValue(this.QuickOrder)
+            editorQuickOrder.setSize('auto','300px');
+            let editorMergeOrder = CodeMirror.fromTextArea(document.getElementById("MergeOrder"), this.options)
+            editorMergeOrder.setValue(this.MergeOrder)
+            editorMergeOrder.setSize('auto','300px');
+            let editorBubbleOrder = CodeMirror.fromTextArea(document.getElementById("BubbleOrder"), this.options)
+            editorBubbleOrder.setValue(this.BubbleOrder)
+            editorBubbleOrder.setSize('auto','300px');
+            let editorBubbleOrder1 = CodeMirror.fromTextArea(document.getElementById("BubbleOrder1"), this.options)
+            editorBubbleOrder1.setValue(this.BubbleOrder1)
+            editorBubbleOrder1.setSize('auto','300px');
+            let editorBubbleOrder2 = CodeMirror.fromTextArea(document.getElementById("BubbleOrder2"), this.options)
+            editorBubbleOrder2.setValue(this.BubbleOrder2)
+            editorBubbleOrder2.setSize('auto','300px');
+        }
     }
 
     //// 一级 问题排查
@@ -4104,6 +4317,7 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         //// 一级菜单 算法
         { path: '/algorithm', component: Algorithm },
         { path: '/question', component: Question }, //// 二级菜单 考题
+        { path: '/order', component: Order }, //// 二级菜单 排序
 
         //// 一级菜单 问题排查
         { path: '/solveProblem', component: SolveProblem },
