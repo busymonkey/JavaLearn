@@ -53,6 +53,9 @@
         font-weight: bold;
         color: red;
     }
+    .fontUnderline {
+        text-decoration: underline;
+    }
     .dividerFont {
         font-weight: bold;
         font-size: 18px;
@@ -3755,6 +3758,21 @@
                         <accordion-item class="stableBack" title="斐波那契数列" content-height="140">
                             <p>题目一：写一个函数，输入n，求斐波那契（F'ibonacci）数列的第n项。【O(n)，不能递归】</p>
                             <p>题目二：【青蛙跳台阶】一只青蛙一次可跳上1级台阶，也可以跳上2级台阶。求该青蛙跳上一个n级台阶共多少总跳法。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="旋转数组的最小数字" content-height="120">
+                            <p>题目：把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个递增排序的数组的一个旋转，输出旋转数组的最小元素。例如，数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1【O(logn)】。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="矩阵中的路径" content-height="300">
+                            <p>题目：请设计一个函数，用来判断在一个矩阵中是否存在一条包含某字符串所有字符的路径。路径可以从矩阵中的任意一格开始，每一步可以在矩阵中向上、下、左、右移动一格。如果一条路径经过了矩阵的某一格，那么该路径不能再次进入该格子。例如，在下面的3*4的矩阵中包含一条字符串“bfce”的路径（路径中的字母用下划线标出）。但矩阵中不包含字符串“abfb”的路径，因为字符串的第一个字符b占据了矩阵中的第一行第二个格子之后，路径不能再次进入这个格子【回溯】</p>
+                            <p>a    <span class="fontUnderline">b</span>    t    g</p>
+                            <p>c    <span class="fontUnderline">f</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fontUnderline">c</span>    s</p>
+                            <p>j    d    <span class="fontUnderline">e</span>    h</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="剪绳子" content-height="160">
+                            <p>题目：给你一根长度为n的绳子，请把绳子剪成m段（m、n都是整数，n>1  and m>1）每段绳子的长度记为k[0],k[1],...,k[m]。请问k[0]*k[1]*...*k[m]可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2，3，3的三段，此时得到的最大乘积是18【动态规划时间复杂度O(n²)空间复杂度O(n)，贪心算法O(1)】。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="二进制中1的个数" content-height="100">
+                            <p>题目：请实现一个函数，输入一个整数，输出该数二进制表示中1的个数。例如，把9表示成二进制是1001，有2位是1。因此输入9，则输出2。</p>
                         </accordion-item>
                     </accordion>
                 </div>
