@@ -3824,7 +3824,7 @@
                             <div><img src="./img/mergeOrder.bmp" width="100%"></div>
                             <div><textarea id="MergeOrder"></textarea></div>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="冒泡排序" content-height="1470">
+                        <accordion-item class="stableBack" title="冒泡排序" content-height="1370">
                             <p>基本的逻辑是，取第一个元素与后一个比较，如果大于后者，就与后者互换位置，不大于，就保持位置不变。再拿第二个元素与后者比较，如果大于后者，就与后者互换位置。一轮比较之后，最大的元素就移动到末尾。相当于最大的就冒出来了。再进行第二轮，第三轮，直到排序完毕。</p>
                             <div><img src="./img/bubbleOrder.bmp" width="100%"></div>
                             <p>改前：</p>
@@ -3834,6 +3834,39 @@
                             <p>改进2：除了加入flag标志位，再加入边界，记录每次冒泡最后一次交换的位置</p>
                             <div><textarea id="BubbleOrder2"></textarea></div>
                         </accordion-item>
+                        <accordion-item class="stableBack" title="堆排序" content-height="2900">
+                            <p>堆排序的时间复杂度O(nlogn)，额外空间复杂度O(1)，是一个不稳定性的排序。堆的结构可以分为大根堆和小根堆，是一个完全二叉树，而堆排序是根据堆的这种数据结构设计的一种排序，下面先来看看什么是大根堆和小根堆</p>
+                            <p><span class="redBold">大小根堆：</span></p>
+                            <p>每个结点的值都大于其左孩子和右孩子结点的值，称之为大根堆<br>每个结点的值都小于其左孩子和右孩子结点的值，称之为小根堆</p>
+                            <div><img src="./img/heapOrder1.bmp" width="100%"></div>
+                            <p>我们对上面的图中每个数都进行了标记，上面的结构映射成数组就变成了下面这个样子</p>
+                            <div><img src="./img/heapOrder2.bmp" width="100%"></div>
+                            <p><span class="redBold">还有一个基本概念：</span>查找数组中某个数的父结点和左右孩子结点，比如已知索引为 i 的数，那么<br>父结点索引：(i-1)/2（这里计算机中的除以2，省略掉小数）<br>左孩子索引：2*i+1<br>右孩子索引：2*i+2</p>
+                            <p><span class="redBold">堆排序基本步骤：</span><br>首先将待排序的数组构造成一个大根堆，此时，整个数组的最大值就是堆结构的顶端<br>将顶端的数与末尾的数交换，此时，末尾的数为最大值，剩余待排序数组个数为n-1<br>将剩余的n-1个数再构造成大根堆，再将顶端数与n-1位置的数交换，如此反复执行，便能得到有序数组</p>
+                            <p><span class="redBold">构造堆：</span><br>将无序数组构造成一个大根堆（升序用大根堆，降序就用小根堆）假设存在以下数组</p>
+                            <div><img src="./img/heapOrder3.bmp" width="100%"></div>
+                            <p>主要思路：第一次保证0~0位置大根堆结构（废话），第二次保证0~1位置大根堆结构，第三次保证0~2位置大根堆结构...直到保证0~n-1位置大根堆结构（每次新插入的数据都与其父结点进行比较，如果插入的数比父结点大，则与父结点交换，否则一直向上交换，直到小于等于父结点，或者来到了顶端）</p>
+                            <p>插入6的时候，6大于他的父结点3，即arr(1)>arr(0)，则交换；此时，保证了0~1位置是大根堆结构，如下图：</p>
+                            <div><img src="./img/heapOrder4.bmp" width="100%"></div>
+                            <p>插入8的时候，8大于其父结点6，即arr(2)>arr(0),则交换；此时，保证了0~2位置是大根堆结构，如下图</p>
+                            <div><img src="./img/heapOrder5.bmp" width="100%"></div>
+                            <p>插入5的时候，5大于其父结点3，则交换，交换之后，5又发现比8小，所以不交换；此时，保证了0~3位置大根堆结构，如下图</p>
+                            <div><img src="./img/heapOrder6.bmp" width="100%"></div>
+                            <p>插入7的时候，7大于其父结点5，则交换，交换之后，7又发现比8小，所以不交换；此时<span class="redBold">整个数组已经是大根堆结构</span></p>
+                            <div><img src="./img/heapOrder7.bmp" width="100%"></div>
+                            <p><span class="redBold">固定最大值再构造堆：</span></p>
+                            <p>此时，我们已经得到一个大根堆，下面将顶端的数与最后一位数交换，然后将剩余的数再构造成一个大根堆</p>
+                            <div><img src="./img/heapOrder8.bmp" width="100%"></div>
+                            <p>此时最大数8已经来到末尾，则固定不动，后面只需要对顶端的数据进行操作即可，拿顶端的数与其左右孩子较大的数进行比较，如果顶端的数大于其左右孩子较大的数，则停止，如果顶端的数小于其左右孩子较大的数，则交换，然后继续与下面的孩子进行比较</p>
+                            <p>下图中，5的左右孩子中，左孩子7比右孩子6大，则5与7进行比较，发现5<7，则交换；交换后，发现5已经大于他的左孩子，说明剩余的数已经构成大根堆，后面就是重复固定最大值，然后构造大根堆</p>
+                            <div><img src="./img/heapOrder9.bmp" width="100%"></div>
+                            <p>如下图：顶端数7与末尾数3进行交换，固定好7</p>
+                            <div><img src="./img/heapOrder10.bmp" width="100%"></div>
+                            <p>剩余的数开始构造大根堆 ，然后顶端数与末尾数交换，固定最大值再构造大根堆，重复执行上面的操作，最终会得到有序数组</p>
+                            <div><img src="./img/heapOrder11.bmp" width="100%"></div>
+                            <div><textarea id="HeapOrder"></textarea></div>
+                        </accordion-item>
+
                     </accordion>
                 </div>
             </div>
@@ -3875,53 +3908,53 @@
                     "    }\n" +
                     "}",
                 MergeOrder:
-                    "\tpublic static void main(String[] args) {\n" +
-                    "\t\tint[] arr = {9,8,7,6,5,4,3,2,1};\n" +
-                    "\t\tmerginSort(arr);\n" +
-                    "\t\tfor (int i = 0; i < arr.length; i++) {\n" +
-                    "\t\t\tSystem.out.print(arr[i]+\",\");\n" +
-                    "\t\t}\n" +
+                    "public static void main(String[] args) {\n" +
+                    "\tint[] arr = {9,8,7,6,5,4,3,2,1};\n" +
+                    "\tmerginSort(arr);\n" +
+                    "\tfor (int i = 0; i < arr.length; i++) {\n" +
+                    "\t\tSystem.out.print(arr[i]+\",\");\n" +
                     "\t}\n" +
+                    "}\n" +
                     "\t\n" +
-                    "\tpublic static void merginSort(int[] arr) {\n" +
-                    "\t\tint[] temp = new int[arr.length];\n" +
-                    "\t\tseparate(arr, 0, arr.length-1, temp);\n" +
-                    "\t}\n" +
+                    "public static void merginSort(int[] arr) {\n" +
+                    "\tint[] temp = new int[arr.length];\n" +
+                    "\tseparate(arr, 0, arr.length-1, temp);\n" +
+                    "}\n" +
                     "\n" +
-                    "\tpublic static void separate(int[] arr, int left, int right, int[] temp) {\n" +
-                    "\t\tif (left < right) {\n" +
-                    "\t\t\tint mid = (left + right) / 2;\n" +
-                    "\t\t\tseparate(arr, left, mid, temp);\n" +
-                    "\t\t\tseparate(arr, mid+1, right, temp);\n" +
-                    "\t\t\tmerging(arr, left, mid, right, temp);\n" +
-                    "\t\t}\n" +
+                    "public static void separate(int[] arr, int left, int right, int[] temp) {\n" +
+                    "\tif (left < right) {\n" +
+                    "\t\tint mid = (left + right) / 2;\n" +
+                    "\t\tseparate(arr, left, mid, temp);\n" +
+                    "\t\tseparate(arr, mid+1, right, temp);\n" +
+                    "\t\tmerging(arr, left, mid, right, temp);\n" +
                     "\t}\n" +
+                    "}\n" +
                     "\t\n" +
-                    "\tpublic static void merging(int[] arr, int left, int mid, int right, int[] temp) {\n" +
-                    "\t\tint i = left; //// 左序列指针\n" +
-                    "\t\tint j = mid + 1; //// 右序列指针\n" +
-                    "\t\tint t = 0; //// 临时数组指针\n" +
-                    "\t\twhile (i <= mid && j <= right) {\n" +
-                    "\t\t\tif (arr[i] < arr[j]) {\n" +
-                    "\t\t\t\ttemp[t++] = arr[i++];\n" +
-                    "\t\t\t} else {\n" +
-                    "\t\t\t\ttemp[t++] = arr[j++];\n" +
-                    "\t\t\t}\n" +
-                    "\t\t}\n" +
-                    "\t\t//// 将左边剩余元素填充进temp中\n" +
-                    "\t\twhile (i <= mid) { \n" +
+                    "public static void merging(int[] arr, int left, int mid, int right, int[] temp) {\n" +
+                    "\tint i = left; //// 左序列指针\n" +
+                    "\tint j = mid + 1; //// 右序列指针\n" +
+                    "\tint t = 0; //// 临时数组指针\n" +
+                    "\twhile (i <= mid && j <= right) {\n" +
+                    "\t\tif (arr[i] < arr[j]) {\n" +
                     "\t\t\ttemp[t++] = arr[i++];\n" +
-                    "\t\t}\n" +
-                    "\t\t//// 将右序列剩余元素填充进temp中\n" +
-                    "\t\twhile (j <= right) { \n" +
+                    "\t\t} else {\n" +
                     "\t\t\ttemp[t++] = arr[j++];\n" +
                     "\t\t}\n" +
-                    "\t\tt = 0;\n" +
-                    "\t\t//// 将temp中的元素全部拷贝到原数组中\n" +
-                    "\t\twhile (left <= right) {\n" +
-                    "\t\t\tarr[left++] = temp[t++];\n" +
-                    "\t\t}\n" +
-                    "\t}",
+                    "\t}\n" +
+                    "\t//// 将左边剩余元素填充进temp中\n" +
+                    "\twhile (i <= mid) { \n" +
+                    "\t\ttemp[t++] = arr[i++];\n" +
+                    "\t}\n" +
+                    "\t//// 将右序列剩余元素填充进temp中\n" +
+                    "\twhile (j <= right) { \n" +
+                    "\t\ttemp[t++] = arr[j++];\n" +
+                    "\t}\n" +
+                    "\tt = 0;\n" +
+                    "\t//// 将temp中的元素全部拷贝到原数组中\n" +
+                    "\twhile (left <= right) {\n" +
+                    "\t\tarr[left++] = temp[t++];\n" +
+                    "\t}\n" +
+                    "}",
                 BubbleOrder:
                     "public static void bubbleSort(int[] arr) {\n" +
                     "    for (int i = 0; i < arr.length-1; i++) {\n" +
@@ -3964,6 +3997,62 @@
                     "        noSwapOffset = flag + 1;\n" +
                     "    }\n" +
                     "}",
+                HeapOrder:
+                    "public static void main(String[] args) {\n" +
+                    "\tint[] arr = {5,2,6,7,9,8,1,3,4};\n" +
+                    "\tbigHeap(arr); //// 首先构造大根堆\n" +
+                    "\tint size = arr.length;\n" +
+                    "\twhile (size > 1) {\n" +
+                    "\t\tswap(arr, 0, size-1); //// 首元素跟未排序的尾元素交换\n" +
+                    "\t\tsize--;\n" +
+                    "\t\theapSort(arr, 0, size); //// 重新构造大根堆\n" +
+                    "\t}\n" +
+                    "\tprintArr(arr);\n" +
+                    "}\n" +
+                    "\t\n" +
+                    "public static void bigHeap(int[] arr) {\n" +
+                    "\tfor (int i = 0; i < arr.length; i++) {\n" +
+                    "\t\tint currentIndex = i;\n" +
+                    "\t\tint fatherIndex = (currentIndex - 1) / 2;\n" +
+                    "\t\twhile (arr[currentIndex] > arr[fatherIndex]) {\n" +
+                    "\t\t\tswap(arr, currentIndex, fatherIndex);\n" +
+                    "\t\t\tcurrentIndex = fatherIndex;\n" +
+                    "\t\t\tfatherIndex = (currentIndex - 1) / 2;\n" +
+                    "\t\t}\n" +
+                    "\t}\n" +
+                    "}\n" +
+                    "\t\n" +
+                    "public static void heapSort(int[] arr, int index, int size) {\n" +
+                    "\tint leftChild = 2 * index + 1;\n" +
+                    "\tint rightChild = 2 * index + 2;\n" +
+                    "\twhile (leftChild < size) {\n" +
+                    "\t\tint largeIndex;\n" +
+                    "\t\tif (arr[leftChild] < arr[rightChild] && rightChild < size) {\n" +
+                    "\t\t\tlargeIndex = rightChild;\n" +
+                    "\t\t} else {\n" +
+                    "\t\t\tlargeIndex = leftChild;\n" +
+                    "\t\t}\n" +
+                    "\t\tif (arr[index] > arr[largeIndex]) {\n" +
+                    "\t\t\tbreak; //// 当前父节点比子节点都大的话直接退出\n" +
+                    "\t\t}\n" +
+                    "\t\tswap(arr, index, largeIndex);\n" +
+                    "\t\tindex = largeIndex;\n" +
+                    "\t\tleftChild = 2 * index + 1;\n" +
+                    "\t\trightChild = 2 * index + 2;\n" +
+                    "\t}\n" +
+                    "}\n" +
+                    "\t\n" +
+                    "public static void swap(int[] arr, int l, int r) {\n" +
+                    "\tint temp = arr[l];\n" +
+                    "\tarr[l] = arr[r];\n" +
+                    "\tarr[r] = temp;\n" +
+                    "}\n" +
+                    "\t\n" +
+                    "public static void printArr(int[] arr) {\n" +
+                    "\tfor (int i = 0; i < arr.length; i++) {\n" +
+                    "\t\tSystem.out.print(arr[i]+\", \");\n" +
+                    "\t}\n" +
+                    "}",
                 options: {
                     tabSize: 2,
                     theme: "dracula",
@@ -3981,13 +4070,16 @@
             editorMergeOrder.setSize('auto','300px');
             let editorBubbleOrder = CodeMirror.fromTextArea(document.getElementById("BubbleOrder"), this.options)
             editorBubbleOrder.setValue(this.BubbleOrder)
-            editorBubbleOrder.setSize('auto','300px');
+            editorBubbleOrder.setSize('auto','200px');
             let editorBubbleOrder1 = CodeMirror.fromTextArea(document.getElementById("BubbleOrder1"), this.options)
             editorBubbleOrder1.setValue(this.BubbleOrder1)
             editorBubbleOrder1.setSize('auto','300px');
             let editorBubbleOrder2 = CodeMirror.fromTextArea(document.getElementById("BubbleOrder2"), this.options)
             editorBubbleOrder2.setValue(this.BubbleOrder2)
             editorBubbleOrder2.setSize('auto','300px');
+            let editorHeapOrder = CodeMirror.fromTextArea(document.getElementById("HeapOrder"), this.options)
+            editorHeapOrder.setValue(this.HeapOrder)
+            editorHeapOrder.setSize('auto','300px');
         }
     }
 
