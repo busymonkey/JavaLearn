@@ -3798,13 +3798,14 @@
                             <div class="imgRot"><img src="./img/orderCompare.bmp" width="600px" height="350px"></div>
                         </accordion-item>
                         <div class="item item-divider dividerFont">具体实现</div>
-                        <accordion-item class="stableBack" title="插入排序" content-height="300">
+                        <accordion-item class="stableBack" title="插入排序" content-height="650">
                             <p>基本逻辑是，把元素分为已排序的和未排序的。每次从未排序的元素取出第一个，与已排序的元素从尾到头逐一比较，找到插入点，将之后的元素都往后移一位，腾出位置给该元素。</p>
-                            <div><img src="./img/insertOrder.bmp" width="100%"></div>
+                            <div><img src="./img/insertOrder.bmp" width="200px" height="220px"></div>
+                            <div><textarea id="InsertOrder"></textarea></div>
                         </accordion-item>
                         <accordion-item class="stableBack" title="选择排序" content-height="300">
                             <p>算法中只是交换节点的val值，时间复杂度O（n^2）,空间复杂度O（1），每次选中最大/小进行插入</p>
-                            <div><img src="./img/selectOrder.bmp" width="100%"></div>
+                            <div><img src="./img/selectOrder.bmp" width="200px" height="100px"></div>
                         </accordion-item>
                         <accordion-item class="stableBack" title="快速排序（重点）" content-height="1080">
                             <p>算法只交换节点的val值，平均时间复杂度O（nlogn）,不考虑递归栈空间的话空间复杂度是O（1）</p>
@@ -3834,8 +3835,9 @@
                             <p>改进2：除了加入flag标志位，再加入边界，记录每次冒泡最后一次交换的位置</p>
                             <div><textarea id="BubbleOrder2"></textarea></div>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="堆排序" content-height="2900">
+                        <accordion-item class="stableBack" title="堆排序" content-height="2950">
                             <p>堆排序的时间复杂度O(nlogn)，额外空间复杂度O(1)，是一个不稳定性的排序。堆的结构可以分为大根堆和小根堆，是一个完全二叉树，而堆排序是根据堆的这种数据结构设计的一种排序，下面先来看看什么是大根堆和小根堆</p>
+                            <p>应用：<span class="redBold">快速找到topN</span></p>
                             <p><span class="redBold">大小根堆：</span></p>
                             <p>每个结点的值都大于其左孩子和右孩子结点的值，称之为大根堆<br>每个结点的值都小于其左孩子和右孩子结点的值，称之为小根堆</p>
                             <div><img src="./img/heapOrder1.bmp" width="100%"></div>
@@ -3866,13 +3868,49 @@
                             <div><img src="./img/heapOrder11.bmp" width="100%"></div>
                             <div><textarea id="HeapOrder"></textarea></div>
                         </accordion-item>
-
+                        <accordion-item class="stableBack" title="希尔排序" content-height="1640">
+                            <p>希尔排序是把序列按一定间隔分组，对每组使用直接插入排序；随着间隔减小，一直到1，使得整个序列有序。（网上的例子大多是偶数个，不能全面的反应整个排序过程）分组公式为N = N/2（还有其他的变种公式）</p>
+                            <p><span class="redBold">开始排序：</span></p>
+                            <div><img src="./img/shellOrder1.bmp" width="100%"></div>
+                            <p><span class="redBold">第一次分组值为9/2=4，分组结果如下：</span></p>
+                            <div><img src="./img/shellOrder2.bmp" width="100%"></div>
+                            <p><span class="redBold">每组内部实现插入排序</span>，因为前面4组只有两个元素，看似好想只是交换了顺序，实际是插入排序，每组排序结果如下：</p>
+                            <div><img src="./img/shellOrder3.bmp" width="100%"></div>
+                            <p><span class="redBold">第一次分组排序后：</span></p>
+                            <div><img src="./img/shellOrder4.bmp" width="100%"></div>
+                            <p><span class="redBold">第二次分组值为4/2=2，分组结果如下：</span></p>
+                            <div><img src="./img/shellOrder5.bmp" width="100%"></div>
+                            <p><span class="redBold">每组内部实现插入排序，每组排序结果如下：</span></p>
+                            <div><img src="./img/shellOrder6.bmp" width="100%"></div>
+                            <p><span class="redBold">第二次分组排序后：</span></p>
+                            <div><img src="./img/shellOrder7.bmp" width="100%"></div>
+                            <p><span class="redBold">类似还有第三次分组值为2/2=1，结果类似处理</span></p>
+                            <div><textarea id="ShellOrder"></textarea></div>
+                        </accordion-item>
                     </accordion>
                 </div>
             </div>
         `,
         data() {
             return {
+                InsertOrder:
+                    "public static void sort(int[] arr) {\n" +
+                    "    int temp;\n" +
+                    "    for (int i = 1; i < arr.length; i++) {\n" +
+                    "        //待排元素小于有序序列的最后一个元素时，向前插入\n" +
+                    "        if (arr[i] < arr[i - 1]) {\n" +
+                    "            temp = arr[i];\n" +
+                    "            for (int j = i; j >= 0; j--) {\n" +
+                    "                if (j > 0 && arr[j - 1] > temp) {\n" +
+                    "                    arr[j] = arr[j - 1];\n" +
+                    "                } else {\n" +
+                    "                    arr[j] = temp;\n" +
+                    "                    break;\n" +
+                    "                }\n" +
+                    "            }\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}",
                 QuickOrder:
                     "#include <iostream>\n" +
                     "\n" +
@@ -4053,6 +4091,24 @@
                     "\t\tSystem.out.print(arr[i]+\", \");\n" +
                     "\t}\n" +
                     "}",
+                ShellOrder:
+                    "public static void sort(int[] arr) {\n" +
+                    "    int number = arr.length / 2;\n" +
+                    "    int swapIndex;\n" +
+                    "    int temp;\n" +
+                    "    while (number >= 1) {\n" +
+                    "        for (int i = number; i < arr.length; i++) {\n" +
+                    "            temp = arr[i];\n" +
+                    "            swapIndex = i - number;\n" +
+                    "            while (swapIndex >= 0 && arr[swapIndex] > temp) {\n" +
+                    "                arr[swapIndex + number] = arr[swapIndex];\n" +
+                    "                swapIndex -= number;\n" +
+                    "            }\n" +
+                    "            arr[swapIndex + number] = temp;\n" +
+                    "        }\n" +
+                    "        number /= 2;\n" +
+                    "    }\n" +
+                    "}",
                 options: {
                     tabSize: 2,
                     theme: "dracula",
@@ -4062,6 +4118,9 @@
             }
         },
         mounted() {
+            let editorInsertOrder = CodeMirror.fromTextArea(document.getElementById("InsertOrder"), this.options)
+            editorInsertOrder.setValue(this.InsertOrder)
+            editorInsertOrder.setSize('auto','300px');
             let editorQuickOrder = CodeMirror.fromTextArea(document.getElementById("QuickOrder"), this.options)
             editorQuickOrder.setValue(this.QuickOrder)
             editorQuickOrder.setSize('auto','300px');
@@ -4080,6 +4139,9 @@
             let editorHeapOrder = CodeMirror.fromTextArea(document.getElementById("HeapOrder"), this.options)
             editorHeapOrder.setValue(this.HeapOrder)
             editorHeapOrder.setSize('auto','300px');
+            let editorShellOrder = CodeMirror.fromTextArea(document.getElementById("ShellOrder"), this.options)
+            editorShellOrder.setValue(this.ShellOrder)
+            editorShellOrder.setSize('auto','300px');
         }
     }
 
