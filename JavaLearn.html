@@ -3803,9 +3803,10 @@
                             <div><img src="./img/insertOrder.bmp" width="200px" height="220px"></div>
                             <div><textarea id="InsertOrder"></textarea></div>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="选择排序" content-height="300">
+                        <accordion-item class="stableBack" title="选择排序" content-height="630">
                             <p>算法中只是交换节点的val值，时间复杂度O（n^2）,空间复杂度O（1），每次选中最大/小进行插入</p>
-                            <div><img src="./img/selectOrder.bmp" width="200px" height="100px"></div>
+                            <div><img src="./img/selectOrder.bmp" width="300px" height="220px"></div>
+                            <div><textarea id="SelectOrder"></textarea></div>
                         </accordion-item>
                         <accordion-item class="stableBack" title="快速排序（重点）" content-height="1080">
                             <p>算法只交换节点的val值，平均时间复杂度O（nlogn）,不考虑递归栈空间的话空间复杂度是O（1）</p>
@@ -4109,6 +4110,24 @@
                     "        number /= 2;\n" +
                     "    }\n" +
                     "}",
+                SelectOrder:
+                    "public static void sort(int[] arr) {\n" +
+                    "    for (int i = 0; i < arr.length-1; i++) {\n" +
+                    "        int maxIndex = i;\n" +
+                    "        for (int j = i+1; j <arr.length; j++) {\n" +
+                    "            if (arr[j] < arr[maxIndex]) {\n" +
+                    "                maxIndex = j;\n" +
+                    "            }\n" +
+                    "        }\n" +
+                    "        swap(arr, i, maxIndex);\n" +
+                    "    }\n" +
+                    "}\n" +
+                    "\n" +
+                    "private static void swap(int[] arr, int i, int j) {\n" +
+                    "    int temp = arr[i];\n" +
+                    "    arr[i] = arr[j];\n" +
+                    "    arr[j] = temp;\n" +
+                    "}",
                 options: {
                     tabSize: 2,
                     theme: "dracula",
@@ -4142,6 +4161,9 @@
             let editorShellOrder = CodeMirror.fromTextArea(document.getElementById("ShellOrder"), this.options)
             editorShellOrder.setValue(this.ShellOrder)
             editorShellOrder.setSize('auto','300px');
+            let editorSelectOrder = CodeMirror.fromTextArea(document.getElementById("SelectOrder"), this.options)
+            editorSelectOrder.setValue(this.SelectOrder)
+            editorSelectOrder.setSize('auto','300px');
         }
     }
 
