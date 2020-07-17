@@ -3808,6 +3808,16 @@
                             <div><img src="./img/selectOrder.bmp" width="300px" height="220px"></div>
                             <div><textarea id="SelectOrder"></textarea></div>
                         </accordion-item>
+                        <accordion-item class="stableBack" title="冒泡排序" content-height="1370">
+                            <p>基本的逻辑是，取第一个元素与后一个比较，如果大于后者，就与后者互换位置，不大于，就保持位置不变。再拿第二个元素与后者比较，如果大于后者，就与后者互换位置。一轮比较之后，最大的元素就移动到末尾。相当于最大的就冒出来了。再进行第二轮，第三轮，直到排序完毕。</p>
+                            <div><img src="./img/bubbleOrder.bmp" width="100%"></div>
+                            <p>改前：</p>
+                            <div><textarea id="BubbleOrder"></textarea></div>
+                            <p>改进1：加入flag标志位。整一次冒泡没有交换，则停止</p>
+                            <div><textarea id="BubbleOrder1"></textarea></div>
+                            <p>改进2：除了加入flag标志位，再加入边界，记录每次冒泡最后一次交换的位置</p>
+                            <div><textarea id="BubbleOrder2"></textarea></div>
+                        </accordion-item>
                         <accordion-item class="stableBack" title="快速排序（重点）" content-height="1080">
                             <p>算法只交换节点的val值，平均时间复杂度O（nlogn）,不考虑递归栈空间的话空间复杂度是O（1）</p>
                             <div><img src="./img/quickOrder.bmp" width="100%"></div>
@@ -3825,16 +3835,6 @@
                             <p>时间复杂度O（nlogn）,不考虑递归栈空间的话空间复杂度是O（n）</p>
                             <div><img src="./img/mergeOrder.bmp" width="100%"></div>
                             <div><textarea id="MergeOrder"></textarea></div>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="冒泡排序" content-height="1370">
-                            <p>基本的逻辑是，取第一个元素与后一个比较，如果大于后者，就与后者互换位置，不大于，就保持位置不变。再拿第二个元素与后者比较，如果大于后者，就与后者互换位置。一轮比较之后，最大的元素就移动到末尾。相当于最大的就冒出来了。再进行第二轮，第三轮，直到排序完毕。</p>
-                            <div><img src="./img/bubbleOrder.bmp" width="100%"></div>
-                            <p>改前：</p>
-                            <div><textarea id="BubbleOrder"></textarea></div>
-                            <p>改进1：加入flag标志位。整一次冒泡没有交换，则停止</p>
-                            <div><textarea id="BubbleOrder1"></textarea></div>
-                            <p>改进2：除了加入flag标志位，再加入边界，记录每次冒泡最后一次交换的位置</p>
-                            <div><textarea id="BubbleOrder2"></textarea></div>
                         </accordion-item>
                         <accordion-item class="stableBack" title="堆排序" content-height="2950">
                             <p>堆排序的时间复杂度O(nlogn)，额外空间复杂度O(1)，是一个不稳定性的排序。堆的结构可以分为大根堆和小根堆，是一个完全二叉树，而堆排序是根据堆的这种数据结构设计的一种排序，下面先来看看什么是大根堆和小根堆</p>
@@ -3887,6 +3887,21 @@
                             <div><img src="./img/shellOrder7.bmp" width="100%"></div>
                             <p><span class="redBold">类似还有第三次分组值为2/2=1，结果类似处理</span></p>
                             <div><textarea id="ShellOrder"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="计数排序" content-height="1200">
+                            <p>计数排序的核心在于将输入的数据值转化为键存储在额外开辟的数组空间中。作为一种线性时间复杂度的排序，计数排序要求输入的数据必须是有确定范围的整数。</p>
+                            <p><span class="redBold">计数排序的特征：</span>当输入的元素是 n 个 0 到 k 之间的整数时，它的运行时间是 Θ(n + k)。计数排序不是比较排序，排序的速度快于任何比较排序算法。</p>
+                            <p>假设：数组里有20个随机数，取值范围为从0到10，要求用最快的速度把这20个整数从小到大进行排序。于是我们可以建立一个长度为11的数组，数组下标从0到10，元素初始值全为0，如下所示：</p>
+                            <div><img src="./img/countOrder1.bmp" width="100%"></div>
+                            <p>先假设20个随机整数的值是：9, 3, 5, 4, 9, 1, 2, 7, 8，1，3, 6, 5, 3, 4, 0, 10, 9, 7, 9。让我们先遍历这个无序的随机数组，每一个整数按照其值对号入座，对应数组下标的元素进行加1操作。比如第一个整数是9，那么数组下标为9的元素加1：</p>
+                            <div><img src="./img/countOrder2.bmp" width="100%"></div>
+                            <p>第二个整数是3，那么数组下标为3的元素加1：</p>
+                            <div><img src="./img/countOrder3.bmp" width="100%"></div>
+                            <p>继续遍历数列并修改数组，最终，数列遍历完毕时，数组的状态如下：</p>
+                            <div><img src="./img/countOrder4.bmp" width="100%"></div>
+                            <p>数组中的每一个值，代表了数列中对应整数的出现次数。有了这个统计结果，排序就很简单了，直接遍历数组，输出数组元素的下标值，元素的值是几，就输出几次：0, 1, 1, 2, 3, 3, 3, 4, 4, 5, 5, 6, 7, 7, 8, 9, 9, 9, 9, 10。显然，这个输出的数列已经是有序的了。</p>
+                            <div><textarea id="CountOrder"></textarea></div>
+                            <p><span class="redBold">优化：对于计数数组，可以根据数据的实际值来计算，比如数据的范围是90~100，那么计数数组可以是arr[11]，排序前可以先计算出数据的最大值和最小值，根据最大最小的差值来定义计数数组的大小。</span></p>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -4128,6 +4143,19 @@
                     "    arr[i] = arr[j];\n" +
                     "    arr[j] = temp;\n" +
                     "}",
+                CountOrder:
+                    "public static void sort(int[] arr) {\n" +
+                    "    int[] countArr = {0,0,0,0,0,0,0,0,0,0,0};\n" +
+                    "    for (int i = 0; i < arr.length; i++) {\n" +
+                    "        countArr[arr[i]]++;\n" +
+                    "    }\n" +
+                    "    int count = 0;\n" +
+                    "    for (int i = 0; i < countArr.length; i++) {\n" +
+                    "        while (countArr[i]-- > 0 ) {\n" +
+                    "            arr[count++] = i;\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}",
                 options: {
                     tabSize: 2,
                     theme: "dracula",
@@ -4164,6 +4192,9 @@
             let editorSelectOrder = CodeMirror.fromTextArea(document.getElementById("SelectOrder"), this.options)
             editorSelectOrder.setValue(this.SelectOrder)
             editorSelectOrder.setSize('auto','300px');
+            let editorCountOrder = CodeMirror.fromTextArea(document.getElementById("CountOrder"), this.options)
+            editorCountOrder.setValue(this.CountOrder)
+            editorCountOrder.setSize('auto','300px');
         }
     }
 
