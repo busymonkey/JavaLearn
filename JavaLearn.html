@@ -3911,6 +3911,15 @@
                             <div><img src="./img/bucketSort.bmp" width="100%"></div>
                             <div><textarea id="BucketOrder"></textarea></div>
                         </accordion-item>
+                        <accordion-item class="stableBack" title="基数排序" content-height="700">
+                            <p>基数排序是一种非比较型整数排序算法，其原理是将整数按位数切割成不同的数字，然后按每个位数分别比较。由于整数也可以表达字符串（比如名字或日期）和特定格式的浮点数，所以基数排序也不是只能使用于整数。</p>
+                            <p><span class="redBold">基数排序：</span>根据键值的每位数字来分配桶</p>
+                            <p><span class="redBold">计数排序：</span>每个桶只存储单一键值</p>
+                            <p><span class="redBold">桶排序：</span>每个桶存储一定范围的数值</p>
+                            <div><img src="./img/baseSort1.bmp" width="100%"></div>
+                            <div><img src="./img/baseSort2.bmp" width="100%"></div>
+                            <div><textarea id="BaseOrder"></textarea></div>
+                        </accordion-item>
                     </accordion>
                 </div>
             </div>
@@ -4229,6 +4238,87 @@
                     "    }\n" +
                     "\n" +
                     "}",
+                BaseOrder:
+                    "/**\n" +
+                    " * 基数排序\n" +
+                    " * 考虑负数的情况还可以参考： https://code.i-harness.com/zh-CN/q/e98fa9\n" +
+                    " */\n" +
+                    "public class RadixSort implements IArraySort {\n" +
+                    "\n" +
+                    "    @Override\n" +
+                    "    public int[] sort(int[] sourceArray) throws Exception {\n" +
+                    "        // 对 arr 进行拷贝，不改变参数内容\n" +
+                    "        int[] arr = Arrays.copyOf(sourceArray, sourceArray.length);\n" +
+                    "\n" +
+                    "        int maxDigit = getMaxDigit(arr);\n" +
+                    "        return radixSort(arr, maxDigit);\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    /**\n" +
+                    "     * 获取最高位数\n" +
+                    "     */\n" +
+                    "    private int getMaxDigit(int[] arr) {\n" +
+                    "        int maxValue = getMaxValue(arr);\n" +
+                    "        return getNumLenght(maxValue);\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    private int getMaxValue(int[] arr) {\n" +
+                    "        int maxValue = arr[0];\n" +
+                    "        for (int value : arr) {\n" +
+                    "            if (maxValue < value) {\n" +
+                    "                maxValue = value;\n" +
+                    "            }\n" +
+                    "        }\n" +
+                    "        return maxValue;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    protected int getNumLenght(long num) {\n" +
+                    "        if (num == 0) {\n" +
+                    "            return 1;\n" +
+                    "        }\n" +
+                    "        int lenght = 0;\n" +
+                    "        for (long temp = num; temp != 0; temp /= 10) {\n" +
+                    "            lenght++;\n" +
+                    "        }\n" +
+                    "        return lenght;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    private int[] radixSort(int[] arr, int maxDigit) {\n" +
+                    "        int mod = 10;\n" +
+                    "        int dev = 1;\n" +
+                    "\n" +
+                    "        for (int i = 0; i < maxDigit; i++, dev *= 10, mod *= 10) {\n" +
+                    "            // 考虑负数的情况，这里扩展一倍队列数，其中 [0-9]对应负数，[10-19]对应正数 (bucket + 10)\n" +
+                    "            int[][] counter = new int[mod * 2][0];\n" +
+                    "\n" +
+                    "            for (int j = 0; j < arr.length; j++) {\n" +
+                    "                int bucket = ((arr[j] % mod) / dev) + mod;\n" +
+                    "                counter[bucket] = arrayAppend(counter[bucket], arr[j]);\n" +
+                    "            }\n" +
+                    "\n" +
+                    "            int pos = 0;\n" +
+                    "            for (int[] bucket : counter) {\n" +
+                    "                for (int value : bucket) {\n" +
+                    "                    arr[pos++] = value;\n" +
+                    "                }\n" +
+                    "            }\n" +
+                    "        }\n" +
+                    "\n" +
+                    "        return arr;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    /**\n" +
+                    "     * 自动扩容，并保存数据\n" +
+                    "     *\n" +
+                    "     * @param arr\n" +
+                    "     * @param value\n" +
+                    "     */\n" +
+                    "    private int[] arrayAppend(int[] arr, int value) {\n" +
+                    "        arr = Arrays.copyOf(arr, arr.length + 1);\n" +
+                    "        arr[arr.length - 1] = value;\n" +
+                    "        return arr;\n" +
+                    "    }\n" +
+                    "}",
                 options: {
                     tabSize: 2,
                     theme: "dracula",
@@ -4271,6 +4361,9 @@
             let editorBucketOrder = CodeMirror.fromTextArea(document.getElementById("BucketOrder"), this.options)
             editorBucketOrder.setValue(this.BucketOrder)
             editorBucketOrder.setSize('auto','300px');
+            let editorBaseOrder = CodeMirror.fromTextArea(document.getElementById("BaseOrder"), this.options)
+            editorBaseOrder.setValue(this.BaseOrder)
+            editorBaseOrder.setSize('auto','300px');
         }
     }
 
