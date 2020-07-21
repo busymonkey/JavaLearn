@@ -979,6 +979,24 @@
                             <p><span class="redBold">传递规则：</span>这个简单的，就是happens-before原则具有传递性，即A happens-before B ， B happens-before C，那么A happens-before C。</p>
                             <p><span class="redBold">对象终结规则：</span>这个也简单的，就是一个对象的初始化的完成，也就是构造函数执行的结束一定 happens-before它的finalize()方法。</p>
                         </accordion-item>
+                        <accordion-item class="stableBack" title="反射" content-height="1750">
+                            <p><span class="redBold">获取类</span></p>
+                            <div><textarea id="ReflectGetClass"></textarea></div>
+                            <p>其中前两种直接获取，不依靠实例对象，第三种依靠实例对象，第四种依靠子类（子类不依靠实例对象）。</p>
+                            <p><span class="redBold">获取方法及调用</span></p>
+                            <div><textarea id="ReflectGetMethod"></textarea></div>
+                            <p>getDeclaredMethod：第一个参数是需要反射的方法名，第二个参数和之后的参数是该方法所接受的参数的类名。<br>invoke：第一个参数是类的实例对象，第二个和后面的参数是该方法接受的参数对象，也可以这样表示：method1.invoke(obj, 1, "wahaha");</p>
+                            <p>Class.getDeclaredMethods()  方法是获取包括公共、保护、默认（包）访问和私有方法，但不包括继承的方法。当然也包括它所实现接口的方法。<br>Class.getMethods() 方法是获取所有公用（public）方法包括其继承类的公用方法，当然也包括它所实现接口的方法</p>
+                            <p><span class="redBold">获取注解</span></p>
+                            <p>Class.getAnnotation(Class<?> annotationClass)：获取类的注解。<br>Method.getAnnotation(Class<?> annotationClass)   ：获取方法的注解，参数都是目标注解的类。</p>
+                            <div><textarea id="ReflectGetAnnotation"></textarea></div>
+                            <p><span class="redBold">获取内部类</span></p>
+                            <p>Class&lt;?&gt;[] getDeclaredClasses()   返回类中定义的公共、私有、保护的内部类。<br>Class&lt;?&gt;[] getClasses()  返回类定义的公共的内部类,以及从父类、父接口那里继承来的内部类。</p>
+                            <p><span class="redBold">获取字段及赋值</span></p>
+                            <p>getDeclaredField，是可以获取一个类的所有字段。<br>getField，只能获取类的public 字段。<br><span class="redBold">setAccessible(true)，对私有字段赋值。</span></p>
+                            <p><span class="redBold">获取字段及赋值</span></p>
+                            <p>getSuperclass() 获取某类的父类<br>getInterfaces() 获取某类实现的接口</p>
+                        </accordion-item>
                         <accordion-item class="stableBack" title="流式编程" content-height="70">
                             <p>预留</p>
                         </accordion-item>
@@ -988,11 +1006,118 @@
         `,
         data() {
             return {
-
+                ReflectGetClass:
+                    "public class outerTest {\n" +
+                    "\tpublic String a = \"a\";\n" +
+                    "\tpublic String b = \"b\";\n" +
+                    "\t\n" +
+                    "\tpublic Class<?> getSelf() {\n" +
+                    "\t\treturn this.getClass();\n" +
+                    "\t}\n" +
+                    "\t\n" +
+                    "\tpublic void test1() {\n" +
+                    "\t\tSystem.out.println(\"test1\");  \n" +
+                    "\t}\n" +
+                    "\t\n" +
+                    "\tpublic void test2() {\n" +
+                    "\t\tSystem.out.println(\"test2\");  \n" +
+                    "\t}\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class Test extends outerTest {\t\n" +
+                    "\n" +
+                    "\tpublic static void main(String[] args) throws Exception {\n" +
+                    "\t\tClass<?> test1 = Class.forName(\"com.busy.outerTest\");\n" +
+                    "\t\tClass<?> test2 = outerTest.class;\n" +
+                    "\t\tObject obj = test1.newInstance();\n" +
+                    "\t\tClass<?> test3 = obj.getSelf();\n" +
+                    "\t\tClass<?> test4 = Test.class.getSuperclass();\n" +
+                    "\t\tSystem.out.println(test1.toString());\n" +
+                    "\t\tSystem.out.println(test2.toString());\n" +
+                    "\t\tSystem.out.println(test3.toString());\n" +
+                    "\t\tSystem.out.println(test4.toString());\n" +
+                    "\t}\n" +
+                    "}",
+                ReflectGetMethod:
+                    "getDeclaredMethod(String name, Class<?>... parameterTypes)\n" +
+                    "\n" +
+                    "Method.invoke(Object obj, Object... args)\n" +
+                    "\n" +
+                    "public class outerTest {  \n" +
+                    "      \n" +
+                    "    public String a = \"a\";  \n" +
+                    "    public String b = \"b\";  \n" +
+                    "      \n" +
+                    "    public Class<?> getSelf() {  \n" +
+                    "        return this.getClass();  \n" +
+                    "    }  \n" +
+                    "      \n" +
+                    "    public void test1(int a, String b) {  \n" +
+                    "        System.out.println(\"test1 : a = \" + a + \", b = \" + b);    \n" +
+                    "    }  \n" +
+                    "      \n" +
+                    "    public void test2() {  \n" +
+                    "        System.out.println(\"test2\");    \n" +
+                    "    }  \n" +
+                    "} \n" +
+                    "\n" +
+                    "import java.lang.reflect.Method;\n" +
+                    "  \n" +
+                    "public class Test {     \n" +
+                    "  \n" +
+                    "    public static void main(String[] args) throws Exception {  \n" +
+                    "        Class<?> test = Class.forName(\"com.busy.outerTest\");  \n" +
+                    "        Object obj = test.newInstance();\n" +
+                    "        Method method1 = test.getDeclaredMethod(\"test1\", int.class, String.class);\n" +
+                    "        method1.invoke(obj, new Object[] {1, \"wahaha\"});\n" +
+                    "    }  \n" +
+                    "} ",
+                ReflectGetAnnotation:
+                    "import java.lang.annotation.Retention;\n" +
+                    "import java.lang.annotation.RetentionPolicy;\n" +
+                    "\n" +
+                    "@Retention(RetentionPolicy.RUNTIME)\n" +
+                    "public @interface Demo {\n" +
+                    "\t\n" +
+                    "\tString str();\n" +
+                    "\n" +
+                    "\tint val();\n" +
+                    "}\n" +
+                    "\n" +
+                    "import java.lang.reflect.Method;\n" +
+                    "  \n" +
+                    "public class Test {     \n" +
+                    "  \n" +
+                    "    public static void main(String[] args) throws Exception {  \n" +
+                    "        Class<?> test = Class.forName(\"com.busy.outerTest\");  \n" +
+                    "        Object obj = test.newInstance();\n" +
+                    "        Method method1 = test.getDeclaredMethod(\"test1\", int.class, String.class);\n" +
+                    "        Method method2 = test.getDeclaredMethod(\"test2\");\n" +
+                    "        Method methodList1[] = test.getDeclaredMethods();\n" +
+                    "        Method methodList2[] = test.getMethods();\n" +
+                    "        Demo demoClass = test.getAnnotation(Demo.class);\n" +
+                    "        Demo demoMethod = method2.getAnnotation(Demo.class);\n" +
+                    "        method1.invoke(obj, 1, \"wahaha\");\n" +
+                    "    }  \n" +
+                    "} ",
+                options: {
+                    tabSize: 4,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
             }
         },
-        methods: {
-
+        mounted() {
+            let editorReflectGetClass = CodeMirror.fromTextArea(document.getElementById("ReflectGetClass"), this.options)
+            editorReflectGetClass.setValue(this.ReflectGetClass)
+            editorReflectGetClass.setSize('auto','300px')
+            let editorReflectGetMethod = CodeMirror.fromTextArea(document.getElementById("ReflectGetMethod"), this.options)
+            editorReflectGetMethod.setValue(this.ReflectGetMethod)
+            editorReflectGetMethod.setSize('auto','300px')
+            let editorReflectGetAnnotation = CodeMirror.fromTextArea(document.getElementById("ReflectGetAnnotation"), this.options)
+            editorReflectGetAnnotation.setValue(this.ReflectGetAnnotation)
+            editorReflectGetAnnotation.setSize('auto','300px')
         }
     }
 
@@ -3689,6 +3814,10 @@
                             <div><textarea id="Proxy"></textarea></div>
                             <p><span class="redBold">cglib动态代理：</span>JDK的动态代理机制只能代理实现了接口的类，而不能实现接口的类就不能实现JDK的动态代理，cglib是针对类来实现代理的，他的原理是对指定的目标类生成一个子类，并覆盖其中方法实现增强，<span class="redBold">但因为采用的是继承，所以不能对final修饰的类进行代理。</span></p>
                             <div><textarea id="CGlibProxy"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="IOC和DI" content-height="300">
+                            <p>一般情况下我们直接在对象内部通过new进行创建对象，是程序主动去创建依赖对象；而IoC是有专门一个容器来创建这些对象，即由Ioc容器来控制对象的创建；这样就是由容器来控制对象，而不是由我们的对象来控制，这样就完成了控制反转。</p>
+                            <p>DI(Dependency Injection）即“依赖注入”：是组件之间依赖关系由容器在运行期决定，形象的说，即由容器动态的将某个依赖关系注入到组件之中。依赖注入的目的并非为软件系统带来更多功能，而是为了提升组件重用的频率，并为系统搭建一个灵活、可扩展的平台。通过依赖注入机制，我们只需要通过简单的配置，而无需任何代码就可指定目标需要的资源，完成自身的业务逻辑，而不需要关心具体的资源来自何处，由谁实现。</p>
                         </accordion-item>
                     </accordion>
                 </div>
