@@ -3768,10 +3768,10 @@
                             <p>Spring是一个生态体系（也可以说是技术体系），是集大成者，它包含了Spring Framework、Spring Boot、Spring Cloud等（还包括Spring Cloud data flow、spring data、spring integration、spring batch、spring security、spring hateoas）</p>
                             <div><img src="./img/ssmBasic.bmp" width="100%"></div>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="Spring Framework" content-height="900">
+                        <accordion-item class="stableBack" title="Spring Framework" content-height="980">
                             <p>是一个开源容器框架，可以接管web层，业务层，dao层，持久层的组件，并且可以配置各种bean,和维护bean与bean之间的关系。其核心就是控制反转(IOC),和面向切面(AOP),简单的说就是一个分层的轻量级开源框架。</p>
                             <div><img src="./img/springFramework.bmp" width="100%"></div>
-                            <p><span class="redBold">Spring Core：</span>Spring 框架的核心。Spring其它组件都依赖于核心组件，主要通过BeanFactory提供IOC等服务。<br><span class="redBold">Spring Context：</span>Sprin上下文是一个配置文件，向 Spring框架提供上下文信息。Spring 上下文包括企业服务，例如JNDI、EJB、电子邮件、国际化、校验和调度功能。<br><span class="redBold">Spring AOP：</span>通过配置管理特性，Spring AOP 模块直接将面向切面的编程功能集成到了 Spring 框架中。<br><span class="redBold">Spring ORM：</span>Spring 框架插入了若干个ORM框架，从而提供了 ORM 的对象关系工具，其中包括JDO、Hibernate和iBatisSQL Map。所有这些都遵从 Spring 的通用事务和 DAO 异常层次结构。<br><span class="redBold">Spring DAO：</span>DAO抽象层提供了有意义的异常层次结构，可用该结构来管理异常处理和不同数据库供应商抛出的错误消息。异常层次结构简化了错误处理，并且极大地降低了需要编写的异常代码数量（例如打开和关闭连接）。Spring DAO 的面向 JDBC 的异常遵从通用的 DAO 异常层次结构。<br><span class="redBold">Spring Web：</span>Web 上下文模块建立在应用程序上下文模块之上，为基于 Web 的应用程序提供了上下文。所以，Spring框架支持与 Jakarta Struts 的集成。Web 模块还简化了处理多部分请求以及将请求参数绑定到域对象的工作。<br><span class="redBold">Spring Web MVC：</span>为 web 应用提供了模型视图控制（MVC）和 REST Web 服务的实现。Spring 的 MVC 框架可以使领域模型代码和 web 表单完全地分离，且可以与 Spring 框架的其它所有功能进行集成。<br></p>
+                            <p><span class="redBold">Core：</span>Spring 框架的核心。Spring其它组件都依赖于核心组件，主要通过BeanFactory提供IOC等服务。<br><span class="redBold">Context：</span>Sprin上下文是一个配置文件，向 Spring框架提供上下文信息。Spring 上下文包括企业服务，例如JNDI、EJB、电子邮件、国际化、校验和调度功能。<br><span class="redBold">AOP：</span>通过配置管理特性，Spring AOP 模块直接将面向切面的编程功能集成到了 Spring 框架中。<br><span class="redBold">ORM：</span>Spring 框架插入了若干个ORM框架，从而提供了 ORM 的对象关系工具，其中包括JDO、Hibernate和iBatisSQL Map。所有这些都遵从 Spring 的通用事务和 DAO 异常层次结构。<br><span class="redBold">DAO：</span>DAO抽象层提供了有意义的异常层次结构，可用该结构来管理异常处理和不同数据库供应商抛出的错误消息。异常层次结构简化了错误处理，并且极大地降低了需要编写的异常代码数量（例如打开和关闭连接）。Spring DAO 的面向 JDBC 的异常遵从通用的 DAO 异常层次结构。<br><span class="redBold">Web：</span>Web 上下文模块建立在应用程序上下文模块之上，为基于 Web 的应用程序提供了上下文。所以，Spring框架支持与 Jakarta Struts 的集成。Web 模块还简化了处理多部分请求以及将请求参数绑定到域对象的工作。<br><span class="redBold">Web MVC：</span>为 web 应用提供了模型视图控制（MVC）和 REST Web 服务的实现。Spring 的 MVC 框架可以使领域模型代码和 web 表单完全地分离，且可以与 Spring 框架的其它所有功能进行集成。<br><span class="redBold">JDBC：</span>模块提供了一个JDBC抽象层来移除冗长乏味的JDBC编码和解析数据库供应商明确的错误代码。<br><span class="redBold">OXM：</span>模块提供一个支持Object/XML mapping实现(比如JAXB,XMLBeans,JiBX和XStream)的抽象层<br></p>
                         </accordion-item>
                         <accordion-item class="stableBack" title="SpringMVC" content-height="150">
                             <p>Spring MVC属于SpringFrameWork的后续产品，已经融合在Spring Web Flow里面。SpringMVC是一种web层mvc框架，用于替代servlet（处理|响应请求，获取表单参数，表单校验等。SpringMVC是一个MVC的开源框架，SpringMVC=struts2+spring，springMVC就相当于是Struts2加上Spring的整合。</p>
@@ -3781,6 +3781,12 @@
                         </accordion-item>
                         <accordion-item class="stableBack" title="SpringCloud" content-height="120">
                             <p>最后就是大名鼎鼎的Spring Cloud了，Spring Cloud事实上是一整套基于Spring Boot的微服务解决方案。它为开发者提供了很多工具，用于快速构建分布式系统的一些通用模式，例如：配置管理、注册中心、服务发现、限流、网关、链路追踪等。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="ORM" content-height="120">
+                            <p>对象关系映射（Object Relational Mapping，简称ORM）是通过使用描述对象和数据库之间映射的元数据，将面向对象语言程序中的对象自动持久化到关系数据库中。本质上就是将数据从一种形式转换到另外一种形式。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="JMS" content-height="140">
+                            <p>JMS即Java消息服务（Java Message Service）应用程序接口，是一个Java平台中关于面向消息中间件（MOM）的API，用于在两个应用程序之间，或分布式系统中发送消息，进行异步通信。Java消息服务是一个与具体平台无关的API，绝大多数MOM提供商都对JMS提供支持。</p>
                         </accordion-item>
                     </accordion>
                 </div>
