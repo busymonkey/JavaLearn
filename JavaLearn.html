@@ -3084,6 +3084,12 @@
                             <p>出于浏览器的同源策略限制。同源策略（Sameoriginpolicy）是一种约定，它是浏览器最核心也最基本的安全功能，如果缺少了同源策略，则浏览器的正常功能可能都会受到影响。可以说Web是构建在同源策略基础之上的，浏览器只是针对同源策略的一种实现。同源策略会阻止一个域的javascript脚本和另外一个域的内容进行交互。所谓同源（即指在同一个域）就是两个页面具有相同的协议（protocol），主机（host）和端口号（port）</p>
                             <div><img src="./img/cors.bmp" width="100%"></div>
                         </accordion-item>
+                        <accordion-item class="stableBack" title="SSL/TSL" content-height="430">
+                            <p>SSL：（Secure Socket Layer，安全套接字层），位于可靠的面向连接的网络层协议和应用层协议之间的一种协议层。SSL通过互相认证、使用数字签名确保完整性、使用加密确保私密性，以实现客户端和服务器之间的安全通讯。该协议由两层组成：SSL记录协议和SSL握手协议。HTTPS=HTTP+SSL</p>
+                            <p>TLS：(Transport Layer Security，传输层安全协议)，用于两个应用程序之间提供保密性和数据完整性。该协议由两层组成：TLS记录协议和TLS握手协议，较低的层为 TLS 记录协议，位于某个可靠的传输协议（例如 TCP）上面。</p>
+                            <p>TLS是在SSL的基础上标准化的产物，目前SSL3.0与TLS1.0保持一致的，二者是并列关系，只是大家习惯称呼SSL。注明的web服务nginx默认支持的就是TLS1.0、TLS1.1、TLS1.2协议。调用的openssl库中，对应的就是ssl3_acceptt函数。</p>
+                            <p>SSL/TLS位于传输层和应用层之间，应用层数据不再直接传递给传输层，而是传递给SSL层，SSL层对从应用层收到的数据进行加密，并增加自己的SSL头。</p>
+                        </accordion-item>
                     </accordion>
                 </div>
             </div>
@@ -3921,7 +3927,7 @@
                 <div class="page-content">
                     <von-header :theme="'stable'">
                         <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
-                        <span slot="title"><h3 class="padding text-center headerTop">Distribute</h3></span>
+                        <span slot="title"><h3 class="padding text-center headerTop">分布式</h3></span>
                     </von-header>
                     <accordion default-index="0">
                         <div class="item item-divider dividerFont">分布式事务（概念）</div>
@@ -3959,6 +3965,32 @@
                             <p><span class="redBold">事务中断：</span>假如任何一个参与者反馈给协调者No响应，或者在等待超时之后，协调者没有收到所有参与者的响应，那么就会中断事务</p>
                             <p>发送回滚请求：协调者向所有参与者发送Rollback请求</p>
                             <p>事务回滚：参与者接收到Rollback请求后，会利用其在阶段一中记录的Undo信息来执行事务回滚操作，完成回滚之后释放在整个事务执行期间占用的资源，并向协调者发送Ack消息，协调者接收到所有的参与者反馈的Ack消息后，完成事务中断</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="Paxos" content-height="1850">
+                            <p>Paxos是分布式的基础，其他大多数算法基本都是由Paxos引申出来。</p>
+                            <p>说到分布式一致性协议，Paxos 肯定是绕不开的，关于它和其作者 Lamport 的传奇故事也是有很多，这里就不啰嗦了，感兴趣的可以自行搜索。作为几种常见协议的基础，Paxos 提供了“选举” 的思想，Lamport 为了简化 Paxos，也为了讲述这个算法，假想了一个叫做 Paxos 的希腊城邦进行选举的情景，这个算法也是因此而得名。</p>
+                            <p><span class="redBold">Paxos 算法的步骤是这样：</span></p>
+                            <p><span class="redBold">1、</span>首先有两种角色，一个是“提议者”，一个是“接受者”。提议者可以向接受者提出提议，然后接受者表达意见。</p>
+                            <p><span class="redBold">2、</span>因为存在多个提议者，如果同时表达意见会出现意见不一致的情况，所以首先需要尽快选出一个领导者，让意见统一。</p>
+                            <p><span class="redBold">3、</span>然后领导者会给接受者发出提议，如果一个提议被大多数接受者接纳，这个提议就通过了。</p>
+                            <p><span class="redBold">大致的流程是这样，再完善一下细节：</span></p>
+                            <p><span class="redBold">1、</span>如何明确领导者？这里会有两个阶段：</p>
+                            <p><span class="redBold">2、</span>第一阶段是先达成一致，协商出领导者，具体方法就是通过编号，提议者会先报告一个编号，谁的编号最大谁就是领导（Lamport 巧妙的比喻为“贿选”，谁出的钱多就选谁）。</p>
+                            <p><span class="redBold">3、</span>然后第二阶段就是上一轮胜出的领导提出提议，发送给各个接受者。</p>
+                            <p><span class="redBold">4、</span>跟常识不太一样的是，每个提议者不会执着于当领导，而是谋求尽快达成共识，所以如果在一个提议者提议的时候，如果发现接受者已经接受了其他领导者的提议，也会默默的把自己的提议改为前面领导者的提议。</p>
+                            <p><span class="redBold">5、</span>编号不能太小，很小的话前两个阶段都会直接失败，接受者拒绝接受你的提议。</p>
+                            <p><span class="redBold">6、</span>在步骤 2 中，还有可能出现冲突：比如如果一个提议者在对接受者 A 提议的时候，发现 A 接受了领导者 L1 的提议，然后又去接受者 B 那里提议，发现 B 接受了领导者 L2 的提议，已知这个提议者肯定会跟随前面已经存在的提议，那么他会把自己的提议改为上面两个的哪个呐？答案是数值更大的那个。</p>
+                            <p><span class="redBold">7、</span>在达成共识之前，这整个阶段，哪个提议者先来，哪个后来，接受者什么时候收到提议者的信息，都是不可控的。所以有可能产生这样一种情况：一个提议者已经晋升为领导者，但是还没发起提议，这时候另外一个“土豪”提议者过来，疯狂“贿选”，还是存在机会让自己胜出的。这时就形成了一种博弈：</p>
+                            <p><span class="redBold">8、</span>上一个领导者要赶在土豪提议者贿赂到接受者前，赶到接受者面前让他接受自己的提议，否则会因为自己的之前贿赂的钱比土豪少而被拒绝。</p>
+                            <p><span class="redBold">9、</span>土豪“提议者”要赶在上一个领导者将提议传达给接受者前，贿赂到接受者，否则土豪提议者即便贿赂成功，也要默默的将自己的提议改为前任意见领袖的提议。</p>
+                            <p>这整个博弈的过程，最终就看这两个提议者谁的进展快了。但最终一定会有一个领导者，先得到多数接受者的认可，那他的提议就胜出了。</p>
+                            <p><span class="redBold">总结来看，Paxos 包括以下几个原则：</span></p>
+                            <p><span class="redBold">1、</span>Paxos 算法包括两个阶段：第一个阶段主要是贿选，还没有提出提议；第二个阶段主要根据第一阶段的结果，明确接受谁的提议，并明确提议的内容是什么（这个提议可能是贿选胜出提议者自己的提议，也可能是前任意见领袖的提议，具体是哪个提议，往下看，见下面第 3 点的内容）。</p>
+                            <p><span class="redBold">2、</span>编号（贿赂金额）很重要，无论在哪个阶段，编号（贿赂金额）小的，都会被拒绝。</p>
+                            <p><span class="redBold">3、</span>在第一阶段中，一旦接受者已经接受了之前领导者的提议，那后面再来找这个接受者的提议者，即便在贿赂中胜出，也要被洗脑，默默将自己的提议改为前任意见领袖的提议，然后他会在第二阶段提出该提议（也就是之前意见领袖的提议，以力争让大家的意见趋同）。如果接受者之前没有接受过任何提议，那贿选胜出的提议者就可以提出自己的提议了。</p>
+                            <p>以上，我们说的 Paxos 其实又叫 Basic Paxos，只具备理论基础，实际上实现起来很麻烦而且效率低。因为每次同步一个信息，就要进行上述繁杂的达成共识阶段，无异会产生巨大的开销。</p>
+                            <p>于是后来又有了进阶版的 Multi Paxos 协议。只要 Leader 是相对稳定不变的，第 1 阶段就变得不必要。 这样，系统可以在接下来的 Paxos 算法实例中，跳过的第 1 阶段，直接使用同样的 Leader。</p>
+                            <p>Multi Paxos 本身对一些边缘情况没有定义，所以大多数实际应用是基于 Multi Paxos 进行补充，或者使用它的变种 Raft。</p>
                         </accordion-item>
                         <accordion-item class="stableBack" title="Raft" content-height="270">
                             <p>在Raft中，任何时候一个服务器可以扮演下面角色之一：</p>
