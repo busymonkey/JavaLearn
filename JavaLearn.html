@@ -4372,23 +4372,23 @@
                         <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
                         <span slot="title"><h3 class="padding text-center headerTop">算法</h3></span>
                     </von-header>
-                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="1"></cells>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="2"></cells>
                 </div>
             </div>
         `,
         data() {
             return {
-                cells: ['考题','排序'],
+                cells: ['排序','剑指Offer题','剑指Offer解','LeetCode题&解','其他算法题&解'],
             }
         },
         methods: {
             onCellClick(cellIndex) {
                 switch (cellIndex) {
-                    case 0: this.$router.push({path: `/question`}); break;
-                    case 1: this.$router.push({path: `/order`}); break;
-                    case 2: break;
-                    case 3: break;
-                    case 4: break;
+                    case 0: this.$router.push({path: `/order`}); break;
+                    case 1: this.$router.push({path: `/offerQuestion`}); break;
+                    case 2: this.$router.push({path: `/offerSolve`}); break;
+                    case 3: this.$router.push({path: `/leetCode`}); break;
+                    case 4: this.$router.push({path: `/otherQS`}); break;
                     case 5: break;
                     default: this.$router.push({path: `/demo`});
                 }
@@ -4396,247 +4396,7 @@
             },
         }
     }
-    //// 一级 考题
-    const Question = {
-        template: `
-            <div class="page has-navbar" v-nav="{hideNavbar: true}">
-                <div class="page-content">
-                    <von-header :theme="'stable'">
-                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/algorithm')"></button>
-                        <span slot="title"><h3 class="padding text-center headerTop">考题</h3></span>
-                    </von-header>
-                    <accordion default-index="0">
-                        <div class="item item-divider dividerFont">剑指Offer（基础篇）</div>
-                        <accordion-item class="stableBack" title="2、singleton" content-height="70">
-                            <p>写一个singleton</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="3、数组中的重复数字" content-height="300">
-                            <p>题目一【找出数组中的重复数字】在一个长度为n的数组里的所有数字都在0~n-1范围内。数组中某些数字是重复的，但不知道有几个数字重复了，也不知道每个数字重复了几次。请找出数组中任意一个重复的数字。例如，如果输入长度为7的数组{2,3,1,0,2,5,3}，那么对应输出是重复的数字2或3【时间复杂度O(n)，空间复杂度O(1)】</p>
-                            <p>题目二【不修改数组找出重复数字】在一个长度为n+1的数组里的所有数字都在1~n的范围内，所以数组中至少有一个数字是重复的，请找出数组中任意一个重复的数字，但不能修改输入的数组。例如，如果输入长度为8的数组{2,3,5,4,3,2,6,7}，那么对应的输出是重复的数字2或者3【时间复杂度O(n)，空间复杂度O(n)，或者时间复杂度O(nlogn)，空间复杂度O(1)】</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="4、二维数组的查找" content-height="280">
-                            <p>题目：在一个二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。例如下面的二维数组就是每行，每列都是递增排序。如果在这个数组中查找数字7，则返回true；如果查找5，则返回false；</p>
-                            <p>1    2    8    9</p>
-                            <p>2    4    9    12</p>
-                            <p>4    7    10    13</p>
-                            <p>6    8    11    15</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="5、替换空格" content-height="170">
-                            <p>题目一：请实现一个函数，把字符串中的每个空格替换成“%20”。例如，输入“We are happy.”，则输出“We%20are%20happy.”。【O(n)】</p>
-                            <p>题目二：有两个排序数组A1和A2，内存在A1的末尾有足够多的空余空间容纳A2，请实现一个函数，把A2中的所有数字插入A1，并且所有数字是排序的。【O(n)】</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="6、从尾到头打印链表" content-height="80">
-                            <p>题目：输入一个链表的头节点，从尾到头反过来打印出每个节点的值。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="7、重建二叉树" content-height="80">
-                            <p>题目：输入某二叉树的前序遍历和中序遍历的结果，请重建二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复数字。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="8、二叉树的下一个节点" content-height="100">
-                            <p>题目：给定一棵二叉树和其中的一个节点，如何找出中序遍历序列的下一个节点？树中的节点除了有两个分别指向左、右节点的指针，还有一个指向父节点的指针。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="9、用两个栈实现队列" content-height="100">
-                            <p>题目：用两个栈实现一个队列。请实现它的两个函数appendTail和deleteHead，分别完成在队尾部插入节点和在队头部删除节点的功能</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="10、斐波那契数列" content-height="140">
-                            <p>题目一：写一个函数，输入n，求斐波那契（F'ibonacci）数列的第n项。【O(n)，不能递归】</p>
-                            <p>题目二：【青蛙跳台阶】一只青蛙一次可跳上1级台阶，也可以跳上2级台阶。求该青蛙跳上一个n级台阶共多少总跳法。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="11、旋转数组的最小数字" content-height="120">
-                            <p>题目：把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个递增排序的数组的一个旋转，输出旋转数组的最小元素。例如，数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1【O(logn)】。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="12、矩阵中的路径" content-height="300">
-                            <p>题目：请设计一个函数，用来判断在一个矩阵中是否存在一条包含某字符串所有字符的路径。路径可以从矩阵中的任意一格开始，每一步可以在矩阵中向上、下、左、右移动一格。如果一条路径经过了矩阵的某一格，那么该路径不能再次进入该格子。例如，在下面的3*4的矩阵中包含一条字符串“bfce”的路径（路径中的字母用下划线标出）。但矩阵中不包含字符串“abfb”的路径，因为字符串的第一个字符b占据了矩阵中的第一行第二个格子之后，路径不能再次进入这个格子【回溯】</p>
-                            <p>a    <span class="fontUnderline">b</span>    t    g</p>
-                            <p>c    <span class="fontUnderline">f</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fontUnderline">c</span>    s</p>
-                            <p>j    d    <span class="fontUnderline">e</span>    h</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="14、剪绳子" content-height="160">
-                            <p>题目：给你一根长度为n的绳子，请把绳子剪成m段（m、n都是整数，n>1  and m>1）每段绳子的长度记为k[0],k[1],...,k[m]。请问k[0]*k[1]*...*k[m]可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2，3，3的三段，此时得到的最大乘积是18【动态规划时间复杂度O(n²)空间复杂度O(n)，贪心算法O(1)】。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="15、二进制中1的个数" content-height="100">
-                            <p>题目：请实现一个函数，输入一个整数，输出该数二进制表示中1的个数。例如，把9表示成二进制是1001，有2位是1。因此输入9，则输出2。</p>
-                        </accordion-item>
-                        <div class="item item-divider dividerFont">剑指Offer（高质量代码）</div>
-                        <accordion-item class="stableBack" title="16、数值的整数次方" content-height="100">
-                            <p>题目：实现函数 double Power(double base, int exponent)，求base的exponent次方。不得使用库函数，同时不需要考虑大数问题。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="17、打印从1到最大的n位数" content-height="100">
-                            <p>题目：输入数字n，按顺序打印出从1到最大的n位十进制数。比如输入3，则打印出1、2、3一直到最大3位数999。【考虑大数】</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="18、删除链表的节点" content-height="140">
-                            <p>题目一：【在O(1)时间内删除链表节点】给定单向链表的头指针和一个节点指针，定义一个函数在O(1)时间内删除该节点。</p>
-                            <p>题目二：【删除链表中重复的节点】在一个排序列表中，如何删除重复节点，例如：1-2-3-3-4-4-5，删除之后变成了1-2-5</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="19、正则表达式" content-height="140">
-                            <p>题目：请实现一个函数用来匹配包含'.'和'*'的正则表达式。模式中的字符'.'表示任意一个字符，而'*'表示它前面的字符可以出现任意次数（包括0次）。在本题中，匹配是指字符串的所有字符匹配这个模式。例如，字符串"aaa"与模式"a.a"、"ab*ac*a"匹配，但与"aa.a"和"ab*a"均不匹配。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="21、调整数组顺序使奇数位于偶数前面" content-height="120">
-                            <p>题目：输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有奇数位于数组的前半部分，所有偶数位于后半部分【O(n)】.</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="22、链表中倒数第k个节点" content-height="140">
-                            <p>题目：输入一个链表，输出该链表中倒数第k个节点。为符合大多数人的习惯，本题从1开始计数，即链表的尾节点是倒数第一个节点。例如，一个链表有6个节点，从头节点开始，他们的值依次是1，2，3，4，5，6。这个链表倒数第三个节点是值为4的节点【单次遍历，考虑代码鲁棒性】。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="23、链表中环的入口节点" content-height="190">
-                            <p>题目：如果一个链表中包含环，如何找出环的入口节点？如下图所示，入口节点是值为3的节点</p>
-                            <div><img src="./img/offer23.bmp" width="100%"></div>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="24、翻转链表" content-height="100">
-                            <p>题目：定义一个函数，输入一个链表的头节点，翻转该链表并输出翻转后的链表头结点。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="25、合并两个排序的链表" content-height="100">
-                            <p>题目：输入两个递增排序的链表，合并这两个链表并使新链表中的节点仍然是递增排序的。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="26、树的子结构" content-height="100">
-                            <p>题目：输入两颗二叉树A和B，判断B是不是A的子结构。</p>
-                        </accordion-item>
-                        <div class="item item-divider dividerFont">剑指Offer（复杂问题：画图举例分解）</div>
-                        <accordion-item class="stableBack" title="27、二叉树的镜像" content-height="270">
-                            <p>题目：请完成一个函数，输入一棵二叉树，该函数输出它的镜像。</p>
-                            <div><img src="./img/offer27.bmp" width="100%"></div>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="28、对称二叉树" content-height="270">
-                            <p>题目：请实现一个函数，用来判断一棵二叉树是不是对称的。如果一个二叉树和它的镜像一样，那么它是对称二叉树。例如下图，第一棵二叉树是对称的，另外两个不是。</p>
-                            <div><img src="./img/offer28.bmp" width="100%"></div>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="29、顺时针打印矩阵" content-height="250">
-                            <p>题目：输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字。例如，如果输入如下矩阵：</p>
-                            <div><img src="./img/offer29.bmp" width="100%"></div>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="30、包含min函数的栈" content-height="120">
-                            <p>题目：定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的min函数。在该栈中，调用min，push，pop的时间复杂度均为O(1)。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="31、从上到下打印二叉树" content-height="670">
-                            <p>题目一【不分行从上到下打印二叉树】从上到下打印出二叉树的每个子节点，同一层的节点按照从左到右的顺序打印。例如，输入下图的二叉树，则依次打印 8,6,10,5,7,9,11 。</p>
-                            <div><img src="./img/offer32-01.bmp" width="100px"></div>
-                            <p>题目二【分行从上到下打印二叉树】从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印一行。如下</p>
-                            <div><img src="./img/offer32-02.bmp" width="150px"></div>
-                            <p>题目三【之字形打印二叉树】请实现一个函数按照之字形顺序打印二叉树，即第一行按照从左到右的顺序打印，第二层按照从右到左的顺序打印，第三行再按照从左到右的顺序打印，其他行以此类推。例如下图</p>
-                            <div><img src="./img/offer32-03.bmp" width="150px"></div>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="33、二叉搜索树的后序遍历序列" content-height="220">
-                            <p>题目：输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。假设输入的数组任意两个数字均不相等。例如，输入数组{5,7,6,9,11,10,8}则返回true，因为整个序列是下图二叉搜索树的后序遍历结果。如果输入数组{7,4,6,5}，则返回false。</p>
-                            <div><img src="./img/offer33.bmp" width="100px"></div>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="34、二叉树中和为某一值得路径" content-height="120">
-                            <p>题目：输入一棵二叉树和一个整数，打印出二叉树中节点值的和为输入整数的所有路径。从树的根节点开始往下一直到叶子节点所经过的节点形成一条路径</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="35、复杂链表的复制" content-height="400">
-                            <p>题目：实现函数ComplexListNode* Clone(ComplexListNode* pHead)，复制一个复杂链表。在复杂链表中，每个节点除了一个m_pNext指针指向下一个节点，还有一个m_pSibling指针指向链表中的任意节点或nullptr，节点定义和示例复杂链表如下</p>
-                            <div><img src="./img/offer35.bmp" width="300px"></div>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="36、二叉搜索树与双向链表" content-height="300">
-                            <p>题目：输入一棵<span class="redBold">二叉搜索树</span>，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新节点，只能调整树种的节点指针的指向。如下</p>
-                            <div><img src="./img/offer36.bmp" width="100%"></div>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="37、序列化二叉树" content-height="100">
-                            <p>题目：请实现两个函数，分别用来序列化和反序列化二叉树</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="38、字符串排列" content-height="100">
-                            <p>题目：输入一个字符串，打印出该字符串中字符的所有排列。例如，输入字符串abc，则打印出由字符a,b,c所能排列出来的所有字符串abc、acb、bac、bca、cab、cba。</p>
-                        </accordion-item>
-                        <div class="item item-divider dividerFont">剑指Offer（效率）</div>
-                        <accordion-item class="stableBack" title="39、字符串排列" content-height="100">
-                            <p>题目：输入一个字符串，打印出该字符串中字符的所有排列。例如，输入字符串abc，则打印出由字符a,b,c所能排列出来的所有字符串abc、acb、bac、bca、cab、cba。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="40、最小的k个数" content-height="100">
-                            <p>题目：输入n个整数，找出其中最小的k个数，例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="41、数据流中的中位数" content-height="100">
-                            <p>题目：如何得到一个数据流中的中位数，如果从数据流中读出奇数个数值，那么中位数就是所有数值排序的中间的数值，偶数个则是中间两个数的平均值【O(n)、O(logn)】。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="42、连续子数组的最大和" content-height="100">
-                            <p>题目：输入一个整型数组，数组里有正数也有负数。数组中的一个或连续多个整数组成一个子数组。求所有子数组的和的最大值【O(n)】。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="43、1~n整数中1出现的次数" content-height="100">
-                            <p>题目：输入一个整数n，求1~n这n个整数的十进制表示中1出现的次数，例如，输入12，1~12这些整数中包含1的数字有1，10，11和12，1一共出现5次。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="44、数字序列中的某一位数字" content-height="120">
-                            <p>题目：数字以01234567891011121314151617...的格式序列化到一个字符序列中。在这个序列中，第5位（从0开始计数）是5，第13位是1，第19位是4，等等。请写一个函数，求任意第n位对应的数字。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="45、把数组排成最小的数" content-height="120">
-                            <p>题目：输入一个正整数数组，把数组里所有数字拼起来排成一个数，打印能拼接处的所有数字中最小的一个。例如输入数组{3,32,321}，则打印321323。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="46、把数字翻译成字符串" content-height="120">
-                            <p>题目：给定一个数字，我们按照如下规则把它翻译成字符串：0翻译成a，1翻译成b，......，11翻译成l，25翻译成z，一个数字可能有多个翻译。例如，12258有5种不同的翻译，分别是bccfi，bwfi，bczi，mcfi，mzi，请编程实现一个函数，用来计算一个数字有多少种不同的翻译方法。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="47、礼物的最大价值" content-height="260">
-                            <p>题目：在一个m*n的棋盘的每一格都放有一个礼物，每个礼物都有一定价值（>0）。你可以从棋盘的左上角开始拿格子里的礼物，并每次向右或者向下移动一格，直到到达棋盘的右下角。给定一个棋盘及上面的礼物，请计算最多能拿到多少价值的礼物。</p>
-                            <div><img src="./img/offer47.bmp" width="100%"></div>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="48、最长不含重复字符的子字符串" content-height="120">
-                            <p>题目：请从字符串中找出一个最长的不包含重复字符的子字符串，计算该最长子字符串的长度。假设字符串中只包含a~z的字符。例如，在字符串arabcacfr中，最长的不包含重复字符的子字符串是acfr，长度是4。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="49、丑数" content-height="120">
-                            <p>题目：我们把只包含因子2、3和5的数称作丑数。求按从小到大顺序的第1500个丑数。例如，6、8都是丑数，但14不是，习惯上我们把1当做第一个丑数。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="50、第一个只出现一次的字符" content-height="120">
-                            <p>题目：字符串中第一个只出现一次的字符，在字符串中找出第一个只出现一次的字符。如输入abaccdeff，则输出b。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="51、数组中的逆序对" content-height="120">
-                            <p>题目：在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组，求出这个数组中的逆序对的总数。例如，在数组{7,5,6,4}中，一共存在5个逆序对，分别是{7,6},{7,5},{7,4},{6,4},{5,4}。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="52、两个链表的第一个公共节点" content-height="110">
-                            <p>题目：输入两个链表，找出它们的第一个公共节点。</p>
-                        </accordion-item>
-                        <div class="item item-divider dividerFont">剑指Offer（举一反三）</div>
-                        <accordion-item class="stableBack" title="53、在排序数组中查找数字" content-height="280">
-                            <p>题目一【数字在排序数组中出现的次数】统计一个数字在排序数组中出现的次数，例如，输入排序数组{1,2,3,3,3,3,4,5}和数字3，由于3在这个数组中出现了4次，因此输出4。</p>
-                            <p>题目二【0~n-1中缺失的数字】一个长度为n-1的递增排序数组中的所有数字都是唯一的，并且每个数字都在范围0~n-1之内。在范围0~n-1内的n个数字中有且只有一个数字不在该数组中，请找出。</p>
-                            <p>题目三【数组中数值和下标相等的元素】假设一个单调递增的数组里的每个元素都是整数并且是唯一的。请实现函数，找出数组中任意一个数值等于其下标的元素，例如在数组{-3,-1,1,3,5}中，数组3和它的下标相等。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="54、二叉搜索树的第k大节点" content-height="280">
-                            <p>题目：给定一棵二叉搜索树，请找出其中第k大的节点。例如下图，第三大节点的值是4</p>
-                            <div><img src="./img/offer54.bmp" width="150px"></div>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="55、二叉树的深度" content-height="200">
-                            <p>题目一【二叉树的深度】输入一棵二叉树的根节点，求该树的深度。从根节点到叶子节点依次经过的节点（含根、叶节点）形成树的一条路径，最长路径的长度为树的深度。</p>
-                            <p>题目二【平衡二叉树】输入一棵二叉树的根节点，判断该树是不是平衡二叉树。如果某二叉树中任意节点的左、右子树的深度相差不超过1，那么它就是一颗平衡二叉树。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="56、数组中数字出现的次数" content-height="200">
-                            <p>题目一【数组中只出现一次的两个数字】一个整型数组里除了两个数字之外，其他数字都出现了两次。请写程序找出这两个只出现一次的数字。【O(n)，空间O(1)】</p>
-                            <p>题目二【数组中唯一只出现一次的数字】在一个数组中除一个数字只出现一次之外，其他数字都出现了三次。请找出唯一的数字。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="57、和为s的数字" content-height="200">
-                            <p>题目一【和为s的两个数字】输入一个递增排序的数组和一个数字s，在数组中查找两个数，使得它们的和正好是s。如果有多对，则任意输出一对。</p>
-                            <p>题目二【和为s的连续正数序列】输入一个正数s，打印出所有和为s的连续正数序列（至少含有两个数）。例如，输入15，由于1+2+3+4+5=4+5+6=7+8=15，所以打印出三个连续序列1~5，4~6，7~8.</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="58、翻转字符串" content-height="200">
-                            <p>题目一【翻转单词顺序】输入一个英文句子，翻转句子中单词的顺序，但单词内字符的顺序不变。为简单起见，标点符号和普通字母一样处理。例如输入字符串为I am a student. 输出 student. a am I。</p>
-                            <p>题目二【左旋转字符串】字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串abcsefg和数字2，输出cdefgab。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="59、队列的最大值" content-height="200">
-                            <p>题目一【滑动串口的最大值】给定一个数组和滑动窗口的大小，请找出所有滑动窗口里的最大值。例如，如果输入数组{2,3,4,2,6,2,5,1}及滑动串口大小为3，那么一共存在6个滑动窗口，他们的最大值分别为{4,4,6,6,6,5}【O(n)】。</p>
-                            <p>题目二【队列的最大值】请定义一个队列并实现函数max得到队列里的最大值，要求函数max、push_back、pop_front的时间复杂度都是【O(1)】。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="60、n个骰子的点数" content-height="100">
-                            <p>题目：把n个骰子扔在地上，所有骰子朝上一面的点数之和为s。输入n，打印出s的所有可能出现的概率。【循环】</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="61、扑克牌中的顺子" content-height="100">
-                            <p>题目：从扑克牌中随机抽5张牌，判断是不是一个顺子，即这5张牌是不是连续的。2~10位数字本身，A为1，J为11，Q为12，K为13，大小王可以看成任意数字。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="62、圆圈中最后剩下的数字" content-height="100">
-                            <p>题目：0,1,...,n-1这n个数字排成一个圆圈，从数字0开始，每次从这个圆圈里删除第m个数字。求这个圆圈里剩下的最后一个数字。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="63、股票的最大利润" content-height="100">
-                            <p>题目：假设把某股票的价格按照时间先后顺序存储在数组中，请问买卖该股票一次可能获得的最大利润是多少？例如，一只股票在某些时间节点的价格为{9,11,8,5,7,12,16,14}。如果我们能在价格为5的时候买入并在价格为16时卖出，则能收获最大利润11。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="65、不用加减乘除做加法" content-height="100">
-                            <p>题目：写一个函数，求两个整数之和，要求不能使用+、-、*、/四则运算。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="66、构建乘积数组" content-height="100">
-                            <p>题目：给定一个数组A[0,1,...,n-1]，请构建一个数组B[0,1,...,n-1]，其中B中的元素B[i]=A[0]*A[1]*...*A[i-1]*A[i+1]*...*A[n-1]。不能使用除法。</p>
-                        </accordion-item>
-                    </accordion>
-                </div>
-            </div>
-        `,
-        data() {
-            return {
-
-            }
-        },
-    }
-    //// 一级 排序
+    //// 二级 排序
     const Order = {
         template: `
             <div class="page has-navbar" v-nav="{hideNavbar: true}">
@@ -5218,6 +4978,696 @@
             editorBaseOrder.setSize('auto','300px');
         }
     }
+    //// 二级 剑指Offer题
+    const OfferQuestion = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/algorithm')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">剑指Offer题</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <div class="item item-divider dividerFont">剑指Offer（基础篇）</div>
+                        <accordion-item class="stableBack" title="2、singleton" content-height="70">
+                            <p>写一个singleton</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="3、数组中的重复数字" content-height="300">
+                            <p>题目一【找出数组中的重复数字】在一个长度为n的数组里的所有数字都在0~n-1范围内。数组中某些数字是重复的，但不知道有几个数字重复了，也不知道每个数字重复了几次。请找出数组中任意一个重复的数字。例如，如果输入长度为7的数组{2,3,1,0,2,5,3}，那么对应输出是重复的数字2或3【时间复杂度O(n)，空间复杂度O(1)】</p>
+                            <p>题目二【不修改数组找出重复数字】在一个长度为n+1的数组里的所有数字都在1~n的范围内，所以数组中至少有一个数字是重复的，请找出数组中任意一个重复的数字，但不能修改输入的数组。例如，如果输入长度为8的数组{2,3,5,4,3,2,6,7}，那么对应的输出是重复的数字2或者3【时间复杂度O(n)，空间复杂度O(n)，或者时间复杂度O(nlogn)，空间复杂度O(1)】</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="4、二维数组的查找" content-height="280">
+                            <p>题目：在一个二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。例如下面的二维数组就是每行，每列都是递增排序。如果在这个数组中查找数字7，则返回true；如果查找5，则返回false；</p>
+                            <p>1    2    8    9</p>
+                            <p>2    4    9    12</p>
+                            <p>4    7    10    13</p>
+                            <p>6    8    11    15</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="5、替换空格" content-height="170">
+                            <p>题目一：请实现一个函数，把字符串中的每个空格替换成“%20”。例如，输入“We are happy.”，则输出“We%20are%20happy.”。【O(n)】</p>
+                            <p>题目二：有两个排序数组A1和A2，内存在A1的末尾有足够多的空余空间容纳A2，请实现一个函数，把A2中的所有数字插入A1，并且所有数字是排序的。【O(n)】</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="6、从尾到头打印链表" content-height="80">
+                            <p>题目：输入一个链表的头节点，从尾到头反过来打印出每个节点的值。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="7、重建二叉树" content-height="80">
+                            <p>题目：输入某二叉树的前序遍历和中序遍历的结果，请重建二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复数字。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="8、二叉树的下一个节点" content-height="100">
+                            <p>题目：给定一棵二叉树和其中的一个节点，如何找出中序遍历序列的下一个节点？树中的节点除了有两个分别指向左、右节点的指针，还有一个指向父节点的指针。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="9、用两个栈实现队列" content-height="100">
+                            <p>题目：用两个栈实现一个队列。请实现它的两个函数appendTail和deleteHead，分别完成在队尾部插入节点和在队头部删除节点的功能</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="10、斐波那契数列" content-height="140">
+                            <p>题目一：写一个函数，输入n，求斐波那契（F'ibonacci）数列的第n项。【O(n)，不能递归】</p>
+                            <p>题目二：【青蛙跳台阶】一只青蛙一次可跳上1级台阶，也可以跳上2级台阶。求该青蛙跳上一个n级台阶共多少总跳法。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="11、旋转数组的最小数字" content-height="120">
+                            <p>题目：把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个递增排序的数组的一个旋转，输出旋转数组的最小元素。例如，数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1【O(logn)】。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="12、矩阵中的路径" content-height="300">
+                            <p>题目：请设计一个函数，用来判断在一个矩阵中是否存在一条包含某字符串所有字符的路径。路径可以从矩阵中的任意一格开始，每一步可以在矩阵中向上、下、左、右移动一格。如果一条路径经过了矩阵的某一格，那么该路径不能再次进入该格子。例如，在下面的3*4的矩阵中包含一条字符串“bfce”的路径（路径中的字母用下划线标出）。但矩阵中不包含字符串“abfb”的路径，因为字符串的第一个字符b占据了矩阵中的第一行第二个格子之后，路径不能再次进入这个格子【回溯】</p>
+                            <p>a    <span class="fontUnderline">b</span>    t    g</p>
+                            <p>c    <span class="fontUnderline">f</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fontUnderline">c</span>    s</p>
+                            <p>j    d    <span class="fontUnderline">e</span>    h</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="14、剪绳子" content-height="160">
+                            <p>题目：给你一根长度为n的绳子，请把绳子剪成m段（m、n都是整数，n>1  and m>1）每段绳子的长度记为k[0],k[1],...,k[m]。请问k[0]*k[1]*...*k[m]可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2，3，3的三段，此时得到的最大乘积是18【动态规划时间复杂度O(n²)空间复杂度O(n)，贪心算法O(1)】。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="15、二进制中1的个数" content-height="100">
+                            <p>题目：请实现一个函数，输入一个整数，输出该数二进制表示中1的个数。例如，把9表示成二进制是1001，有2位是1。因此输入9，则输出2。</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">剑指Offer（高质量代码）</div>
+                        <accordion-item class="stableBack" title="16、数值的整数次方" content-height="100">
+                            <p>题目：实现函数 double Power(double base, int exponent)，求base的exponent次方。不得使用库函数，同时不需要考虑大数问题。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="17、打印从1到最大的n位数" content-height="100">
+                            <p>题目：输入数字n，按顺序打印出从1到最大的n位十进制数。比如输入3，则打印出1、2、3一直到最大3位数999。【考虑大数】</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="18、删除链表的节点" content-height="140">
+                            <p>题目一：【在O(1)时间内删除链表节点】给定单向链表的头指针和一个节点指针，定义一个函数在O(1)时间内删除该节点。</p>
+                            <p>题目二：【删除链表中重复的节点】在一个排序列表中，如何删除重复节点，例如：1-2-3-3-4-4-5，删除之后变成了1-2-5</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="19、正则表达式" content-height="140">
+                            <p>题目：请实现一个函数用来匹配包含'.'和'*'的正则表达式。模式中的字符'.'表示任意一个字符，而'*'表示它前面的字符可以出现任意次数（包括0次）。在本题中，匹配是指字符串的所有字符匹配这个模式。例如，字符串"aaa"与模式"a.a"、"ab*ac*a"匹配，但与"aa.a"和"ab*a"均不匹配。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="21、调整数组顺序使奇数位于偶数前面" content-height="120">
+                            <p>题目：输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有奇数位于数组的前半部分，所有偶数位于后半部分【O(n)】.</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="22、链表中倒数第k个节点" content-height="140">
+                            <p>题目：输入一个链表，输出该链表中倒数第k个节点。为符合大多数人的习惯，本题从1开始计数，即链表的尾节点是倒数第一个节点。例如，一个链表有6个节点，从头节点开始，他们的值依次是1，2，3，4，5，6。这个链表倒数第三个节点是值为4的节点【单次遍历，考虑代码鲁棒性】。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="23、链表中环的入口节点" content-height="190">
+                            <p>题目：如果一个链表中包含环，如何找出环的入口节点？如下图所示，入口节点是值为3的节点</p>
+                            <div><img src="./img/offer23.bmp" width="100%"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="24、翻转链表" content-height="100">
+                            <p>题目：定义一个函数，输入一个链表的头节点，翻转该链表并输出翻转后的链表头结点。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="25、合并两个排序的链表" content-height="100">
+                            <p>题目：输入两个递增排序的链表，合并这两个链表并使新链表中的节点仍然是递增排序的。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="26、树的子结构" content-height="100">
+                            <p>题目：输入两颗二叉树A和B，判断B是不是A的子结构。</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">剑指Offer（复杂问题：画图举例分解）</div>
+                        <accordion-item class="stableBack" title="27、二叉树的镜像" content-height="270">
+                            <p>题目：请完成一个函数，输入一棵二叉树，该函数输出它的镜像。</p>
+                            <div><img src="./img/offer27.bmp" width="100%"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="28、对称二叉树" content-height="270">
+                            <p>题目：请实现一个函数，用来判断一棵二叉树是不是对称的。如果一个二叉树和它的镜像一样，那么它是对称二叉树。例如下图，第一棵二叉树是对称的，另外两个不是。</p>
+                            <div><img src="./img/offer28.bmp" width="100%"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="29、顺时针打印矩阵" content-height="250">
+                            <p>题目：输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字。例如，如果输入如下矩阵：</p>
+                            <div><img src="./img/offer29.bmp" width="100%"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="30、包含min函数的栈" content-height="120">
+                            <p>题目：定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的min函数。在该栈中，调用min，push，pop的时间复杂度均为O(1)。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="31、从上到下打印二叉树" content-height="670">
+                            <p>题目一【不分行从上到下打印二叉树】从上到下打印出二叉树的每个子节点，同一层的节点按照从左到右的顺序打印。例如，输入下图的二叉树，则依次打印 8,6,10,5,7,9,11 。</p>
+                            <div><img src="./img/offer32-01.bmp" width="100px"></div>
+                            <p>题目二【分行从上到下打印二叉树】从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印一行。如下</p>
+                            <div><img src="./img/offer32-02.bmp" width="150px"></div>
+                            <p>题目三【之字形打印二叉树】请实现一个函数按照之字形顺序打印二叉树，即第一行按照从左到右的顺序打印，第二层按照从右到左的顺序打印，第三行再按照从左到右的顺序打印，其他行以此类推。例如下图</p>
+                            <div><img src="./img/offer32-03.bmp" width="150px"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="33、二叉搜索树的后序遍历序列" content-height="220">
+                            <p>题目：输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。假设输入的数组任意两个数字均不相等。例如，输入数组{5,7,6,9,11,10,8}则返回true，因为整个序列是下图二叉搜索树的后序遍历结果。如果输入数组{7,4,6,5}，则返回false。</p>
+                            <div><img src="./img/offer33.bmp" width="100px"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="34、二叉树中和为某一值得路径" content-height="120">
+                            <p>题目：输入一棵二叉树和一个整数，打印出二叉树中节点值的和为输入整数的所有路径。从树的根节点开始往下一直到叶子节点所经过的节点形成一条路径</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="35、复杂链表的复制" content-height="400">
+                            <p>题目：实现函数ComplexListNode* Clone(ComplexListNode* pHead)，复制一个复杂链表。在复杂链表中，每个节点除了一个m_pNext指针指向下一个节点，还有一个m_pSibling指针指向链表中的任意节点或nullptr，节点定义和示例复杂链表如下</p>
+                            <div><img src="./img/offer35.bmp" width="300px"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="36、二叉搜索树与双向链表" content-height="300">
+                            <p>题目：输入一棵<span class="redBold">二叉搜索树</span>，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新节点，只能调整树种的节点指针的指向。如下</p>
+                            <div><img src="./img/offer36.bmp" width="100%"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="37、序列化二叉树" content-height="100">
+                            <p>题目：请实现两个函数，分别用来序列化和反序列化二叉树</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="38、字符串排列" content-height="100">
+                            <p>题目：输入一个字符串，打印出该字符串中字符的所有排列。例如，输入字符串abc，则打印出由字符a,b,c所能排列出来的所有字符串abc、acb、bac、bca、cab、cba。</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">剑指Offer（效率）</div>
+                        <accordion-item class="stableBack" title="39、字符串排列" content-height="100">
+                            <p>题目：输入一个字符串，打印出该字符串中字符的所有排列。例如，输入字符串abc，则打印出由字符a,b,c所能排列出来的所有字符串abc、acb、bac、bca、cab、cba。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="40、最小的k个数" content-height="100">
+                            <p>题目：输入n个整数，找出其中最小的k个数，例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="41、数据流中的中位数" content-height="100">
+                            <p>题目：如何得到一个数据流中的中位数，如果从数据流中读出奇数个数值，那么中位数就是所有数值排序的中间的数值，偶数个则是中间两个数的平均值【O(n)、O(logn)】。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="42、连续子数组的最大和" content-height="100">
+                            <p>题目：输入一个整型数组，数组里有正数也有负数。数组中的一个或连续多个整数组成一个子数组。求所有子数组的和的最大值【O(n)】。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="43、1~n整数中1出现的次数" content-height="100">
+                            <p>题目：输入一个整数n，求1~n这n个整数的十进制表示中1出现的次数，例如，输入12，1~12这些整数中包含1的数字有1，10，11和12，1一共出现5次。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="44、数字序列中的某一位数字" content-height="120">
+                            <p>题目：数字以01234567891011121314151617...的格式序列化到一个字符序列中。在这个序列中，第5位（从0开始计数）是5，第13位是1，第19位是4，等等。请写一个函数，求任意第n位对应的数字。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="45、把数组排成最小的数" content-height="120">
+                            <p>题目：输入一个正整数数组，把数组里所有数字拼起来排成一个数，打印能拼接处的所有数字中最小的一个。例如输入数组{3,32,321}，则打印321323。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="46、把数字翻译成字符串" content-height="120">
+                            <p>题目：给定一个数字，我们按照如下规则把它翻译成字符串：0翻译成a，1翻译成b，......，11翻译成l，25翻译成z，一个数字可能有多个翻译。例如，12258有5种不同的翻译，分别是bccfi，bwfi，bczi，mcfi，mzi，请编程实现一个函数，用来计算一个数字有多少种不同的翻译方法。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="47、礼物的最大价值" content-height="260">
+                            <p>题目：在一个m*n的棋盘的每一格都放有一个礼物，每个礼物都有一定价值（>0）。你可以从棋盘的左上角开始拿格子里的礼物，并每次向右或者向下移动一格，直到到达棋盘的右下角。给定一个棋盘及上面的礼物，请计算最多能拿到多少价值的礼物。</p>
+                            <div><img src="./img/offer47.bmp" width="100%"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="48、最长不含重复字符的子字符串" content-height="120">
+                            <p>题目：请从字符串中找出一个最长的不包含重复字符的子字符串，计算该最长子字符串的长度。假设字符串中只包含a~z的字符。例如，在字符串arabcacfr中，最长的不包含重复字符的子字符串是acfr，长度是4。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="49、丑数" content-height="120">
+                            <p>题目：我们把只包含因子2、3和5的数称作丑数。求按从小到大顺序的第1500个丑数。例如，6、8都是丑数，但14不是，习惯上我们把1当做第一个丑数。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="50、第一个只出现一次的字符" content-height="120">
+                            <p>题目：字符串中第一个只出现一次的字符，在字符串中找出第一个只出现一次的字符。如输入abaccdeff，则输出b。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="51、数组中的逆序对" content-height="120">
+                            <p>题目：在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组，求出这个数组中的逆序对的总数。例如，在数组{7,5,6,4}中，一共存在5个逆序对，分别是{7,6},{7,5},{7,4},{6,4},{5,4}。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="52、两个链表的第一个公共节点" content-height="110">
+                            <p>题目：输入两个链表，找出它们的第一个公共节点。</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">剑指Offer（举一反三）</div>
+                        <accordion-item class="stableBack" title="53、在排序数组中查找数字" content-height="280">
+                            <p>题目一【数字在排序数组中出现的次数】统计一个数字在排序数组中出现的次数，例如，输入排序数组{1,2,3,3,3,3,4,5}和数字3，由于3在这个数组中出现了4次，因此输出4。</p>
+                            <p>题目二【0~n-1中缺失的数字】一个长度为n-1的递增排序数组中的所有数字都是唯一的，并且每个数字都在范围0~n-1之内。在范围0~n-1内的n个数字中有且只有一个数字不在该数组中，请找出。</p>
+                            <p>题目三【数组中数值和下标相等的元素】假设一个单调递增的数组里的每个元素都是整数并且是唯一的。请实现函数，找出数组中任意一个数值等于其下标的元素，例如在数组{-3,-1,1,3,5}中，数组3和它的下标相等。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="54、二叉搜索树的第k大节点" content-height="280">
+                            <p>题目：给定一棵二叉搜索树，请找出其中第k大的节点。例如下图，第三大节点的值是4</p>
+                            <div><img src="./img/offer54.bmp" width="150px"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="55、二叉树的深度" content-height="200">
+                            <p>题目一【二叉树的深度】输入一棵二叉树的根节点，求该树的深度。从根节点到叶子节点依次经过的节点（含根、叶节点）形成树的一条路径，最长路径的长度为树的深度。</p>
+                            <p>题目二【平衡二叉树】输入一棵二叉树的根节点，判断该树是不是平衡二叉树。如果某二叉树中任意节点的左、右子树的深度相差不超过1，那么它就是一颗平衡二叉树。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="56、数组中数字出现的次数" content-height="200">
+                            <p>题目一【数组中只出现一次的两个数字】一个整型数组里除了两个数字之外，其他数字都出现了两次。请写程序找出这两个只出现一次的数字。【O(n)，空间O(1)】</p>
+                            <p>题目二【数组中唯一只出现一次的数字】在一个数组中除一个数字只出现一次之外，其他数字都出现了三次。请找出唯一的数字。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="57、和为s的数字" content-height="200">
+                            <p>题目一【和为s的两个数字】输入一个递增排序的数组和一个数字s，在数组中查找两个数，使得它们的和正好是s。如果有多对，则任意输出一对。</p>
+                            <p>题目二【和为s的连续正数序列】输入一个正数s，打印出所有和为s的连续正数序列（至少含有两个数）。例如，输入15，由于1+2+3+4+5=4+5+6=7+8=15，所以打印出三个连续序列1~5，4~6，7~8.</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="58、翻转字符串" content-height="200">
+                            <p>题目一【翻转单词顺序】输入一个英文句子，翻转句子中单词的顺序，但单词内字符的顺序不变。为简单起见，标点符号和普通字母一样处理。例如输入字符串为I am a student. 输出 student. a am I。</p>
+                            <p>题目二【左旋转字符串】字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串abcsefg和数字2，输出cdefgab。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="59、队列的最大值" content-height="200">
+                            <p>题目一【滑动串口的最大值】给定一个数组和滑动窗口的大小，请找出所有滑动窗口里的最大值。例如，如果输入数组{2,3,4,2,6,2,5,1}及滑动串口大小为3，那么一共存在6个滑动窗口，他们的最大值分别为{4,4,6,6,6,5}【O(n)】。</p>
+                            <p>题目二【队列的最大值】请定义一个队列并实现函数max得到队列里的最大值，要求函数max、push_back、pop_front的时间复杂度都是【O(1)】。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="60、n个骰子的点数" content-height="100">
+                            <p>题目：把n个骰子扔在地上，所有骰子朝上一面的点数之和为s。输入n，打印出s的所有可能出现的概率。【循环】</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="61、扑克牌中的顺子" content-height="100">
+                            <p>题目：从扑克牌中随机抽5张牌，判断是不是一个顺子，即这5张牌是不是连续的。2~10位数字本身，A为1，J为11，Q为12，K为13，大小王可以看成任意数字。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="62、圆圈中最后剩下的数字" content-height="100">
+                            <p>题目：0,1,...,n-1这n个数字排成一个圆圈，从数字0开始，每次从这个圆圈里删除第m个数字。求这个圆圈里剩下的最后一个数字。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="63、股票的最大利润" content-height="100">
+                            <p>题目：假设把某股票的价格按照时间先后顺序存储在数组中，请问买卖该股票一次可能获得的最大利润是多少？例如，一只股票在某些时间节点的价格为{9,11,8,5,7,12,16,14}。如果我们能在价格为5的时候买入并在价格为16时卖出，则能收获最大利润11。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="65、不用加减乘除做加法" content-height="100">
+                            <p>题目：写一个函数，求两个整数之和，要求不能使用+、-、*、/四则运算。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="66、构建乘积数组" content-height="100">
+                            <p>题目：给定一个数组A[0,1,...,n-1]，请构建一个数组B[0,1,...,n-1]，其中B中的元素B[i]=A[0]*A[1]*...*A[i-1]*A[i+1]*...*A[n-1]。不能使用除法。</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+            }
+        },
+    }
+    //// 二级 剑指Offer题
+    const OfferSolve = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/algorithm')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">剑指Offer题</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="11、旋转数组的最小数字" content-height="370">
+                            <p>解答：二分递归版本、循环版本</p>
+                            <div><textarea id="Offer11"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="25、合并两个排序的链表" content-height="370">
+                            <p>解答：递归的思想</p>
+                            <div><textarea id="Offer25"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="29、顺时针打印矩阵" content-height="370">
+                            <p>解答：暴力循环</p>
+                            <div><textarea id="Offer29"></textarea></div>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+                Offer11:
+                    "public static int returnMinValue(int[] arr) {\n" +
+                    "    if (arr.length == 0) {\n" +
+                    "        return -1;\n" +
+                    "    }\n" +
+                    "    if (arr.length == 1) {\n" +
+                    "        return arr[0];\n" +
+                    "    }\n" +
+                    "    return diFind(arr, 0, arr.length-1);\n" +
+                    "}\n" +
+                    "\n" +
+                    "private static int diFind(int[] arr, int left, int right) {\n" +
+                    "    if (left >= right) {\n" +
+                    "        return arr[right];\n" +
+                    "    }\n" +
+                    "    if (arr[left] < arr[right]) {\n" +
+                    "        return arr[left];\n" +
+                    "    }\n" +
+                    "    int mid = (left+right)/2;\n" +
+                    "    int leftMinValue = diFind(arr, left, mid);\n" +
+                    "    int rightMinValue = diFind(arr, mid+1, right);\n" +
+                    "    if (leftMinValue > rightMinValue) {\n" +
+                    "        return rightMinValue;\n" +
+                    "    } else {\n" +
+                    "        return leftMinValue;\n" +
+                    "    }\n" +
+                    "}\n" +
+                    "\n" +
+                    "public static int minValueFor(int[] arr) {\n" +
+                    "    int left = 0;\n" +
+                    "    int right = arr.length - 1;\n" +
+                    "    while (arr[left] >= arr[right]) {\n" +
+                    "        if (right - left == 1) {\n" +
+                    "            return arr[right];\n" +
+                    "        }\n" +
+                    "        int mid = (left + right) / 2;\n" +
+                    "        if (arr[left] == arr[mid] && arr[mid] == arr[right]) {\n" +
+                    "            return findOrder(arr, left, right);\n" +
+                    "        }\n" +
+                    "        if (arr[left] > arr[mid]) {\n" +
+                    "            right = mid;\n" +
+                    "        }\n" +
+                    "        if (arr[mid] > arr[right]) {\n" +
+                    "            left = mid;\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "    return arr[left];\n" +
+                    "}\n" +
+                    "\n" +
+                    "private static int findOrder(int[] arr, int left, int right) {\n" +
+                    "    int min = arr[left];\n" +
+                    "    for (int i = left+1; i <= right; i++) {\n" +
+                    "        if (arr[i] < min) {\n" +
+                    "            min = arr[i];\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "    return min;\n" +
+                    "}",
+                Offer25:
+                    "public static ListNode merge(ListNode list1, ListNode list2) {\n" +
+                    "    if (list1 == null) {\n" +
+                    "        return list2;\n" +
+                    "    }\n" +
+                    "    if (list2 == null) {\n" +
+                    "        return list1;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    ListNode head = null;\n" +
+                    "\n" +
+                    "    if (list1.getnValue() < list2.getnValue()) {\n" +
+                    "        head = list1;\n" +
+                    "        head.setpNext(merge(list1.getpNext(), list2));\n" +
+                    "    } else {\n" +
+                    "        head = list2;\n" +
+                    "        head.setpNext(merge(list1, list2.getpNext()));\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    return head;\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class ListNode {\n" +
+                    "    private int nValue;\n" +
+                    "    private ListNode pNext;\n" +
+                    "\n" +
+                    "    public int getnValue() {\n" +
+                    "        return nValue;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public void setnValue(int nValue) {\n" +
+                    "        this.nValue = nValue;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public ListNode getpNext() {\n" +
+                    "        return pNext;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public void setpNext(ListNode pNext) {\n" +
+                    "        this.pNext = pNext;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public static ListNode createList(int[] arr) {\n" +
+                    "        if (arr.length == 0) {\n" +
+                    "            return null;\n" +
+                    "        }\n" +
+                    "        ListNode head = new ListNode();\n" +
+                    "        ListNode currentNode = head;\n" +
+                    "        for (int i = 0; i < arr.length-1; i++) {\n" +
+                    "            currentNode.nValue = arr[i];\n" +
+                    "            currentNode.pNext = new ListNode();\n" +
+                    "            currentNode = currentNode.pNext;\n" +
+                    "        }\n" +
+                    "        currentNode.nValue = arr[arr.length-1];\n" +
+                    "        currentNode.pNext = null;\n" +
+                    "        return head;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public static void printList(ListNode listNode) {\n" +
+                    "        StringBuffer buf = new StringBuffer(\"[\");\n" +
+                    "        ListNode currentNode = listNode;\n" +
+                    "        while (currentNode != null) {\n" +
+                    "            buf.append(currentNode.nValue).append(\",\");\n" +
+                    "            currentNode = currentNode.getpNext();\n" +
+                    "        }\n" +
+                    "        String result = buf.length() == 1?buf.toString():buf.substring(0, buf.length()-1);\n" +
+                    "        System.out.println(result+\"]\");\n" +
+                    "    }\n" +
+                    "}",
+                Offer29:
+                    "class Solution {\n" +
+                    "    public int[] spiralOrder(int[][] matrix) {\n" +
+                    "        if (matrix.length == 0) {\n" +
+                    "            return new int[]{};\n" +
+                    "        }\n" +
+                    "        int rows = matrix.length;\n" +
+                    "        int cols = matrix[0].length;\n" +
+                    "        int[] result = new int[rows*cols];\n" +
+                    "        int circleCount = rows > cols ? cols/2+cols%2 : rows/2+rows%2;\n" +
+                    "        int startIndex = 0;\n" +
+                    "        int count = 0;\n" +
+                    "        while (circleCount > 0) {\n" +
+                    "            //// 上\n" +
+                    "            for (int i = startIndex; i < cols-startIndex; i++) {\n" +
+                    "                result[count++] = matrix[startIndex][i];\n" +
+                    "            }\n" +
+                    "            if (count >= result.length) {\n" +
+                    "                break;\n" +
+                    "            }\n" +
+                    "            //// 右\n" +
+                    "            for (int j = startIndex+1; j < rows-startIndex; j++) {\n" +
+                    "                result[count++] = matrix[j][cols-1-startIndex];\n" +
+                    "            }\n" +
+                    "            if (count >= result.length) {\n" +
+                    "                break;\n" +
+                    "            }\n" +
+                    "            //// 下\n" +
+                    "            for (int i = cols-2-startIndex; i >= startIndex; i--) {\n" +
+                    "                result[count++] = matrix[rows-1-startIndex][i];\n" +
+                    "            }\n" +
+                    "            if (count >= result.length) {\n" +
+                    "                break;\n" +
+                    "            }\n" +
+                    "            //// 左\n" +
+                    "            for (int j = rows-2-startIndex; j >=startIndex+1; j--) {\n" +
+                    "                result[count++] = matrix[j][startIndex];\n" +
+                    "            }\n" +
+                    "            if (count >= result.length) {\n" +
+                    "                break;\n" +
+                    "            }\n" +
+                    "            circleCount--;\n" +
+                    "            startIndex++;\n" +
+                    "        }\n" +
+                    "        return result;\n" +
+                    "    }\n" +
+                    "}",
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        mounted() {
+            let editorOffer11 = CodeMirror.fromTextArea(document.getElementById("Offer11"), this.options)
+            editorOffer11.setValue(this.Offer11)
+            editorOffer11.setSize('auto','300px');
+            let editorOffer25 = CodeMirror.fromTextArea(document.getElementById("Offer25"), this.options)
+            editorOffer25.setValue(this.Offer25)
+            editorOffer25.setSize('auto','300px');
+            let editorOffer29 = CodeMirror.fromTextArea(document.getElementById("Offer29"), this.options)
+            editorOffer29.setValue(this.Offer29)
+            editorOffer29.setSize('auto','300px');
+        }
+    }
+    //// 二级 LeetCode题&解
+    const LeetCode = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/algorithm')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">LeetCode题&解</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="34、在排序数组中查找元素的第一个和最后一个位置" content-height="720">
+                            <p>给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在数组中的开始位置和结束位置。你的算法时间复杂度必须是 O(log n) 级别。如果数组中不存在目标值，返回 [-1, -1]。</p>
+                            <p>示例 1:</p>
+                            <p>输入: nums = [5,7,7,8,8,10], target = 8</p>
+                            <p>输出: [3,4]</p>
+                            <p>示例 2:</p>
+                            <p>输入: nums = [5,7,7,8,8,10], target = 6</p>
+                            <p>输入: nums = [5,7,7,8,8,10], target = 6</p>
+                            <p>【解答】：二分法（或者先用二分法找左边，右边也是二分，注意边界判断）</p>
+                            <div><textarea id="LeetCode34"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="53、最大子序和" content-height="610">
+                            <p>给定一个整数数组 nums ，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。</p>
+                            <p>示例:</p>
+                            <p>输入: [-2,1,-3,4,-1,2,1,-5,4],</p>
+                            <p>输出: 6</p>
+                            <p>解释: 连续子数组 [4,-1,2,1] 的和最大，为 6。</p>
+                            <p>【解答】：动态规划，保存当前最大值，更新到原数组</p>
+                            <div><textarea id="LeetCode53"></textarea></div>
+                        </accordion-item>
+
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+                LeetCode34:
+                    "class Solution {\n" +
+                    "    public int[] searchRange(int[] nums, int target) {\n" +
+                    "        if (nums == null || nums.length == 0) {\n" +
+                    "            return new int[]{-1,-1};\n" +
+                    "        } \n" +
+                    "        if (nums.length == 1 && nums[0] == target) {\n" +
+                    "            return new int[]{0,0};\n" +
+                    "        }\n" +
+                    "        int[] result = {nums.length,-1};\n" +
+                    "        findIndex(nums, result, target, 0, nums.length-1);\n" +
+                    "        if (result[0] == nums.length) {\n" +
+                    "            result[0] = -1;\n" +
+                    "        }\n" +
+                    "        return result;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public void findIndex(int[] arr, int[] indexArr, int target, int left, int right) {\n" +
+                    "        if (left > right || left < 0 || right > arr.length-1) {\n" +
+                    "            return;\n" +
+                    "        }\n" +
+                    "        if (left == right && arr[left] == target) {\n" +
+                    "            if (left > indexArr[1]) {\n" +
+                    "                indexArr[1] = left;\n" +
+                    "            }\n" +
+                    "            if (left < indexArr[0]) {\n" +
+                    "                indexArr[0] = left;\n" +
+                    "            }\n" +
+                    "            return;\n" +
+                    "        }\n" +
+                    "        int mid = (left+right)/2;\n" +
+                    "        if (arr[mid] > target) {\n" +
+                    "            findIndex(arr, indexArr, target, left, mid-1);\n" +
+                    "        } else if (arr[mid] < target) {\n" +
+                    "            findIndex(arr, indexArr, target, mid+1, right);\n" +
+                    "        } else {\n" +
+                    "            if (mid > indexArr[1]) {\n" +
+                    "                indexArr[1] = mid;\n" +
+                    "            }\n" +
+                    "            if (mid < indexArr[0]) {\n" +
+                    "                indexArr[0] = mid;\n" +
+                    "            }\n" +
+                    "            findIndex(arr, indexArr, target, left, mid);\n" +
+                    "            findIndex(arr, indexArr, target, mid+1, right);\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}\n" +
+                    "\n" +
+                    "class Solution {\n" +
+                    "    public int[] searchRange(int[] nums, int target) {\n" +
+                    "        if (nums == null || nums.length == 0) {\n" +
+                    "            return new int[]{-1,-1};\n" +
+                    "        }\n" +
+                    "        if (target < nums[0] || nums[nums.length-1] < target) {\n" +
+                    "            return new int[]{-1,-1};\n" +
+                    "        }\n" +
+                    "        int[] result = new int[]{findLeftIndex(nums, 0, nums.length-1, target), findRightIndex(nums, 0, nums.length-1, target)};\n" +
+                    "        return result;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public int findLeftIndex(int[] nums, int left, int right, int target) {\n" +
+                    "        if (right == left) {\n" +
+                    "            if (nums[left] == target) {\n" +
+                    "                return left;\n" +
+                    "            } else return -1;\n" +
+                    "        }\n" +
+                    "        int midIndex = (left+right)/2;\n" +
+                    "        if (nums[midIndex] < target) {\n" +
+                    "            return findLeftIndex(nums, midIndex+1, right, target);\n" +
+                    "        } else if (nums[midIndex] > target) {\n" +
+                    "            return findLeftIndex(nums, left, midIndex-1, target);\n" +
+                    "        } else {\n" +
+                    "            return findLeftIndex(nums, left, midIndex, target);\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public int findRightIndex(int[] nums, int left, int right, int target) {\n" +
+                    "        if (right == left) {\n" +
+                    "            if (nums[left] == target) {\n" +
+                    "                return left;\n" +
+                    "            } else return -1;\n" +
+                    "        }\n" +
+                    "        int midIndex = (left+right)/2+1;\n" +
+                    "        if (nums[midIndex] < target) {\n" +
+                    "            return findRightIndex(nums, midIndex+1, right, target);\n" +
+                    "        } else if (nums[midIndex] > target) {\n" +
+                    "            return findRightIndex(nums, left, midIndex-1, target);\n" +
+                    "        } else {\n" +
+                    "            return findRightIndex(nums, midIndex, right, target);\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}",
+                LeetCode53:
+                    "public int maxSubArray(int[] nums) {\n" +
+                    "    int Max = nums[0];\n" +
+                    "    for (int i = 1; i < nums.length; i++) {\n" +
+                    "        if (nums[i-1] > 0) {\n" +
+                    "            nums[i] += nums[i-1];\n" +
+                    "        }\n" +
+                    "        Max = Math.max(Max, nums[i]);\n" +
+                    "    }\n" +
+                    "    return Max;\n" +
+                    "}",
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        mounted() {
+            let editorLeetCode34 = CodeMirror.fromTextArea(document.getElementById("LeetCode34"), this.options)
+            editorLeetCode34.setValue(this.LeetCode34)
+            editorLeetCode34.setSize('auto','300px');
+            let editorLeetCode53 = CodeMirror.fromTextArea(document.getElementById("LeetCode53"), this.options)
+            editorLeetCode53.setValue(this.LeetCode53)
+            editorLeetCode53.setSize('auto','300px');
+        }
+    }
+    //// 二级 其他算法题&解
+    const OtherQS = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/algorithm')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">其他算法题&解</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="TopK问题" content-height="450">
+                            <p>在未排序的数组中找到第 k 个最⼤的元素。请注意，你需要找的是数组排序后的第 k 个最⼤的元素，⽽不是第 k 个不同的元素。</p>
+                            <p>【解答】：采用快速排序思路解答</p>
+                            <div><textarea id="OtherQS1"></textarea></div>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+                OtherQS1:
+                    "public static int returnTopK(int[] arr, int topK) {\n" +
+                    "    if (topK <= 0 || topK > arr.length) {\n" +
+                    "        return -1;\n" +
+                    "    }\n" +
+                    "    return partition(arr, 0 ,arr.length-1, arr.length-topK);\n" +
+                    "}\n" +
+                    "\n" +
+                    "private static int partition(int[] arr, int left, int right, int topK) {\n" +
+                    "    int pivot = arr[left];\n" +
+                    "    int loLeft = left;\n" +
+                    "    int loRight = right;\n" +
+                    "    while (loLeft < loRight) {\n" +
+                    "        while (arr[loRight] >= pivot && loLeft < loRight) {\n" +
+                    "            loRight--;\n" +
+                    "        }\n" +
+                    "        if (loLeft < loRight) {\n" +
+                    "            arr[loLeft++] = arr[loRight];\n" +
+                    "        }\n" +
+                    "        while (arr[loLeft] <= pivot && loLeft < loRight) {\n" +
+                    "            loLeft++;\n" +
+                    "        }\n" +
+                    "        if (loLeft < loRight) {\n" +
+                    "            arr[loRight--] = arr[loLeft];\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "    arr[loLeft] = pivot;\n" +
+                    "    if (loLeft == topK) {\n" +
+                    "        return arr[loLeft];\n" +
+                    "    } else if (loLeft > topK) {\n" +
+                    "        return partition(arr, left, loLeft-1, topK);\n" +
+                    "    } else {\n" +
+                    "        return partition(arr, loLeft+1, right, topK);\n" +
+                    "    }\n" +
+                    "}",
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        mounted() {
+            let editorOtherQS1 = CodeMirror.fromTextArea(document.getElementById("OtherQS1"), this.options)
+            editorOtherQS1.setValue(this.OtherQS1)
+            editorOtherQS1.setSize('auto','300px');
+
+        }
+    }
 
     //// 一级 问题排查
     const SolveProblem = {
@@ -5650,8 +6100,11 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
 
         //// 一级菜单 算法
         { path: '/algorithm', component: Algorithm },
-        { path: '/question', component: Question }, //// 二级菜单 考题
         { path: '/order', component: Order }, //// 二级菜单 排序
+        { path: '/offerQuestion', component: OfferQuestion }, //// 二级菜单 考题
+        { path: '/offerSolve', component: OfferSolve }, //// 二级菜单 考题
+        { path: '/leetCode', component: LeetCode }, //// 二级菜单 LeetCode题&解
+        { path: '/otherQS', component: OtherQS }, //// 二级菜单 LeetCode题&解
 
         //// 一级菜单 问题排查
         { path: '/solveProblem', component: SolveProblem },
