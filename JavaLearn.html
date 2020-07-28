@@ -2921,96 +2921,36 @@
                         <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
                         <span slot="title"><h3 class="padding text-center headerTop">网络</h3></span>
                     </von-header>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="1"></cells>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+                cells: ['基本概念','TCP/UDP'],
+            }
+        },
+        methods: {
+            onCellClick(cellIndex) {
+                switch (cellIndex) {
+                    case 0: this.$router.push({path: `/netBasic`}); break;
+                    case 1: this.$router.push({path: `/tcpudp`}); break;
+                    default: this.$router.push({path: `/demo`});
+                }
+            },
+        }
+    }
+    //// 二级 基本概念
+    const NetBasic = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/netWork')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">基本概念</h3></span>
+                    </von-header>
                     <accordion default-index="0">
-                        <div class="item item-divider dividerFont">TCP/UDP</div>
-                        <accordion-item class="stableBack" title="TCP和UDP区别" content-height="680">
-                            <p><span class="redBold">原理区别：</span></p>
-                            <p>TCP 是面向连接的，UDP 是面向无连接的（比如socket编程中TCP发送数据之前先要connect）<br>UDP 程序结构较简单<br>TCP 是面向字节流的，UDP 是基于数据报的<br>TCP 保证数据正确性，UDP 可能丢包<br>TCP 保证数据顺序，UDP 不保证<br>对系统资源的要求（TCP较多，UDP少）<br></p>
-                            <p><span class="redBold">编程区别：</span></p>
-                            <p>UDP Server不需要调用listen和accept<br>UDP 收发数据用sendto/recvfrom函数<br>TCP 地址信息在connect/accept时确定<br>UDP 在sendto/recvfrom函数中每次均 需指定地址信息<br>UDP shutdown函数无效<br></p>
-                            <p><span class="redBold">UDP适用：</span></p>
-                            <p>网络数据大多为短消息<br>拥有大量Client<br>对数据安全性无特殊要求<br>网络负担非常重，但对响应速度要求高<br></p>
-                            <p><span class="redBold">数据报：</span>是网络传输的数据的基本单元，包含一个报头和数据本身，其中报头描述了数据的目的地以及和其它数据之间的关系。同一报文的不同分组可以由不同的传输路径通过通信子网。UDP基于数据报。</p>
-                            <p><span class="redBold">字节流：</span>方式指的是仅把传输中的报文看作是一个字节序列，在字节流服务中，由于没有报文边界，用户进程在某一时刻可以读或写任意数量的字节。 TCP基于字节流。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="TCP和UDP包头" content-height="350">
-                            <div><img src="./img/udp.bmp" width="100%"></div>
-                            <div><img src="./img/tcp.bmp" width="100%"></div>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="TCP三次握手" content-height="700">
-                            <p>TCP 的三次握手除了建立连接外，主要还是为了沟通 TCP 包的序号问题。A 告诉 B，我发起的包的序号是从哪个号开始的，B 同样也告诉 A，B 发起的 包的序号是从哪个号开始的。双方建立连接之后需要共同维护一个状态机，在建立连接的过程中，双方的状态变化时序图如下所示：</p>
-                            <div><img src="./img/tcpshakehand.bmp" width="100%"></div>
-                            <p><span class="redBold">为什么连接建立需要三次握手，而不是两次握手？</span></p>
-                            <p>防止失效的连接请求报文段被服务端接收，从而产生错误。PS：失效的连接请求：若客户端向服务端发送的连接请求丢失，客户端等待应答超时后就会再次发送连接请求，此时，上一个连接请求就是『失效的』。</p>
-                            <p>若建立连接只需两次握手，客户端并没有太大的变化，仍然需要获得服务端的应答后才进入ESTABLISHED状态，而服务端在收到连接请求后就进入ESTABLISHED状态。此时如果网络拥塞，客户端发送的连接请求迟迟到不了服务端，客户端便超时重发请求，如果服务端正确接收并确认应答，双方便开始通信，通信结束后释放连接。此时，如果那个失效的连接请求抵达了服务端，由于只有两次握手，服务端收到请求就会进入ESTABLISHED状态，等待发送数据或主动发送数据。但此时的客户端早已进入CLOSED状态，服务端将会一直等待下去，这样浪费服务端连接资源。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="TCP四次挥手" content-height="990">
-                            <p>A：B 啊，我不想玩了<br>B：哦，你不想玩了啊，我知道了<br>这个时候，只是 A 不想玩了，即不再发送数据，但是 B 可能还有未发送完的数据，所以需要等待 B 也主动关闭。<br>B：A 啊，好吧，我也不玩了，拜拜<br>A：好的，拜拜<br></p>
-                            <p>这样整个连接就关闭了，当然上面只是正常的状态，也有些非正常的状态（比如 A 说完不玩了，直接跑路，B 发起的结束得不到 A 的回答，不知道该怎么办或则 B 直接跑路 A 不知道该怎么办），TCP 协议专门设计了几个状态来处理这些非正常状态：</p>
-                            <div><img src="./img/tcpseeyou.bmp" width="100%"></div>
-                            <p><span class="redBold">为什么会有TIME_WAIT：</span>客户端接收到服务器的FIN报文后进入TIME_WAIT状态而不是CLOSED，还需要等待2MSL，理由：确保最后一个确认报文能够到达。如果server端没收到client端发来的确认报文，那么就会重新发送连接释放请求报文。</p>
-                            <p><span class="redBold">为什么是四次挥手，不是三次？</span>观察四次挥手过程可见报文段3包含了报文段2中的确认值，因此三次挥手只能将报文段3和报文段2合并。但这样合并是有问题的。被动关闭方发送报文段2只是确认主动关闭方发来的结束报文段，但并不代表自身的数据已经传输完毕。即就是当断开连接的时候，一个方向的断开，只是说明该方向数据已传输完毕，而另一方向或许还有数据，所以要等到另一个方向数据也全部传输完成后，才能实现三次握手。但是这个时间不确定，因此会造成主动关闭方的结束报文段长时间未得到响应而进行超时重传等等。造成了不必要的资源浪费甚至更意想不到的问题。</p>
-                            <p><span class="redBold">注意：</span>这里在理解三次握手和四次挥手有一点很关键，即tcp传输是<span class="redBold">全双工</span>，所以每次都要向对方确认并获取确认，在考虑为什么是三次握手四次挥手时，可以在<span class="redBold">每次通信中加入网络抖动</span>，并分析如果产生网络抖动会有什么影响。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="TCP 编程流程" content-height="1080">
-                            <div><img src="./img/tcpprogram.bmp" width="100%"></div>
-                            <p><span class="redBold">端口状态：</span></p>
-                            <p>listen()：</p>
-                            <div><img src="./img/tcpprogram1.bmp" width="100%"></div>
-                            <p>accept()：</p>
-                            <p>connect()：</p>
-                            <div><img src="./img/tcpprogram2.bmp" width="100%"></div>
-                            <p>可以看到7688进程有两个socket管道、一个是1002本地监听、另一个是与外界通信socket。</p>
-                            <p><span class="redBold">1、这里先关闭客户端socket：</span></p>
-                            <div><img src="./img/tcpprogram3.bmp" width="100%"></div>
-                            <p>因为是客户端主动触发的关闭，所以服务端的状态变为CLOSE_WAIT状态，客户端状态变为FIN_WAIT_1->FIN_WAIT_2；这时不关闭服务端接受到的客户端的socket，等待2MSL后，就只剩服务端的监听端口了；</p>
-                            <p>如果在2MSL之内，关闭服务端接受到的客户端的socket，则客户端socket进入TIME_WAIT状态：</p>
-                            <div><img src="./img/tcpprogram4.bmp" width="100%"></div>
-                            <p>2、反之先关闭服务端接收到的客户端socket，也是一样的效果；</p>
-                            <p><span class="redBold">3、这里直接先关闭服务端的监听socket：</span></p>
-                            <div><img src="./img/tcpprogram5.bmp" width="100%"></div>
-                            <p>所以任然可以用已建立连接的socket发消息；</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="UDP 编程流程" content-height="430">
-                            <div><img src="./img/udpprogram.bmp" width="100%"></div>
-                            <p><span class="redBold">端口状态：</span></p>
-                            <p>bind()：</p>
-                            <div><img src="./img/udpprogram1.bmp" width="100%"></div>
-                            <p><span class="redBold">没有连接状态；</span></p>
-                            <p>并且关闭客户端socket不会改变服务器进程的状态，只有当服务端的socket关闭时进程才会结束，并且是立即结束。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="select、poll、epoll" content-height="770">
-                            <p><span class="redBold">select==>时间复杂度O(n)</span></p>
-                            <p>它仅仅知道了，有I/O事件发生了，却并不知道是哪那几个流（可能有一个，多个，甚至全部），我们只能无差别轮询所有流，找出能读出数据，或者写入数据的流，对他们进行操作。所以select具有O(n)的无差别轮询复杂度，同时处理的流越多，无差别轮询时间就越长。</p>
-                            <p><span class="redBold">poll==>时间复杂度O(n)</span></p>
-                            <p>poll本质上和select没有区别，它将用户传入的数组拷贝到内核空间，然后查询每个fd对应的设备状态， 但是它没有最大连接数的限制，原因是它是基于链表来存储的。</p>
-                            <p><span class="redBold">epoll==>时间复杂度O(1)</span></p>
-                            <p>epoll可以理解为event poll，不同于忙轮询和无差别轮询，epoll会把哪个流发生了怎样的I/O事件通知我们。所以我们说epoll实际上是事件驱动（每个事件关联上fd）的，此时我们对这些流的操作都是有意义的。（复杂度降低到了O(1)）</p>
-                            <p><span class="redBold">epoll的水平触发和边缘触发</span></p>
-                            <p>Level_triggered(水平触发)：当被监控的文件描述符上有可读写事件发生时，epoll_wait()会通知处理程序去读写。如果这次没有把数据一次性全部读写完(如读写缓冲区太小)，那么下次调用 epoll_wait()时，它还会通知你在上没读写完的文件描述符上继续读写，当然如果你一直不去读写，它会一直通知你。如果系统中有大量你不需要读写的就绪文件描述符，而它们每次都会返回，这样会大大降低处理程序检索自己关心的就绪文件描述符的效率。<br>Edge_triggered(边缘触发)：当被监控的文件描述符上有可读写事件发生时，epoll_wait()会通知处理程序去读写。如果这次没有把数据全部读写完(如读写缓冲区太小)，那么下次调用epoll_wait()时，它不会通知你，也就是它只会通知你一次，直到该文件描述符上出现第二次可读写事件才会通知你。这种模式比水平触发效率高，系统不会充斥大量你不关心的就绪文件描述符。<br></p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="TCP的阻塞机制" content-height="960">
-                            <p><span class="redBold">拥塞控制和流量控制区别</span></p>
-                            <p>拥塞控制：防bai止过多的数据注入到网络中，这样可以使网络中的路由器或链路不致过载。拥塞控制所要做的都有一个前提：网络能够承受现有的网络负荷。拥塞控制是一个全局性的过程，涉及到所有的主机、路由器，以及与降低网络传输性能有关的所有因素。<br>流量控制：指点对点通信量的控制，是端到端正的问题。流量控制所要做的就是抑制发送端发送数据的速率，以便使接收端来得及接收。<br></p>
-                            <p><span class="redBold">阻塞控制的几种方式</span></p>
-                            <p>慢开始( slow-start )：当主机开始发送数据时，如果立即所大量数据字节注入到网络，那么就有可能引起网络拥塞，因为现在并不清楚网络的负荷情况。因此，较好的方法是先探测一下，即由小到大逐渐增大发送窗口，也就是说，由小到大逐渐增大拥塞窗口数值。通常在刚刚开始发送报文段时，先把拥塞窗口 cwnd 设置为一个最大报文段MSS的数值。而在每收到一个对新的报文段的确认后，把拥塞窗口增加至多一个MSS的数值。用这样的方法逐步增大发送方的拥塞窗口 cwnd ，可以使分组注入到网络的速率更加合理。每经过一个传输轮次，拥塞窗口 cwnd 就加倍。一个传输轮次所经历的时间其实就是往返时间RTT。不过“传输轮次”更加强调：把拥塞窗口cwnd所允许发送的报文段都连续发送出去，并收到了对已发送的最后一个字节的确认。另，慢开始的“慢”并不是指cwnd的增长速率慢，而是指在TCP开始发送报文段时先设置cwnd=1，使得发送方在开始时只发送一个报文段（目的是试探一下网络的拥塞情况），然后再逐渐增大cwnd。<br>拥塞避免( congestion avoidance )：让拥塞窗口cwnd缓慢地增大，即每经过一个往返时间RTT就把发送方的拥塞窗口cwnd加1，而不是加倍。这样拥塞窗口cwnd按线性规律缓慢增长，比慢开始算法的拥塞窗口增长速率缓慢得多。<br>快重传( fast retransmit )和快恢复( fast recovery )：我们认识到在收到一个失序的报文段时，TCP立即需要产生一个ACK（一个重复的ACK）。这个重复的ACK不应该被迟延。该重复的ACK的目的在于让对方知道收到一个失序的报文段，并告诉对方自己希望收到的序号。我们不知道一个重复的ACK是有一个丢失的报文段引起的，还是由于仅仅出现了几个报文段的重新排序，因此我们等待少量重复的ACK到来。假如这只是一些报文段的重新排序，则在重新排序的报文段被处理并产生一个新的ACK之前，只可能产生1~2个重复的ACK。如果一连串收到3个或者3个以上的重复ACK，就非常可能是一个报文段的丢失了。于是我们就重传丢失的数据报文段，而无需等待超时定时器的溢出。这就是快速重传算法。接下来执行的不是慢启动算法而是拥塞避免算法。这就是快速恢复算法。<br></p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="TCP流量控制（滑动窗口）" content-height="1140">
-                            <p>大家都知道，我们从一台机器向另外一台机器发送数据的时候，数据并不是一口气也不可能一口气传输给接收方。这个并不难理解，因为网络环境特别的复杂，有些地方快有些地方慢。所以，操作系统把这些数据写成连续的数据包，并且以一定的速率发给对方。一定的速率怎么理解呢？网络环境就像复杂的交通链路。就好比一个沙漏，中间可能有一个地方流量非常的小，这个最小的口径决定了网络传输的真正速度。我们要考虑到带宽缓冲区等因素，如果一下子发送所有的数据只会加大网络压力，造成丢包重试，轻则传输更慢，重则网络崩溃。因为TCP是顺序发送的，操作系统将这些数据包一批一批的发送给对方，就像一个窗口，不停地往后移动，所以，我们称之为TCP滑动窗口协议。</p>
-                            <p>在TCP中，窗口的大小是在TCP三次握手后协定的，并且窗口的大小并不是固定的，而是会随着网络的情况进行调整。这个也不难理解，原本你女朋友在家独享10M的宽带，你下班要上虎牙看网址荣耀直播，两个人就要共享这个宽带。TCP为了更好的传输效率，就会调整窗口的大小。</p>
-                            <div><img src="./img/tcpslide1.bmp" width="100%"></div>
-                            <p>我们通过一个图来解释下滑动窗口的工作流程，对于发送端来说，即将要发送的数据包排成一个队列，对于发送者来说，数据包总共分成四类。分别是在窗口前的，已经发送给接收方，并且收到了接收方的答复，我们称之为已发送。在窗口中的，有两种状态，一个是已经发送给接收方，但是接收方还没确认送达，我们称之为已发送未确认，另外一个是可以发送了，但是还没有发送，我们称之为允许发送未发送。最后的是在窗口外面的，我们称之为不可发送，除非窗口滑到此处，否则不会进行发送。</p>
-                            <p>就这样，一旦前面的数据已经得到服务端确认了，这个窗口就会慢慢地往后滑，如下图所示，P1,P2两个数据包被确认之后，窗口就往后移动，后面新的数据包就由不可发送待发送变成了可发送状态了。</p>
-                            <div><img src="./img/tcpslide2.bmp" width="100%"></div>
-                            <p>TCP的滑动窗口协议有什么意义呢？首先当然是可靠性，滑动窗口只有在队列前部的被确认之后，才会往后移动，保证数据包被接收方确认并接收。其次是传输效率，假如没有窗口，服务端是杂乱无章地进行发包，因为TCP的队首效应，如果有前面的包没有发送成功，就会不停的重试，反而造成更差的传输效率。最后是稳定性，TCP的滑动窗口大小，是整个复杂网络商榷的结果，会进行动态调整，可以尽量地避免网络拥塞，更加稳定。可以关注我，后面我们在一起学习，一起分享。大家的支持是我继续唠嗑的动力。</p>
-                        </accordion-item>
-                        <accordion-item class="stableBack" title="UDP如何实现可靠传输" content-height="450">
-                            <p>UDP不属于连接协议，具有资源消耗少，处理速度快的优点，所以通常音频，视频和普通数据在传送时，使用UDP较多，因为即使丢失少量的包，也不会对接受结果产生较大的影响。传输层无法保证数据的可靠传输，只能通过应用层来实现了。实现的方式可以参照tcp可靠性传输的方式，只是实现不在传输层，实现转移到了应用层。最简单的方式是在应用层模仿传输层TCP的可靠性传输。下面不考虑拥塞处理，可靠UDP的简单设计。</p>
-                            <p>添加seq/ack机制，确保数据发送到对端<br>添加发送和接收缓冲区，主要是用户超时重传<br>添加超时重传机制<br></p>
-                            <p>详细说明：送端发送数据时，生成一个随机seq=x，然后每一片按照数据大小分配seq。数据到达接收端后接收端放入缓存，并发送一个ack=x的包，表示对方已经收到了数据。发送端收到了ack包后，删除缓冲区对应的数据。时间到后，定时任务检查是否需要重传数据。</p>
-                            <p>目前有如下开源程序利用udp实现了可靠的数据传输。分别为RUDP、RTP、UDT。</p>
-                        </accordion-item>
-                        <div class="item item-divider dividerFont">一些零散概念</div>
                         <accordion-item class="stableBack" title="POST/GET" content-height="550">
                             <p>GET在浏览器回退时是无害的，而POST会再次提交请求</p>
                             <p>GET产生的URL地址可以被Bookmark，而POST不可以</p>
@@ -3091,6 +3031,143 @@
                             <p>TLS：(Transport Layer Security，传输层安全协议)，用于两个应用程序之间提供保密性和数据完整性。该协议由两层组成：TLS记录协议和TLS握手协议，较低的层为 TLS 记录协议，位于某个可靠的传输协议（例如 TCP）上面。</p>
                             <p>TLS是在SSL的基础上标准化的产物，目前SSL3.0与TLS1.0保持一致的，二者是并列关系，只是大家习惯称呼SSL。注明的web服务nginx默认支持的就是TLS1.0、TLS1.1、TLS1.2协议。调用的openssl库中，对应的就是ssl3_acceptt函数。</p>
                             <p>SSL/TLS位于传输层和应用层之间，应用层数据不再直接传递给传输层，而是传递给SSL层，SSL层对从应用层收到的数据进行加密，并增加自己的SSL头。</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+            }
+        },
+        methods: {
+
+        }
+    }
+    //// 二级 TCP/UDP
+    const TCPUDP = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/netWork')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">TCP/UDP</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <div class="item item-divider dividerFont">TCP/UDP基本概念</div>
+                        <accordion-item class="stableBack" title="TCP和UDP区别" content-height="680">
+                            <p><span class="redBold">原理区别：</span></p>
+                            <p>TCP 是面向连接的，UDP 是面向无连接的（比如socket编程中TCP发送数据之前先要connect）<br>UDP 程序结构较简单<br>TCP 是面向字节流的，UDP 是基于数据报的<br>TCP 保证数据正确性，UDP 可能丢包<br>TCP 保证数据顺序，UDP 不保证<br>对系统资源的要求（TCP较多，UDP少）<br></p>
+                            <p><span class="redBold">编程区别：</span></p>
+                            <p>UDP Server不需要调用listen和accept<br>UDP 收发数据用sendto/recvfrom函数<br>TCP 地址信息在connect/accept时确定<br>UDP 在sendto/recvfrom函数中每次均 需指定地址信息<br>UDP shutdown函数无效<br></p>
+                            <p><span class="redBold">UDP适用：</span></p>
+                            <p>网络数据大多为短消息<br>拥有大量Client<br>对数据安全性无特殊要求<br>网络负担非常重，但对响应速度要求高<br></p>
+                            <p><span class="redBold">数据报：</span>是网络传输的数据的基本单元，包含一个报头和数据本身，其中报头描述了数据的目的地以及和其它数据之间的关系。同一报文的不同分组可以由不同的传输路径通过通信子网。UDP基于数据报。</p>
+                            <p><span class="redBold">字节流：</span>方式指的是仅把传输中的报文看作是一个字节序列，在字节流服务中，由于没有报文边界，用户进程在某一时刻可以读或写任意数量的字节。 TCP基于字节流。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="TCP和UDP包头" content-height="350">
+                            <div><img src="./img/udp.bmp" width="100%"></div>
+                            <div><img src="./img/tcp.bmp" width="100%"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="TCP三次握手" content-height="700">
+                            <p>TCP 的三次握手除了建立连接外，主要还是为了沟通 TCP 包的序号问题。A 告诉 B，我发起的包的序号是从哪个号开始的，B 同样也告诉 A，B 发起的 包的序号是从哪个号开始的。双方建立连接之后需要共同维护一个状态机，在建立连接的过程中，双方的状态变化时序图如下所示：</p>
+                            <div><img src="./img/tcpshakehand.bmp" width="100%"></div>
+                            <p><span class="redBold">为什么连接建立需要三次握手，而不是两次握手？</span></p>
+                            <p>防止失效的连接请求报文段被服务端接收，从而产生错误。PS：失效的连接请求：若客户端向服务端发送的连接请求丢失，客户端等待应答超时后就会再次发送连接请求，此时，上一个连接请求就是『失效的』。</p>
+                            <p>若建立连接只需两次握手，客户端并没有太大的变化，仍然需要获得服务端的应答后才进入ESTABLISHED状态，而服务端在收到连接请求后就进入ESTABLISHED状态。此时如果网络拥塞，客户端发送的连接请求迟迟到不了服务端，客户端便超时重发请求，如果服务端正确接收并确认应答，双方便开始通信，通信结束后释放连接。此时，如果那个失效的连接请求抵达了服务端，由于只有两次握手，服务端收到请求就会进入ESTABLISHED状态，等待发送数据或主动发送数据。但此时的客户端早已进入CLOSED状态，服务端将会一直等待下去，这样浪费服务端连接资源。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="TCP四次挥手" content-height="990">
+                            <p>A：B 啊，我不想玩了<br>B：哦，你不想玩了啊，我知道了<br>这个时候，只是 A 不想玩了，即不再发送数据，但是 B 可能还有未发送完的数据，所以需要等待 B 也主动关闭。<br>B：A 啊，好吧，我也不玩了，拜拜<br>A：好的，拜拜<br></p>
+                            <p>这样整个连接就关闭了，当然上面只是正常的状态，也有些非正常的状态（比如 A 说完不玩了，直接跑路，B 发起的结束得不到 A 的回答，不知道该怎么办或则 B 直接跑路 A 不知道该怎么办），TCP 协议专门设计了几个状态来处理这些非正常状态：</p>
+                            <div><img src="./img/tcpseeyou.bmp" width="100%"></div>
+                            <p><span class="redBold">为什么会有TIME_WAIT：</span>客户端接收到服务器的FIN报文后进入TIME_WAIT状态而不是CLOSED，还需要等待2MSL，理由：确保最后一个确认报文能够到达。如果server端没收到client端发来的确认报文，那么就会重新发送连接释放请求报文。</p>
+                            <p><span class="redBold">为什么是四次挥手，不是三次？</span>观察四次挥手过程可见报文段3包含了报文段2中的确认值，因此三次挥手只能将报文段3和报文段2合并。但这样合并是有问题的。被动关闭方发送报文段2只是确认主动关闭方发来的结束报文段，但并不代表自身的数据已经传输完毕。即就是当断开连接的时候，一个方向的断开，只是说明该方向数据已传输完毕，而另一方向或许还有数据，所以要等到另一个方向数据也全部传输完成后，才能实现三次握手。但是这个时间不确定，因此会造成主动关闭方的结束报文段长时间未得到响应而进行超时重传等等。造成了不必要的资源浪费甚至更意想不到的问题。</p>
+                            <p><span class="redBold">注意：</span>这里在理解三次握手和四次挥手有一点很关键，即tcp传输是<span class="redBold">全双工</span>，所以每次都要向对方确认并获取确认，在考虑为什么是三次握手四次挥手时，可以在<span class="redBold">每次通信中加入网络抖动</span>，并分析如果产生网络抖动会有什么影响。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="select、poll、epoll" content-height="770">
+                            <p><span class="redBold">select==>时间复杂度O(n)</span></p>
+                            <p>它仅仅知道了，有I/O事件发生了，却并不知道是哪那几个流（可能有一个，多个，甚至全部），我们只能无差别轮询所有流，找出能读出数据，或者写入数据的流，对他们进行操作。所以select具有O(n)的无差别轮询复杂度，同时处理的流越多，无差别轮询时间就越长。</p>
+                            <p><span class="redBold">poll==>时间复杂度O(n)</span></p>
+                            <p>poll本质上和select没有区别，它将用户传入的数组拷贝到内核空间，然后查询每个fd对应的设备状态， 但是它没有最大连接数的限制，原因是它是基于链表来存储的。</p>
+                            <p><span class="redBold">epoll==>时间复杂度O(1)</span></p>
+                            <p>epoll可以理解为event poll，不同于忙轮询和无差别轮询，epoll会把哪个流发生了怎样的I/O事件通知我们。所以我们说epoll实际上是事件驱动（每个事件关联上fd）的，此时我们对这些流的操作都是有意义的。（复杂度降低到了O(1)）</p>
+                            <p><span class="redBold">epoll的水平触发和边缘触发</span></p>
+                            <p>Level_triggered(水平触发)：当被监控的文件描述符上有可读写事件发生时，epoll_wait()会通知处理程序去读写。如果这次没有把数据一次性全部读写完(如读写缓冲区太小)，那么下次调用 epoll_wait()时，它还会通知你在上没读写完的文件描述符上继续读写，当然如果你一直不去读写，它会一直通知你。如果系统中有大量你不需要读写的就绪文件描述符，而它们每次都会返回，这样会大大降低处理程序检索自己关心的就绪文件描述符的效率。<br>Edge_triggered(边缘触发)：当被监控的文件描述符上有可读写事件发生时，epoll_wait()会通知处理程序去读写。如果这次没有把数据全部读写完(如读写缓冲区太小)，那么下次调用epoll_wait()时，它不会通知你，也就是它只会通知你一次，直到该文件描述符上出现第二次可读写事件才会通知你。这种模式比水平触发效率高，系统不会充斥大量你不关心的就绪文件描述符。<br></p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">TCP可靠传输</div>
+                        <accordion-item class="stableBack" title="超时重传" content-height="340">
+                            <p>原理是在发送某一个数据以后就开启一个计时器，在一定时间内如果没有得到发送的数据报的ACK报文，那么就重新发送数据，直到发送成功为止。</p>
+                            <p>影响超时重传机制协议效率的一个关键参数是重传超时时间（RTO，Retransmission TimeOut）。RTO的值被设置过大过小都会对协议造成不利影响。</p>
+                            <p>RTO设长了，重发就慢，没有效率，性能差。<br>RTO设短了，重发的就快，会增加网络拥塞，导致更多的超时，更多的超时导致更多的重发。<br></p>
+                            <p>连接往返时间（RTT，Round Trip Time），指发送端从发送TCP包开始到接收它的立即响应所消耗的时间。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="阻塞控制" content-height="1670">
+                            <p>拥塞控制是一个全局性的过程； 流量控制是点对点通信量的控制。TCP拥塞控制4个核心算法：慢开始（slow start）、拥塞避免（Congestion Avoidance）、快速重传（fast retransmit）、快速回复（fast recovery）。拥塞窗口（cwnd，congestion window），其大小取决于网络的拥塞程度，并且动态地在变化。</p>
+                            <p><span class="redBold">慢开始( slow-start )：</span>当主机开始发送数据时，如果立即所大量数据字节注入到网络，那么就有可能引起网络拥塞，因为现在并不清楚网络的负荷情况。因此，较好的方法是先探测一下，即由小到大逐渐增大发送窗口，也就是说，由小到大逐渐增大拥塞窗口数值。通常在刚刚开始发送报文段时，先把拥塞窗口 cwnd 设置为一个最大报文段MSS的数值。而在每收到一个对新的报文段的确认后，把拥塞窗口增加至多一个MSS的数值。用这样的方法逐步增大发送方的拥塞窗口 cwnd ，可以使分组注入到网络的速率更加合理。每经过一个传输轮次，拥塞窗口 cwnd 就加倍。一个传输轮次所经历的时间其实就是往返时间RTT。不过“传输轮次”更加强调：把拥塞窗口cwnd所允许发送的报文段都连续发送出去，并收到了对已发送的最后一个字节的确认。另，慢开始的“慢”并不是指cwnd的增长速率慢，而是指在TCP开始发送报文段时先设置cwnd=1，使得发送方在开始时只发送一个报文段（目的是试探一下网络的拥塞情况），然后再逐渐增大cwnd。</p>
+                            <p><span class="redBold">拥塞避免( congestion avoidance )：</span>让拥塞窗口cwnd缓慢地增大，即每经过一个往返时间RTT就把发送方的拥塞窗口cwnd加1，而不是加倍。这样拥塞窗口cwnd按线性规律缓慢增长，比慢开始算法的拥塞窗口增长速率缓慢得多。</p>
+                            <p>为了防止cwnd增长过大引起网络拥塞，还需设置一个慢开始门限ssthresh状态变量。<span class="redBold">ssthresh</span>的用法如下：</p>
+                            <p>当cwnd < ssthresh时，使用慢开始算法<br>当cwnd > ssthresh时，改用拥塞避免算法<br>当cwnd = ssthresh时，慢开始与拥塞避免算法任意<br></p>
+                            <p>无论是在慢开始阶段还是在拥塞避免阶段，只要发送方判断网络出现拥塞，就把慢开始门限设置为出现拥塞时的发送窗口大小的一半。然后把拥塞窗口设置为1，执行慢开始算法。如下图：</p>
+                            <div><img src="./img/tcpblock.bmp" width="100%"></div>
+                            <p><span class="redBold">拥塞控制的具体过程如下：</span></p>
+                            <p>1、TCP连接初始化，将拥塞窗口设置为1<br>2、执行慢开始算法，cwnd按指数规律增长，直到cwnd=ssthresh时，开始执行拥塞避免算法，cwnd按线性规律增长<br>3、当网络发生拥塞，把ssthresh值更新为拥塞前ssthresh值的一半，cwnd重新设置为1，按照步骤（2）执行<br></p>
+                            <p><span class="redBold">乘法减小和加法增大：</span></p>
+                            <p>乘法减小：是指不论在慢开始阶段还是拥塞避免阶段，只要出现超时，就把慢开始门限减半，即设置为当前的拥塞窗口的一半（于此同时，执行慢开始算法）。当网络出现频繁拥塞时，ssthresh值就下降的很快，以大大将小注入到网络中的分组数。<br>加法增大：是指执行拥塞避免算法后是拥塞窗口缓慢增大，以防止网络过早出现拥塞。<br></p>
+                            <p><span class="redBold">快速重传(Fast retransmit)：</span>要求接收方在收到一个失序的报文段后就立即发出重复确认（为的是使发送方及早知道有报文段没有到达对方），而不要等到自己发送数据时捎带确认。快重传算法规定，发送方只要一连收到3个重复确认就应当立即重传对方尚未收到的报文段，而不必继续等待设置的重传计数器时间到期。</p>
+                            <p><span class="redBold">快速恢复(Fast Recovery)：</span></p>
+                            <p>当发送方连续收到三个重复确认，就执行“乘法减小”算法，把慢开始门限ssthresh减半。这是为了预防网络发生拥塞。请注意：接下去不执行慢开始算法。<br>由于发送方现在认为网络很可能没有发生拥塞，因此与慢开始不同之处是现在不执行慢开始算法（即拥塞窗口cwnd现在不设置为1），而是把cwnd值设置为慢开始门限ssthresh减半后的数值，然后开始执行拥塞避免算法（“加法增大”），使拥塞窗口缓慢地线性增大。<br></p>
+                            <p>发送方窗口的上限值 = Min [ rwnd, cwnd ]
+                                当rwnd < cwnd 时，是接收方的接收能力限制发送方窗口的最大值。
+                                当cwnd < rwnd 时，则是网络的拥塞限制发送方窗口的最大</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="流量控制（滑动窗口）" content-height="1140">
+                            <p>大家都知道，我们从一台机器向另外一台机器发送数据的时候，数据并不是一口气也不可能一口气传输给接收方。这个并不难理解，因为网络环境特别的复杂，有些地方快有些地方慢。所以，操作系统把这些数据写成连续的数据包，并且以一定的速率发给对方。一定的速率怎么理解呢？网络环境就像复杂的交通链路。就好比一个沙漏，中间可能有一个地方流量非常的小，这个最小的口径决定了网络传输的真正速度。我们要考虑到带宽缓冲区等因素，如果一下子发送所有的数据只会加大网络压力，造成丢包重试，轻则传输更慢，重则网络崩溃。因为TCP是顺序发送的，操作系统将这些数据包一批一批的发送给对方，就像一个窗口，不停地往后移动，所以，我们称之为TCP滑动窗口协议。</p>
+                            <p>在TCP中，窗口的大小是在TCP三次握手后协定的，并且窗口的大小并不是固定的，而是会随着网络的情况进行调整。这个也不难理解，原本你女朋友在家独享10M的宽带，你下班要上虎牙看网址荣耀直播，两个人就要共享这个宽带。TCP为了更好的传输效率，就会调整窗口的大小。</p>
+                            <div><img src="./img/tcpslide1.bmp" width="100%"></div>
+                            <p>我们通过一个图来解释下滑动窗口的工作流程，对于发送端来说，即将要发送的数据包排成一个队列，对于发送者来说，数据包总共分成四类。分别是在窗口前的，已经发送给接收方，并且收到了接收方的答复，我们称之为已发送。在窗口中的，有两种状态，一个是已经发送给接收方，但是接收方还没确认送达，我们称之为已发送未确认，另外一个是可以发送了，但是还没有发送，我们称之为允许发送未发送。最后的是在窗口外面的，我们称之为不可发送，除非窗口滑到此处，否则不会进行发送。</p>
+                            <p>就这样，一旦前面的数据已经得到服务端确认了，这个窗口就会慢慢地往后滑，如下图所示，P1,P2两个数据包被确认之后，窗口就往后移动，后面新的数据包就由不可发送待发送变成了可发送状态了。</p>
+                            <div><img src="./img/tcpslide2.bmp" width="100%"></div>
+                            <p>TCP的滑动窗口协议有什么意义呢？首先当然是可靠性，滑动窗口只有在队列前部的被确认之后，才会往后移动，保证数据包被接收方确认并接收。其次是传输效率，假如没有窗口，服务端是杂乱无章地进行发包，因为TCP的队首效应，如果有前面的包没有发送成功，就会不停的重试，反而造成更差的传输效率。最后是稳定性，TCP的滑动窗口大小，是整个复杂网络商榷的结果，会进行动态调整，可以尽量地避免网络拥塞，更加稳定。可以关注我，后面我们在一起学习，一起分享。大家的支持是我继续唠嗑的动力。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="拥塞控制和流量控制区别" content-height="240">
+                            <p>拥塞控制：防bai止过多的数据注入到网络中，这样可以使网络中的路由器或链路不致过载。拥塞控制所要做的都有一个前提：网络能够承受现有的网络负荷。拥塞控制是一个全局性的过程，涉及到所有的主机、路由器，以及与降低网络传输性能有关的所有因素。</p>
+                            <p>流量控制：指点对点通信量的控制，是端到端正的问题。流量控制所要做的就是抑制发送端发送数据的速率，以便使接收端来得及接收。</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">UDP可靠传输</div>
+                        <accordion-item class="stableBack" title="实现方案" content-height="450">
+                            <p>UDP不属于连接协议，具有资源消耗少，处理速度快的优点，所以通常音频，视频和普通数据在传送时，使用UDP较多，因为即使丢失少量的包，也不会对接受结果产生较大的影响。传输层无法保证数据的可靠传输，只能通过应用层来实现了。实现的方式可以参照tcp可靠性传输的方式，只是实现不在传输层，实现转移到了应用层。最简单的方式是在应用层模仿传输层TCP的可靠性传输。下面不考虑拥塞处理，可靠UDP的简单设计。</p>
+                            <p>添加seq/ack机制，确保数据发送到对端<br>添加发送和接收缓冲区，主要是用户超时重传<br>添加超时重传机制<br></p>
+                            <p>详细说明：送端发送数据时，生成一个随机seq=x，然后每一片按照数据大小分配seq。数据到达接收端后接收端放入缓存，并发送一个ack=x的包，表示对方已经收到了数据。发送端收到了ack包后，删除缓冲区对应的数据。时间到后，定时任务检查是否需要重传数据。</p>
+                            <p>目前有如下开源程序利用udp实现了可靠的数据传输。分别为RUDP、RTP、UDT。</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">TCP/UDP编码流程</div>
+                        <accordion-item class="stableBack" title="TCP 编码流程" content-height="1080">
+                            <div><img src="./img/tcpprogram.bmp" width="100%"></div>
+                            <p><span class="redBold">端口状态：</span></p>
+                            <p>listen()：</p>
+                            <div><img src="./img/tcpprogram1.bmp" width="100%"></div>
+                            <p>accept()：</p>
+                            <p>connect()：</p>
+                            <div><img src="./img/tcpprogram2.bmp" width="100%"></div>
+                            <p>可以看到7688进程有两个socket管道、一个是1002本地监听、另一个是与外界通信socket。</p>
+                            <p><span class="redBold">1、这里先关闭客户端socket：</span></p>
+                            <div><img src="./img/tcpprogram3.bmp" width="100%"></div>
+                            <p>因为是客户端主动触发的关闭，所以服务端的状态变为CLOSE_WAIT状态，客户端状态变为FIN_WAIT_1->FIN_WAIT_2；这时不关闭服务端接受到的客户端的socket，等待2MSL后，就只剩服务端的监听端口了；</p>
+                            <p>如果在2MSL之内，关闭服务端接受到的客户端的socket，则客户端socket进入TIME_WAIT状态：</p>
+                            <div><img src="./img/tcpprogram4.bmp" width="100%"></div>
+                            <p>2、反之先关闭服务端接收到的客户端socket，也是一样的效果；</p>
+                            <p><span class="redBold">3、这里直接先关闭服务端的监听socket：</span></p>
+                            <div><img src="./img/tcpprogram5.bmp" width="100%"></div>
+                            <p>所以任然可以用已建立连接的socket发消息；</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="UDP 编码流程" content-height="430">
+                            <div><img src="./img/udpprogram.bmp" width="100%"></div>
+                            <p><span class="redBold">端口状态：</span></p>
+                            <p>bind()：</p>
+                            <div><img src="./img/udpprogram1.bmp" width="100%"></div>
+                            <p><span class="redBold">没有连接状态；</span></p>
+                            <p>并且关闭客户端socket不会改变服务器进程的状态，只有当服务端的socket关闭时进程才会结束，并且是立即结束。</p>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -5461,6 +5538,21 @@
                             <p>【解答】：二分法（或者先用二分法找左边，右边也是二分，注意边界判断）</p>
                             <div><textarea id="LeetCode34"></textarea></div>
                         </accordion-item>
+                        <accordion-item class="stableBack" title="46、全排列" content-height="530">
+                            <p>给定一个 没有重复 数字的序列，返回其所有可能的全排列。</p>
+                            <p>示例:</p>
+                            <p>输入: [1,2,3]</p>
+                            <p>输出: [
+                                  [1,2,3],
+                                  [1,3,2],
+                                  [2,1,3],
+                                  [2,3,1],
+                                  [3,1,2],
+                                  [3,2,1]
+                                ]</p>
+                            <p>【解答】：回溯法</p>
+                            <div><textarea id="LeetCode46"></textarea></div>
+                        </accordion-item>
                         <accordion-item class="stableBack" title="53、最大子序和" content-height="610">
                             <p>给定一个整数数组 nums ，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。</p>
                             <p>示例:</p>
@@ -5470,7 +5562,14 @@
                             <p>【解答】：动态规划，保存当前最大值，更新到原数组</p>
                             <div><textarea id="LeetCode53"></textarea></div>
                         </accordion-item>
-
+                        <accordion-item class="stableBack" title="442、数组中重复的数据" content-height="620">
+                            <p>给定一个整数数组 a，其中1 ≤ a[i] ≤ n （n为数组长度）, 其中有些元素出现两次而其他元素出现一次。找到所有出现两次的元素。你可以不用到任何额外空间并在O(n)时间复杂度内解决这个问题吗？</p>
+                            <p>示例:</p>
+                            <p>输入: [4,3,2,7,8,2,3,1]</p>
+                            <p>输出: [2,3]</p>
+                            <p>【解答】：如果不要求空间复杂度，可以使用类似计数排序的数组做hash，若要求空间复杂度O(1)，则用源数组通过正负号做重复判断的标志</p>
+                            <div><textarea id="LeetCode442"></textarea></div>
+                        </accordion-item>
                     </accordion>
                 </div>
             </div>
@@ -5569,6 +5668,41 @@
                     "        }\n" +
                     "    }\n" +
                     "}",
+                LeetCode46:
+                    "class Solution {\n" +
+                    "    public List<List<Integer>> permute(int[] nums) {\n" +
+                    "        List<List<Integer>> result = new ArrayList<>();\n" +
+                    "        List<Integer> temp = new ArrayList<>();\n" +
+                    "        backTrack(nums, temp, result);\n" +
+                    "        return result;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    /**\n" +
+                    "     * 回溯法模板\n" +
+                    "     * @param nums\n" +
+                    "     * @param temp\n" +
+                    "     * @param result\n" +
+                    "     */\n" +
+                    "    private static void backTrack(int[] nums, List<Integer> temp, List<List<Integer>> result) {\n" +
+                    "        //// 判断是否找到正确路径，找到就加入到结果中\n" +
+                    "        if (temp.size() == nums.length) {\n" +
+                    "            result.add(new ArrayList<>(temp));\n" +
+                    "            return;\n" +
+                    "        }\n" +
+                    "        for (int i = 0; i < nums.length; i++) {\n" +
+                    "            //// 判断是否有重复\n" +
+                    "            if (temp.contains(nums[i])) {\n" +
+                    "                continue;\n" +
+                    "            }\n" +
+                    "            //// 添加步数\n" +
+                    "            temp.add(nums[i]);\n" +
+                    "            //// 继续找路\n" +
+                    "            backTrack(nums, temp, result);\n" +
+                    "            //// 找下条同级别路径前先退回上一步\n" +
+                    "            temp.remove(temp.size()-1);\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}",
                 LeetCode53:
                     "public int maxSubArray(int[] nums) {\n" +
                     "    int Max = nums[0];\n" +
@@ -5579,6 +5713,20 @@
                     "        Max = Math.max(Max, nums[i]);\n" +
                     "    }\n" +
                     "    return Max;\n" +
+                    "}",
+                LeetCode442:
+                    "class Solution {\n" +
+                    "    public List<Integer> findDuplicates(int[] nums) {\n" +
+                    "        List<Integer> result = new ArrayList<>();\n" +
+                    "        for (int i = 0; i < nums.length; i++) {\n" +
+                    "            if (nums[Math.abs(nums[i])-1] < 0) {\n" +
+                    "                result.add(new Integer(Math.abs(nums[i])));\n" +
+                    "            } else {\n" +
+                    "                nums[Math.abs(nums[i])-1] *= -1;\n" +
+                    "            }\n" +
+                    "        }\n" +
+                    "        return result;\n" +
+                    "    }\n" +
                     "}",
                 options: {
                     tabSize: 2,
@@ -5592,9 +5740,15 @@
             let editorLeetCode34 = CodeMirror.fromTextArea(document.getElementById("LeetCode34"), this.options)
             editorLeetCode34.setValue(this.LeetCode34)
             editorLeetCode34.setSize('auto','300px');
+            let editorLeetCode46 = CodeMirror.fromTextArea(document.getElementById("LeetCode46"), this.options)
+            editorLeetCode46.setValue(this.LeetCode46)
+            editorLeetCode46.setSize('auto','300px');
             let editorLeetCode53 = CodeMirror.fromTextArea(document.getElementById("LeetCode53"), this.options)
             editorLeetCode53.setValue(this.LeetCode53)
             editorLeetCode53.setSize('auto','300px');
+            let editorLeetCode442 = CodeMirror.fromTextArea(document.getElementById("LeetCode442"), this.options)
+            editorLeetCode442.setValue(this.LeetCode442)
+            editorLeetCode442.setSize('auto','300px');
         }
     }
     //// 二级 其他算法题&解
@@ -6079,6 +6233,8 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
 
         //// 一级菜单 网络
         { path: '/netWork', component: NetWork },
+        { path: '/netBasic', component: NetBasic }, //// 二级菜单 基本概念
+        { path: '/tcpudp', component: TCPUDP }, //// 二级菜单 TCP/UDP
 
         //// 一级菜单 中间件
         { path: '/middleWare', component: MiddleWare },
