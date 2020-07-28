@@ -1939,8 +1939,11 @@
                             <p>在基于MVCC的数据库实现中，根本就不需要出现Read Uncommitted这种情况。Read Uncommitted是早期数据库，读写都基于锁进行实现的产物。在实际业务中Read Uncommitted毫无意义（如果真有意义，你咋不去用NoSQL数据库？）因此：</p>
                             <p>对于Postgres，Read Committed和Read Uncommitted是一样的。对于Oracle，压根就没有Read Uncommitted这个级别。所以从实际的角度出发，我想所有人都忘记有“Read Uncommitted”这件事。</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="undo/redo log" content-height="100">
-                            <p>预留</p>
+                        <accordion-item class="stableBack" title="undo/redo log" content-height="460">
+                            <p>redo：（重做）记录事务操作中对数据修改后的值，用于将事务重新执行一遍</p>
+                            <p>undo：（撤销）记录事务操作中对数据修改前的值，用户将事务回滚</p>
+                            <p><span class="redBold">redo/undo log 和 binlog 的区别：</span></p>
+                            <p>层次不同。redo/undo 是 innodb 引擎层维护的，而 binlog 是 mysql server 层维护的，跟采用何种引擎没有关系，记录的是所有引擎的更新操作的日志记录。<br>记录内容不同。redo/undo 记录的是 每个页/每个数据 的修改情况，属于物理日志+逻辑日志结合的方式（redo log 是物理日志，undo log 是逻辑日志）。binlog 记录的都是事务操作内容，binlog 有三种模式：Statement（基于 SQL 语句的复制）、Row（基于行的复制） 以及 Mixed（混合模式）。不管采用的是什么模式，当然格式是二进制的。<br>记录时机不同。redo/undo 在 事务执行过程中 会不断的写入，而 binlog 是在 事务最终提交前 写入的。binlog 什么时候刷新到磁盘跟参数 sync_binlog 相关。<br></p>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -2922,7 +2925,6 @@
                         <span slot="title"><h3 class="padding text-center headerTop">网络</h3></span>
                     </von-header>
                     <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="1"></cells>
-                    </accordion>
                 </div>
             </div>
         `,
