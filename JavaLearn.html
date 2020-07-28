@@ -4045,9 +4045,13 @@
                             <p>发送回滚请求：协调者向所有参与者发送Rollback请求</p>
                             <p>事务回滚：参与者接收到Rollback请求后，会利用其在阶段一中记录的Undo信息来执行事务回滚操作，完成回滚之后释放在整个事务执行期间占用的资源，并向协调者发送Ack消息，协调者接收到所有的参与者反馈的Ack消息后，完成事务中断</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="Paxos" content-height="1850">
+                        <accordion-item class="stableBack" title="Paxos" content-height="2230">
                             <p>Paxos是分布式的基础，其他大多数算法基本都是由Paxos引申出来。</p>
                             <p>说到分布式一致性协议，Paxos 肯定是绕不开的，关于它和其作者 Lamport 的传奇故事也是有很多，这里就不啰嗦了，感兴趣的可以自行搜索。作为几种常见协议的基础，Paxos 提供了“选举” 的思想，Lamport 为了简化 Paxos，也为了讲述这个算法，假想了一个叫做 Paxos 的希腊城邦进行选举的情景，这个算法也是因此而得名。</p>
+                            <p><span class="redBold">Paxos 协议中，有三类节点：</span></p>
+                            <p><span class="redBold">Proposer:提案者：</span>Proposer 可以有多个，Proposer 提出议案(value)。所谓 value，在工程中可以是任何操作，例如“修改某个变量的值为某个值”、“设置当前 primary 为某个节点”等等。Paxos 协议中统一将这些操作抽象为 value。不同的 Proposer 可以提出不同的甚至矛盾的 value，例如某个 Proposer 提议“将变量 X 设置为 1”，另一个 Proposer 提议“将变量 X 设置为 2”，但对同一轮 Paxos 过程，最多只有一个 value 被批准。</p>
+                            <p><span class="redBold">Acceptor:批准者：</span>Acceptor 有 N 个，Proposer 提出的 value 必须获得超过半数(N/2+1)的Acceptor 批准后才能通过。Acceptor 之间完全对等独立。</p>
+                            <p><span class="redBold">Learner:学习者：</span>Learner 学习被批准的 value。所谓学习就是通过读取各个 Proposer 对 value 的选择结果，如果某个 value 被超过半数 Proposer 通过，则 Learner 学习到了这个 value。这里类似 Quorum 议会机制，某个 value 需要获得 W=N/2 + 1 的 Acceptor 批准，Learner 需要至少读取 N/2+1 个 Accpetor，至多读取 N 个 Acceptor 的结果后，能学习到一个通过的 value。</p>
                             <p><span class="redBold">Paxos 算法的步骤是这样：</span></p>
                             <p><span class="redBold">1、</span>首先有两种角色，一个是“提议者”，一个是“接受者”。提议者可以向接受者提出提议，然后接受者表达意见。</p>
                             <p><span class="redBold">2、</span>因为存在多个提议者，如果同时表达意见会出现意见不一致的情况，所以首先需要尽快选出一个领导者，让意见统一。</p>
@@ -4071,12 +4075,15 @@
                             <p>于是后来又有了进阶版的 Multi Paxos 协议。只要 Leader 是相对稳定不变的，第 1 阶段就变得不必要。 这样，系统可以在接下来的 Paxos 算法实例中，跳过的第 1 阶段，直接使用同样的 Leader。</p>
                             <p>Multi Paxos 本身对一些边缘情况没有定义，所以大多数实际应用是基于 Multi Paxos 进行补充，或者使用它的变种 Raft。</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="Raft" content-height="270">
+                        <accordion-item class="stableBack" title="Raft" content-height="570">
                             <p>在Raft中，任何时候一个服务器可以扮演下面角色之一：</p>
                             <p><span class="redBold">Leader：</span>处理所有客户端交互，日志复制等，一般一次只有一个Leader。</p>
                             <p><span class="redBold">Follower：</span>类似选民，完全被动。</p>
                             <p><span class="redBold">Candidate候选人：</span>类似Proposer律师，可以被选为一个新的领导人。</p>
                             <p>Raft阶段分为两个，首先是选举过程，然后在选举出来的领导人带领进行正常操作，比如日志复制等。</p>
+                            <p><span class="redBold">分区：</span></p>
+                            <p>Raft能够正确地处理网络分区（“脑裂”）问题。假设A~E五个结点，B是leader。如果发生“脑裂”，A、B成为一个子分区，C、D、E成为一个子分区。此时C、D、E会发生选举，选出C作为新term的leader。这样我们在两个子分区内就有了不同term的两个leader。这时如果有客户端写A时，因为B无法复制日志到大部分follower所以日志处于uncommitted未提交状态。而同时另一个客户端对C的写操作却能够正确完成，因为C是新的leader，它只知道D和E。</p>
+                            <p>当网络通信恢复，B能够发送心跳给C、D、E了，却发现“改朝换代”了，因为C的term值更大，所以B自动降格为follower。然后A和B都回滚未提交的日志，并从新leader那里复制最新的日志。</p>
                         </accordion-item>
                         <div class="item item-divider dividerFont">分布式事务（解决方案）</div>
                         <accordion-item class="stableBack" title="LCN开源框架（TCC）" content-height="290">
