@@ -3364,10 +3364,20 @@
                             <p><span class="redBold">为什么不能代理MySQL等关系型数据库：</span></p>
                             <p>原生不支持SQL复杂查询<br>无论是RDB还是AOF持久化机制及效率都不及关系型数据库（效率问题，和数据丢失问题）<br>原生不支持事务<br></p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="集群模式" content-height="300">
+                        <accordion-item class="stableBack" title="集群模式" content-height="1300">
                             <p><span class="redBold">主从模式：</span>（一主两从）主机可以读写操作；从机只能读操作、不能写操作；•当关掉主机节点后、从机上会显示主机doiwn状态、从机节点也不会自动成为主节点，但是可以读数据</p>
                             <p><span class="redBold">哨兵模式：</span>（基于主从模式，增加三个哨兵）主实例判断为失效<span class="redBold">至少需要2个 Sentinel进程的同意</span>，只要同意Sentinel的数量不达标，自动failover就不会执行</p>
-                            <p><span class="redBold">Cluster模式：</span>Redis Cluster 集群节点最小配置 6 个节点以上(3 主 3 从)，其中主节点提供读写操作，从节点作为备用节点，不提供请求，只作为故障转移使用。Redis Cluster 采用虚拟槽分区，所有的键根据哈希函数映射到 0～16383 个整数槽内，每个节点负责维护一部分槽以及槽所印映射的键值数据。</p>
+                            <p><span class="redBold">Cluster模式：</span>redis最开始使用主从模式做集群，若master宕机需要手动配置slave转为master；后来为了高可用提出来哨兵模式，该模式下有一个哨兵监视master和slave，若master宕机可自动将slave转为master，但它也有一个问题，就是不能动态扩充；所以在3.x提出cluster集群模式。Redis-Cluster采用无中心结构，每个节点保存数据和整个集群状态,每个节点都和其他所有节点连接。Redis Cluster 是社区版推出的 Redis 分布式集群解决方案，主要解决 Redis 分布式方面的需求，比如，当遇到单机内存，并发和流量等瓶颈的时候，Redis Cluster 能起到很好的负载均衡的目的。Redis Cluster 集群节点最小配置 6 个节点以上(3 主 3 从)，其中主节点提供读写操作，从节点作为备用节点，不提供请求，只作为故障转移使用。</p>
+                            <p><span class="redBold">哈希槽：</span></p>
+                            <p>Redis Cluster 采用虚拟槽分区，所有的键根据哈希函数映射到 0～16383 个整数槽内，每个节点负责维护一部分槽以及槽所印映射的键值数据。其结构特点：</p>
+                            <p>所有的redis节点彼此互联(PING-PONG机制),内部使用二进制协议优化传输速度和带宽。<br>节点的fail是通过集群中超过半数的节点检测失效时才生效。<br>客户端与redis节点直连,不需要中间proxy层.客户端不需要连接集群所有节点,连接集群中任何一个可用节点即可。<br>redis-cluster把所有的物理节点映射到[0-16383]slot上（不一定是平均分配）,cluster 负责维护node<->slot<->value。<br>Redis集群预分好16384个桶，当需要在 Redis 集群中放置一个 key-value 时，根据 CRC16(key) mod 16384的值，决定将一个key放到哪个桶中。<br></p>
+                            <p><span class="redBold">举例：</span></p>
+                            <p>现在我们是三个主节点分别是：A, B, C 三个节点，它们可以是一台机器上的三个端口，也可以是三台不同的服务器。那么，采用哈希槽 (hash slot)的方式来分配16384个slot 的话，它们三个节点分别承担的slot 区间是：</p>
+                            <p>节点A覆盖0－5460<br>节点B覆盖5461－10922<br>节点C覆盖10923－16383<br></p>
+                            <p>获取数据：如果存入一个值，按照redis cluster哈希槽的算法： CRC16('key') mod 384 = 6782。 那么就会把这个key 的存储分配到 B 上了。同样，当我连接(A,B,C)任何一个节点想获取'key'这个key时，也会这样的算法，然后内部跳转到B节点上获取数据</p>
+                            <p>新增一个主节点：新增一个节点D，redis cluster的这种做法是从各个节点的前面各拿取一部分slot到D上，我会在接下来的实践中实验。大致就会变成这样：</p>
+                            <p>节点A覆盖1365-5460<br>节点B覆盖6827-10922<br>节点C覆盖12288-16383<br>节点D覆盖0-1364,5461-6826,10923-12287<br></p>
+                            <p>同样删除一个节点也是类似，移动完成后就可以删除这个节点了。</p>
                         </accordion-item>
                         <div class="item item-divider dividerFont">分布式锁</div>
                         <accordion-item class="stableBack" title="setnx" content-height="880">
