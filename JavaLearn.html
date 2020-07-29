@@ -5921,17 +5921,46 @@
                         <span slot="title"><h3 class="padding text-center headerTop">面试准备</h3></span>
                     </von-header>
                     <accordion default-index="0">
-                        <accordion-item class="stableBack" title="项目相关问题" content-height="100">
-                            <p>项目架构图，描述自己最熟悉的项目，主要数据和表结构，使用到的技术点，项目峰值qps，延时，改进的地方，项目遇到的最大挑战及如何解决的</p>
+                        <accordion-item class="stableBack" title="自我介绍" content-height="530">
+                            <p>我先说一下目前做的这个项目吧，目前做的是易方达资金系统二期的外包项目，是易方达以项目外包的形式和我们公司签订的合同，然后担任的是计数经理一职，项目前期主要负责项目开发规范、微服务后台基础模块编码还有核心业务编码的工作；项目中期主要负责代码检查、执行计划分析、接口压测相关工作；项目后期主要是项目部署规范以及配合易方达的IT测试、供应商压力测试及业务的回归测试。二期项目前后已经有一年时间了。</p>
+                            <p>再说一下之前负责公司自己的产品的相关工作。2B2C的产品都有。第一年主要负责公司平台软件的一些通用功能的设计和编码工作，第二年主要负责分布式改造相关需求的详细设计和编码工作，编码主要是对新功能采用分布式设计方案以及对陈旧功能做分布式改造。中间有负责客户端的自动化测试相关技术预研工作。</p>
+                            <p>第一家单位做了半年的音视频相关适配编码，一年的云存储相关需求的编码工作，还有半年的视频监控项目的定制化编码及运维工作。</p>
+                            <p>实习的时候做了三个月的二维码识别加速算法的编码工作。</p>
+                            <p>工作差不多五年了，每个方向都有做过一些，自己平时对计算机相关的内容学习兴趣比较浓，也兼职做过小程序的项目、前端的项目和IOS开发的项目。</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="问题定位" content-height="100">
-                            <p>请求未响应、CPU 100%、</p>
+                        <div class="item item-divider dividerFont">项目相关问题</div>
+                        <accordion-item class="stableBack" title="QPS和延时" content-height="150">
+                            <p><span class="redBold">易方达这个项目峰值QPS是多少？怎么满足这个要求的？延时多少？</span></p>
+                            <p>两小时2000wQPS，具体高峰时服务器的配置和数量我不知道，单笔受理型接口延时是在要求在30ms内。</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="linux常用命令" content-height="400">
+                        <accordion-item class="stableBack" title="难题和性能问题" content-height="550">
+                            <p><span class="redBold">项目中遇到的难题如何解决的？项目中遇到性能问题如何优化的？</span></p>
+                            <p>一个难题就是前端虚拟滚动的问题，易方达现有的vue前端框架还在研发中，所以目前的前端框架使用的是jq，表格控件统一使用的是jqgrid，然后资金系统这个项目有些界面比较特殊，需要做无分页处理，界面全部的数据量大概在10w左右，并且需要支持冻结列，这里存在两个问题，一个是无分页的数据展示，如果采用滚动分页获取后台数据前端渲染，则滚动条无法表达全部进度，若采用一次性获取全部数据的虚拟滚动方式，除了数据传输耗时之外，还不支持冻结列（jqgrid虚拟滚动因为稳定性原因屏蔽了冻结列），最后这个问题是跟易方达业务部门沟通后，做成了两种模式。并且我觉得无分页的大数据量前端展示，本身就是一个存在博弈的需求。</p>
+                            <p>一个性能问题就是，有一个批量受理型接口，在数据处理部分根据不同的业务类型，在同一个事务内需要多次对数据进行merge操作，每次merge可能是更新，也可能是插入，在压测时发现这个接口在数据量较大的时候，每次merge操作的执行效率都比较低，然后就对单条的sql进行merge前后的执行计划分析对比，发现执行计划并没有改变，但是实际上数据是有较大变化的，所以就分析是由于oracle的统计信息没有及时更新导致，最后在每次数据修改后，都对目标表做了更新统计信息的操作，解决了该问题。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="linux下性能瓶颈定位" content-height="550">
+                            <p><span class="redBold">内存：</span></p>
+                            <p>$>free -m ## 查看内存使用（-m单位兆）</p>
+                            <p>$>vmstat 3（间隔时间） 100（监控次数）## 查看swap in/out详细定位</p>
+                            <p>$>sar -r 3 ## 和free类似，但没有swap的情况</p>
+                            <p><span class="redBold">CPU：</span></p>
+                            <p>$>top -H ## 按CPU消耗高低排序（top查看CPU整体消耗）</p>
+                            <p>$>sar -u 3（间隔时间） ## 查看CPU整体消耗占比</p>
+                            <p><span class="redBold">网络：</span></p>
+                            <p>$>cat /var/log/messages ## 查看内核日志，是否丢包</p>
+                            <p><span class="redBold">磁盘：</span></p>
+                            <p>$>iostat -x ## 查看系统各磁盘的读写性能，重点关注await和iowait的CPU占比</p>
+                            <p>$>iotop ## 查看哪个进程在大量读取IO</p>
+                            <p>$>df -hl ## 查看磁盘剩余空间</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">杂</div>
+                        <accordion-item class="stableBack" title="linux常用命令" content-height="600">
                             <p>查询进程ID和属性的动态信息：top</p>
                             <p>关闭进程：kill -9 ID</p>
                             <p>netstat -tunlp |grep 22  //查看22端口</p>
                             <p>pgrep -f tomcat  //查看进程名字为tomcat的端口号</p>
+                            <p>ps -aux|grep 进程名字 //查看进程号</p>
+                            <p>cat /proc/3664/status //查看详细内存占用</p>
                             <p>ps aux | grep defunct //查看僵尸进程</p>
                             <p>ps axu | head -n 10</p>
                             <p>ps a 显示现行终端机下的所有程序，包括其他用户的程序。</p>
@@ -5942,10 +5971,11 @@
                             <p>cat filename | head -n 3000 | tail -n +1000 //查看1000~3000行日志</p>
                             <p>查看后台启动的进程：jobs</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="面试问题杂" content-height="400">
+                        <accordion-item class="stableBack" title="孤儿进程" content-height="80">
                             <p>孤儿进程指的是在其父进程执行完成或被终止 后仍继续运行的一类进程。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="僵尸进程" content-height="100">
                             <p>僵尸进程是指完成执行（通过 exit 系统调用，或运行时发生致命错误或收到终止信号所致）但在操作系统的进程表中仍然有一个表项（进程控制块PCB），处于"终止状态 "的进程。</p>
-                            <p></p>
                         </accordion-item>
                     </accordion>
                 </div>
