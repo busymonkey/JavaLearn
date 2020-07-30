@@ -81,7 +81,7 @@
         `,
         data() {
             return {
-                cells: ['Java基础','设计模式','数据库基础','网络基础','中间件','分布式','SSM','算法','问题排查','Go基础','面试准备'],
+                cells: ['Java基础','设计模式','数据库基础','网络基础','操作系统','中间件','分布式','SSM','算法','问题排查','Go基础','面试准备'],
             }
         },
         methods: {
@@ -91,13 +91,14 @@
                     case 1: this.$router.push({path: '/designMode'}); break;
                     case 2: this.$router.push({path: '/dataBase'}); break;
                     case 3: this.$router.push({path: '/netWork'}); break;
-                    case 4: this.$router.push({path: '/middleWare'}); break;
-                    case 5: this.$router.push({path: '/distribute'}); break;
-                    case 6: this.$router.push({path: '/ssm'}); break;
-                    case 7: this.$router.push({path: '/algorithm'}); break;
-                    case 8: this.$router.push({path: '/solveProblem'}); break;
-                    case 9: this.$router.push({path: '/golang'}); break;
-                    case 10: this.$router.push({path: '/interview'}); break;
+                    case 4: this.$router.push({path: '/system'}); break;
+                    case 5: this.$router.push({path: '/middleWare'}); break;
+                    case 6: this.$router.push({path: '/distribute'}); break;
+                    case 7: this.$router.push({path: '/ssm'}); break;
+                    case 8: this.$router.push({path: '/algorithm'}); break;
+                    case 9: this.$router.push({path: '/solveProblem'}); break;
+                    case 10: this.$router.push({path: '/golang'}); break;
+                    case 11: this.$router.push({path: '/interview'}); break;
                     default:
                 }
             },
@@ -3189,6 +3190,60 @@
         }
     }
 
+    //// 一级 操作系统
+    const System = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">操作系统</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="进程" content-height="430">
+                            <p>我们都知道计算机的核心是CPU，它承担了所有的计算任务，而操作系统是计算机的管理者，它负责任务的调度，资源的分配和管理，统领整个计算机硬件；应用程序是具有某种功能的程序，程序是运行于操作系统之上的。</p>
+                            <p>进程是一个具有一定独立功能的程序在一个数据集上的一次动态执行的过程，是<span class="redBold">操作系统进行资源分配和调度的一个独立单位</span>是应用程序运行的载体。进程是一种抽象的概念，从来没有统一的标准定义。进程一般由程序，数据集合和进程控制块三部分组成。程序用于描述进程要完成的功能，是控制进程执行的指令集；数据集合是程序在执行时所需要的数据和工作区；程序控制块包含进程的描述信息和控制信息是进程存在的唯一标志，进程具有的特征：</p>
+                            <p>动态性：进程是程序的一次执行过程，是临时的，有生命期的，是动态产生，动态消亡的；<br>并发性：任何进程都可以同其他进行一起并发执行；<br>独立性：进程是系统进行资源分配和调度的一个独立单位；<br>结构性：进程由程序，数据和进程控制块三部分组成<br></p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="线程" content-height="350">
+                            <p>在早期的操作系统中并没有线程的概念，进程是拥有资源和独立运行的最小单位，也是程序执行的最小单位。任务调度采用的是时间片轮转的抢占式调度方式，而进程是任务调度的最小单位，每个进程有各自独立的一块内存，使得各个进程之间内存地址相互隔离。后来，随着计算机的发展，对CPU的要求越来越高，进程之间的切换开销较大，已经无法满足越来越复杂的程序的要求了。</p>
+                            <p>于是就发明了线程，线程是程序执行中一个单一的顺序控制流程，<span class="redBold">是程序执行流的最小单元，是处理器调度和分派的基本单位</span>。一个进程可以有一个或多个线程，各个线程之间共享程序的内存空间(也就是所在进程的内存空间)。一个标准的线程由线程ID，当前指令指针PC，寄存器和堆栈组成。而进程由内存空间(代码，数据，进程空间，打开的文件)和一个或多个线程组成。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="进程和线程的区别" content-height="300">
+                            <p>线程是程序执行的最小单位，而进程是操作系统分配资源的最小单位；</p>
+                            <p>一个进程由一个或多个线程组成，线程是一个进程中代码的不同执行路线</p>
+                            <p>进程之间相互独立，但同一进程下的各个线程之间共享程序的内存空间(包括代码段，数据集，堆等)及一些进程级的资源(如打开文件和信号等)，某进程内的线程在其他进程不可见；</p>
+                            <p>调度和切换：线程上下文切换比进程上下文切换要快得多</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="互斥锁" content-height="100">
+                            <p>进程使用的内存地址可以上锁，即一个线程使用某些共享内存时，其他线程必须等它结束，才能使用这一块内存。（比如火车上的洗手间）</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="信号量" content-height="100">
+                            <p>信号量限制一份资源的最大同步个数。线程可以请求进入资源，并在用完资源时发出信号。（比如火车上的餐厅，最多只允许多少人进入，如果满了需要在门口等，等有人出来了才能进去）</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="Linux下的进程通信" content-height="870">
+                            <p>进程间通信（IPC，InterProcess Communication）是指在不同进程之间传播或交换信息。IPC的方式通常有管道（包括无名管道和命名管道）、消息队列、信号量、共享存储、Socket、Streams等。其中 Socket和Streams支持不同主机上的两个进程IPC。以Linux中的C语言编程为例。</p>
+                            <p>管道：通常指无名管道，是 UNIX 系统IPC最古老的形式。它是半双工的（即数据只能在一个方向上流动），具有固定的读端和写端。它只能用于具有亲缘关系的进程之间的通信（也是父子进程或者兄弟进程之间）。它可以看成是一种特殊的文件，对于它的读写也可以使用普通的read、write 等函数。但是它不是普通的文件，并不属于其他任何文件系统，并且只存在于内存中。</p>
+                            <p>FIFO：也称为命名管道，它是一种文件类型。FIFO可以在无关的进程之间交换数据，与无名管道不同。FIFO有路径名与之相关联，它以一种特殊设备文件形式存在于文件系统中。</p>
+                            <p>消息队列：是消息的链接表，存放在内核中。一个消息队列由一个标识符（即队列ID）来标识。消息队列是面向记录的，其中的消息具有特定的格式以及特定的优先级。消息队列独立于发送与接收进程。进程终止时，消息队列及其内容并不会被删除。消息队列可以实现消息的随机查询,消息不一定要以先进先出的次序读取,也可以按消息的类型读取。</p>
+                            <p>信号量：信号量（semaphore）与已经介绍过的 IPC 结构不同，它是一个计数器。信号量用于实现进程间的互斥与同步，而不是用于存储进程间通信数据。信号量用于进程间同步，若要在进程间传递数据需要结合共享内存。信号量基于操作系统的 PV 操作，程序对信号量的操作都是原子操作。每次对信号量的 PV 操作不仅限于对信号量值加 1 或减 1，而且可以加减任意正整数。支持信号量组。</p>
+                            <p>共享内存：指两个或多个进程共享一个给定的存储区。共享内存是最快的一种 IPC，因为进程是直接对内存进行存取。因为多个进程可以同时操作，所以需要进行同步。信号量+共享内存通常结合在一起使用，信号量用来同步对共享内存的访问。</p>
+                            <p>套接字：即套接字是一种通信机制，凭借这种机制，客户/服务器（即要进行通信的进程）系统的开发工作既可以在本地单机上进行，也可以跨网络进行。也就是说它可以让不在同一台计算机但通过网络连接计算机上的进程进行通信。也因为这样，套接字明确地将客户端和服务器区分开来。</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+            }
+        },
+        methods: {
+
+        }
+    }
+
     //// 一级 中间件
     const MiddleWare = {
         template: `
@@ -5941,6 +5996,9 @@
                             <p>一个难题就是前端虚拟滚动的问题，易方达现有的vue前端框架还在研发中，所以目前的前端框架使用的是jq，表格控件统一使用的是jqgrid，然后资金系统这个项目有些界面比较特殊，需要做无分页处理，界面全部的数据量大概在10w左右，并且需要支持冻结列，这里存在两个问题，一个是无分页的数据展示，如果采用滚动分页获取后台数据前端渲染，则滚动条无法表达全部进度，若采用一次性获取全部数据的虚拟滚动方式，除了数据传输耗时之外，还不支持冻结列（jqgrid虚拟滚动因为稳定性原因屏蔽了冻结列），最后这个问题是跟易方达业务部门沟通后，做成了两种模式。并且我觉得无分页的大数据量前端展示，本身就是一个存在博弈的需求。</p>
                             <p>一个性能问题就是，有一个批量受理型接口，在数据处理部分根据不同的业务类型，在同一个事务内需要多次对数据进行merge操作，每次merge可能是更新，也可能是插入，在压测时发现这个接口在数据量较大的时候，每次merge操作的执行效率都比较低，然后就对单条的sql进行merge前后的执行计划分析对比，发现执行计划并没有改变，但是实际上数据是有较大变化的，所以就分析是由于oracle的统计信息没有及时更新导致，最后在每次数据修改后，都对目标表做了更新统计信息的操作，解决了该问题。</p>
                         </accordion-item>
+                        <accordion-item class="stableBack" title="说说最有价值的一部分工作" content-height="170">
+                            <p>代码走查，项目编码阶段，每天都会抽一定时间去看新提交的代码，不会过多关注业务逻辑，主要是对代码封装做一些审查工作，觉得有改进的地方就会及时与开发人员沟通并协调完善。我觉得现在项目二期结束了，后台代码整体看上去逻辑很清晰，可读性还是比较好的。</p>
+                        </accordion-item>
                         <accordion-item class="stableBack" title="linux下性能瓶颈定位" content-height="550">
                             <p><span class="redBold">内存：</span></p>
                             <p>$>free -m ## 查看内存使用（-m单位兆）</p>
@@ -6288,6 +6346,9 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         { path: '/netWork', component: NetWork },
         { path: '/netBasic', component: NetBasic }, //// 二级菜单 基本概念
         { path: '/tcpudp', component: TCPUDP }, //// 二级菜单 TCP/UDP
+
+        //// 一级菜单 操作系统
+        { path: '/system', component: System },
 
         //// 一级菜单 中间件
         { path: '/middleWare', component: MiddleWare },
