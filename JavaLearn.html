@@ -4799,18 +4799,18 @@
         `,
         data() {
             return {
-                cells: ['排序','剑指Offer题','剑指Offer解','LeetCode题&解','其他算法题&解'],
+                cells: ['排序','二叉树','剑指Offer题','剑指Offer解','LeetCode题&解','其他算法题&解'],
             }
         },
         methods: {
             onCellClick(cellIndex) {
                 switch (cellIndex) {
                     case 0: this.$router.push({path: `/order`}); break;
-                    case 1: this.$router.push({path: `/offerQuestion`}); break;
-                    case 2: this.$router.push({path: `/offerSolve`}); break;
-                    case 3: this.$router.push({path: `/leetCode`}); break;
-                    case 4: this.$router.push({path: `/otherQS`}); break;
-                    case 5: break;
+                    case 1: this.$router.push({path: `/bitree`}); break;
+                    case 2: this.$router.push({path: `/offerQuestion`}); break;
+                    case 3: this.$router.push({path: `/offerSolve`}); break;
+                    case 4: this.$router.push({path: `/leetCode`}); break;
+                    case 5: this.$router.push({path: `/otherQS`}); break;
                     default: this.$router.push({path: `/demo`});
                 }
 
@@ -5397,6 +5397,73 @@
             let editorBaseOrder = CodeMirror.fromTextArea(document.getElementById("BaseOrder"), this.options)
             editorBaseOrder.setValue(this.BaseOrder)
             editorBaseOrder.setSize('auto','300px');
+        }
+    }
+    //// 二级 二叉树
+    const BiTree = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/algorithm')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">二叉树</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="搜索方式" content-height="870">
+                            <p>前序遍历：先访问根节点，再访问左子节点，最后访问右子节点</p>
+                            <p>中序遍历：先访问左子节点，再访问根节点，最后访问右子节点</p>
+                            <p>中序遍历：先访问左子节点，再访问根节点，最后访问右子节点</p>
+                            <p>深度优先遍历（DFS）：从根节点出发，沿着左子树方向进行纵向遍历，直到找到叶子节点为止。然后回溯到前一个节点，进行右子树节点的遍历，直到遍历完所有可达节点为止。</p>
+                            <p>广度优先遍历（BFS）：从根节点出发，在横向遍历二叉树层段节点的基础上纵向遍历二叉树的层次。</p>
+                            <p>DFS实现：【栈】父节点入栈，父节点出栈，先右子节点入栈，后左子节点入栈。(也可用递归，递归就是栈)</p>
+                            <div><textarea id="BiTreeDFS"></textarea></div>
+                            <p>BFS实现：【队列】父节点入队，父节点出队列，先左子节点入队，后右子节点入队。</p>
+                            <div><textarea id="BiTreeBFS"></textarea></div>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+                BiTreeDFS:
+                    "void dfs(TreeNode root) {\n" +
+                    "    if (root == null) {\n" +
+                    "        return;\n" +
+                    "    }\n" +
+                    "    dfs(root.left);\n" +
+                    "    dfs(root.right);\n" +
+                    "}",
+                BiTreeBFS:
+                    "void bfs(TreeNode root) {\n" +
+                    "    Queue<TreeNode> queue = new ArrayDeque<>();\n" +
+                    "    queue.add(root);\n" +
+                    "    while (!queue.isEmpty()) {\n" +
+                    "        TreeNode node = queue.poll(); // Java 的 pop 写作 poll()\n" +
+                    "        if (node.left != null) {\n" +
+                    "            queue.add(node.left);\n" +
+                    "        }\n" +
+                    "        if (node.right != null) {\n" +
+                    "            queue.add(node.right);\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}",
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        mounted() {
+            let editorBiTreeDFS = CodeMirror.fromTextArea(document.getElementById("BiTreeDFS"), this.options)
+            editorBiTreeDFS.setValue(this.BiTreeDFS)
+            editorBiTreeDFS.setSize('auto','150px');
+            let editorBiTreeBFS = CodeMirror.fromTextArea(document.getElementById("BiTreeBFS"), this.options)
+            editorBiTreeBFS.setValue(this.BiTreeBFS)
+            editorBiTreeBFS.setSize('auto','300px');
+
         }
     }
     //// 二级 剑指Offer题
@@ -6742,6 +6809,7 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         //// 一级菜单 算法
         { path: '/algorithm', component: Algorithm },
         { path: '/order', component: Order }, //// 二级菜单 排序
+        { path: '/bitree', component: BiTree }, //// 二级菜单 二叉树
         { path: '/offerQuestion', component: OfferQuestion }, //// 二级菜单 考题
         { path: '/offerSolve', component: OfferSolve }, //// 二级菜单 考题
         { path: '/leetCode', component: LeetCode }, //// 二级菜单 LeetCode题&解
