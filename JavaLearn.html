@@ -6171,6 +6171,10 @@
                             <p>【解答】：采用快速排序思路解答</p>
                             <div><textarea id="OtherQS1"></textarea></div>
                         </accordion-item>
+                        <accordion-item class="stableBack" title="二叉树两个节点最近的祖先" content-height="410">
+                            <p>【解答】：后序遍历递归+DFS</p>
+                            <div><textarea id="OtherQS2"></textarea></div>
+                        </accordion-item>
                     </accordion>
                 </div>
             </div>
@@ -6212,6 +6216,36 @@
                     "        return partition(arr, loLeft+1, right, topK);\n" +
                     "    }\n" +
                     "}",
+                OtherQS2:
+                    "class Solution {\n" +
+                    "    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n" +
+                    "        //// 当越过叶节点，则直接返回 null\n" +
+                    "        //// 当 root 等于 p, q，则直接返回 root\n" +
+                    "        if (root == null || root == p || root == q) {\n" +
+                    "            return root;\n" +
+                    "        }\n" +
+                    "        TreeNode left = lowestCommonAncestor(root.left, p, q);\n" +
+                    "        TreeNode right = lowestCommonAncestor(root.right, p, q);\n" +
+                    "\n" +
+                    "        //// 当left和right同时为空：说明root的左/右子树中都不包含p,q，返回null\n" +
+                    "        //// 当left和right同时不为空：说明p, q分列在root的 异侧 （分别在左/右子树），因此root为最近公共祖先，返回root\n" +
+                    "        //// 当left为空，right不为空p,q都不在root的左子树中，直接返回right。具体可分为两种情况：\n" +
+                    "        ////     p,q其中一个在root的右子树中，此时right指向 p（假设为p）\n" +
+                    "        ////     p,q两节点都在root的右子树中，此时的right指向最近公共祖先节点\n" +
+                    "        //// 当left不为空，right为空：与情况3.同理\n" +
+                    "\n" +
+                    "        //// 这段代码可以做一些合并，但是可读性就会变差\n" +
+                    "        if (left == null && right == null) {\n" +
+                    "            return null;\n" +
+                    "        } else if (left != null && right != null) {\n" +
+                    "            return root;\n" +
+                    "        } else if (left == null && right != null) {\n" +
+                    "            return right;\n" +
+                    "        } else {\n" +
+                    "            return left;\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}",
                 options: {
                     tabSize: 2,
                     theme: "dracula",
@@ -6224,6 +6258,9 @@
             let editorOtherQS1 = CodeMirror.fromTextArea(document.getElementById("OtherQS1"), this.options)
             editorOtherQS1.setValue(this.OtherQS1)
             editorOtherQS1.setSize('auto','300px');
+            let editorOtherQS2 = CodeMirror.fromTextArea(document.getElementById("OtherQS2"), this.options)
+            editorOtherQS2.setValue(this.OtherQS2)
+            editorOtherQS2.setSize('auto','300px');
 
         }
     }
