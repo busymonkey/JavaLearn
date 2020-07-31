@@ -3260,7 +3260,7 @@
         `,
         data() {
             return {
-                cells: ['概念和对比','Redis','Ehcache','Nginx','Zookeeper','RocketMQ','RabbitMQ'],
+                cells: ['概念和对比','Redis','Ehcache','Nginx','Zookeeper','RocketMQ','RabbitMQ','Kafka'],
             }
         },
         methods: {
@@ -3273,6 +3273,7 @@
                     case 4: this.$router.push({path: `/zookeeper`}); break;
                     case 5: this.$router.push({path: `/rocketmq`}); break;
                     case 6: this.$router.push({path: `/rabbitmq`}); break;
+                    case 7: this.$router.push({path: `/kafka`}); break;
                     default: this.$router.push({path: `/demo`});
                 }
 
@@ -3976,6 +3977,7 @@
                             <p><span class="redBold">broker集群：</span>负责topic的创建，向namesrv注册路由信息，消息存储，消息查询，消息消费。broker由master broker和slave borker组成，master broker之间无通信，多个master broker用于分摊消息生产时的压力，每个topic对应的消息会被分配到一个broker集群下的所有master broker上，生产者在发送指定topic的消息时，会从所有可写queue中轮询一个queue进行消息发送，这里的queue对应于broker向namesrv注册的路由信息中的写队列数，不同能力的master broker机器可以配置不同数量的可写队列数，可以实现消息的权重分配。另外，由于topic上的消息可以被分配到任意个broker上，这就支持了方便的broker横向扩展。slave broker用于对master broker进行消息同步备份，对外只提供消息读取，不提供消息发送。</p>
                             <p><span class="redBold">producer与consumer：</span>生产者与消费者，其实都属于rocketMq的客户端，一个应用程序中往往都是生产者与消费者都有的。</p>
                         </accordion-item>
+                        <div class="item item-divider dividerFont">相关问题</div>
                         <accordion-item class="stableBack" title="顺序消费" content-height="100">
                             <p>RocketMQ支持顺序消费。顺序消费分为全局顺序和局部顺序，全局顺序就只有一个orderId，局部顺序就是多个orderId（同一个orderId内保证顺序）</p>
                         </accordion-item>
@@ -4040,14 +4042,13 @@
                         </accordion-item>
                         <accordion-item class="stableBack" title="序列化" content-height="280">
                             <p>RabbitMQ使用ProtoBuf序列化消息,它可作为RabbitMQ的Message的数据格式进行传输,由于是结构化的数据,这样就极大的方便了Consumer的数据高效处理,当然也可以使用XML，与XML相比,ProtoBuf有以下优势：</p>
-                            <p>简单<br>size小了3-10倍<br>速度快了20-100倍<br>易于编程<br>减少了语义的歧</p>
+                            <p>简单<br>size小了3-10倍<br>速度快了20-100倍<br>易于编程<br>减少了语义的歧<br></p>
                             <p>ProtoBuf具有速度和空间的优势，使得它现在应用非常广泛</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="消息顺序" content-height="500">
+                        <accordion-item class="stableBack" title="消息顺序" content-height="330">
                             <p>场景：数据1、2、3按顺序发到一个queue，多个消费者消费同一个queue</p>
                             <div><img src="./img/rabbitmqOrder1.bmp" height="140px" width="100%"></div>
                             <p>解决方案：拆分为多个queue，每个queue由一个consumer消费；或者就一个queue但是对应一个consumer，然后这个consumer内部用内存队列做排队，然后分发给底层不同的worker来处理。</p>
-                            <div><img src="./img/rabbitmqOrder2.bmp" height="140px" width="100%"></div>
                         </accordion-item>
                     </accordion>
                 </div>
@@ -4068,6 +4069,114 @@
             // let editorNginxConf = CodeMirror.fromTextArea(document.getElementById("NginxConf"), this.options)
             // editorNginxConf.setValue(this.NginxConf)
             // editorNginxConf.setSize('auto','300px');
+        }
+    }
+    //// 二级 RabbitMQ
+    const Kafka = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/middleWare')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">Kafka</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="架构" content-height="650">
+                            <p>一个topic的多个partition（每个partition有多个副本）</p>
+                            <div style="transform: rotate(90deg);"><img src="./img/kafka.bmp" height="350px" width="600px"></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="组件" content-height="400">
+                            <p><span class="redBold">topic：</span>Kafka对消息进行归类，发送到集群的每一条消息都要指定一个topic</p>
+                            <p><span class="redBold">partition：</span>物理上的概念，每个topic包含一个或多个partition，一个partition对应一个文件夹，这个文件夹下存储partition的数据和索引文件，每个partition内部是有序的。每个partition在存储层面是一个append log文件，发布到此partition的消息会追加到log文件的尾部，为顺序写人磁盘（顺序写磁盘比随机写内存的效率还要高）。每条消息在log文件中的位置成为offset（偏移量），offset为一个long型数字，唯一标记一条消息。（00000.kafka、00001.kafka、00002.kafka）kafka中只能保证partition中记录是有序的，而不保证topic中不同partition的顺序。</p>
+                            <p><span class="redBold">副本：</span>leader和follower都称为副本，一个partition有多个副本，这些副本中只有一个leader副本，其余都为follower副本。<span class="redBold">消费者和生产者只与leader副本进行交互</span>。follower实时地从 leader 中同步数据，保持和 leader 数据的同步。leader 发生故障时，某个 follower 会成为新的 leader（<span class="redBold">选举新leader采用raft算法</span>）</p>
+                            <p><span class="redBold">producer：</span>生产者，产生消息</p>
+                            <p><span class="redBold">comsumer：</span>消费者，拉取消息</p>
+                            <p><span class="redBold">消费组：</span>每个Consumer属于一个特定的Consumer Group（可为每个Consumer指定group name，若不指定group name则属于默认的group）。同一个组内的consumer是竞争关系来消费消息（一条消息只会被一个组内的一个consumer消费）。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="再均衡" content-height="280">
+                            <p>在Kafka中，当有新消费者加入或者订阅的topic数发生变化时，会触发Rebalance(再均衡：在同一个消费者组当中，分区的所有权从一个消费者转移到另外一个消费者)机制，Rebalance顾名思义就是重新均衡消费者消费。Rebalance的过程如下：</p>
+                            <p>所有成员都向coordinator发送请求，请求入组。一旦所有成员都发送了请求，coordinator会从中选择一个consumer担任leader的角色，并把组成员信息以及订阅信息发给leader<br>leader开始分配消费方案，指明具体哪个consumer负责消费哪些topic的哪些partition。一旦完成分配，leader会将这个方案发给coordinator。coordinator接收到分配方案之后会把方案发给各个consumer，这样组内的所有成员就都知道自己应该消费哪些分区了。所以对于Rebalance来说，Coordinator起着至关重要的作用<br></p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">编码</div>
+                        <accordion-item class="stableBack" title="创建生产者" content-height="370">
+                            <div><textarea id="KafkaCode1"></textarea></div>
+                            <p>Kafka的生产者有如下三个必选的属性：</p>
+                            <p>bootstrap.servers，指定broker的地址清单<br>key.serializer必须是一个实现org.apache.kafka.common.serialization.Serializer接口的类，将key序列化成字节数组。注意：key.serializer必须被设置，即使消息中没有指定key。<br>value.serializer，将value序列化成字节数组<br></p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="发消息" content-height="450">
+                            <p>同步：</p>
+                            <div><textarea id="KafkaCode2"></textarea></div>
+                            <p>异步：</p>
+                            <div><textarea id="KafkaCode3"></textarea></div>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="消费指定分区" content-height="150">
+                            <div><textarea id="KafkaCode4"></textarea></div>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">相关问题</div>
+                        <accordion-item class="stableBack" title="kafka消息如何保证顺序" content-height="600">
+                            <p>原因：数据库中的binlog；一些业务需要，比如希望把某个订单的数据写入一个partion</p>
+                            <p>为何消息会错乱：由于消费者消费消息之后，消费之后，有可能交给很多个线程去处理数据（如下图），这样就导致数据顺序错乱</p>
+                            <div><img src="./img/kafka1.bmp" width="100%"></div>
+                            <p>kafka特点：kafka中，写入一个partion照片中的数据是一定有顺序的；kafka中一个消费者消费一个partion的数据，消费者取出数据时，也是有顺序的。为了保证一个消费者中多个线程去处理时，不会使得消息的顺序被打乱，则可以在消费者中，消息分发至不同的线程时，加一个队列，消费者去做hash分发，将需要放在一起的数据，分发至同一个队列中，最后多个线程从队列中取数据，如下图所示。</p>
+                            <div><img src="./img/kafka2.bmp" width="100%"></div>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+                KafkaCode1:
+                    "Properties kafkaProps = new Properties();\n" +
+                    "kafkaProps.put(\"bootstrap.servers\", \"broker1:port1, broker2:port2\");\n" +
+                    "kafkaProps.put(\"key.serializer\", \"org.apache.kafka.common.StringSerializer\");\n" +
+                    "kafkaProps.put(\"value.serializer\", \"org.apache.kafka.common.StringSerializer\");\n" +
+                    "producer = new KafkaProducer<String, String>(kafkaProps);",
+                KafkaCode2:
+                    "ProducerRecord<String, String> record = new ProducerRecord<>(\"CustomCountry\", \"Precision Products\", \"France\");//Topic Key Value\n" +
+                    "try{\n" +
+                    "    Future future = producer.send(record); \n" +
+                    "    future.get();//不关心是否发送成功，则不需要这行。\n" +
+                    "} catch(Exception e) {\n" +
+                    "    e.printStackTrace();//连接错误、No Leader错误都可以通过重试解决；消息太大这类错误kafkaProducer不会进行任何重试，直接抛出异常\n" +
+                    "} ",
+                KafkaCode3:
+                    "ProducerRecord<String, String> record = new ProducerRecord<>(\"CustomCountry\", \"Precision Products\", \"France\");//Topic Key Value\n" +
+                    "producer.send(record, new DemoProducerCallback());//发送消息时，传递一个回调对象，该回调对象必须实现org.apahce.kafka.clients.producer.Callback接口\n" +
+                    "\n" +
+                    "private class DemoProducerCallback implements Callback {\n" +
+                    "    @Override\n" +
+                    "    public void onCompletion(RecordMetadata recordMetadata, Exception e) {\n" +
+                    "        if (e != null) {//如果Kafka返回一个错误，onCompletion方法抛出一个non null异常。\n" +
+                    "            e.printStackTrace();//对异常进行一些处理，这里只是简单打印出来\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "} ",
+                KafkaCode4:
+                    "TopicPartition topicPartition = new TopicPartition(\"test\" , 1);\n" +
+                    "KafkaConsumer consumer = new KafkaConsumer(props);\n" +
+                    "consumer.assign(Arrays.asList(topicPartition));",
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        mounted() {
+            let editorKafkaCode1 = CodeMirror.fromTextArea(document.getElementById("KafkaCode1"), this.options)
+            editorKafkaCode1.setValue(this.KafkaCode1)
+            editorKafkaCode1.setSize('auto','150px');
+            let editorKafkaCode2 = CodeMirror.fromTextArea(document.getElementById("KafkaCode2"), this.options)
+            editorKafkaCode2.setValue(this.KafkaCode2)
+            editorKafkaCode2.setSize('auto','150px');
+            let editorKafkaCode3 = CodeMirror.fromTextArea(document.getElementById("KafkaCode3"), this.options)
+            editorKafkaCode3.setValue(this.KafkaCode3)
+            editorKafkaCode3.setSize('auto','170px');
+            let editorKafkaCode4 = CodeMirror.fromTextArea(document.getElementById("KafkaCode4"), this.options)
+            editorKafkaCode4.setValue(this.KafkaCode4)
+            editorKafkaCode4.setSize('auto','100px');
         }
     }
 
@@ -6363,6 +6472,7 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         { path: '/zookeeper', component: Zookeeper }, //// 二级菜单 Zookeeper
         { path: '/rocketmq', component: RocketMQ }, //// 二级菜单 RocketMQ
         { path: '/rabbitmq', component: RabbitMQ }, //// 二级菜单 RabbitMQ
+        { path: '/kafka', component: Kafka }, //// 二级菜单 Kafka
 
         //// 一级菜单 分布式
         { path: '/distribute', component: Distribute },
