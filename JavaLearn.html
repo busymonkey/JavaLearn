@@ -4202,9 +4202,37 @@
                         <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
                         <span slot="title"><h3 class="padding text-center headerTop">分布式</h3></span>
                     </von-header>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="1"></cells>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+                cells: ['基本概念','分布式理论','分布式应用'],
+            }
+        },
+        methods: {
+            onCellClick(cellIndex) {
+                switch (cellIndex) {
+                    case 0: this.$router.push({path: `/distributeBasic`}); break;
+                    case 1: this.$router.push({path: `/distributeTheory`}); break;
+                    case 2: this.$router.push({path: `/distributeReality`}); break;
+                    default: this.$router.push({path: `/demo`});
+                }
+            },
+        }
+    }
+    //// 二级 基本概念
+    const DistributeBasic = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/distribute')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">基本概念</h3></span>
+                    </von-header>
                     <accordion default-index="0">
-                        <div class="item item-divider dividerFont">分布式事务（概念）</div>
-                        <accordion-item class="stableBack" title="ACID" content-height="230">
+                        <accordion-item class="stableBack" title="ACID" content-height="280">
                             <p>关系数据库的ACID模型拥有 高一致性 + 可用性 很难进行分区：</p>
                             <p><span class="redBold">Atomicity原子性：</span>一个事务中所有操作都必须全部完成，要么全部不完成。</p>
                             <p><span class="redBold">Consistency一致性：</span>在事务开始或结束时，数据库应该在一致状态。</p>
@@ -4224,7 +4252,38 @@
                             <p>定理：任何分布式系统只可同时满足二点，没法三者兼顾。</p>
                             <p>忠告：架构师不要将精力浪费在如何设计能满足三者的完美分布式系统，而是应该进行取舍。</p>
                         </accordion-item>
-                        <div class="item item-divider dividerFont">分布式事务（实现）</div>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        mounted() {
+            // let editorNginxConf = CodeMirror.fromTextArea(document.getElementById("NginxConf"), this.options)
+            // editorNginxConf.setValue(this.NginxConf)
+            // editorNginxConf.setSize('auto','300px');
+        }
+    }
+    //// 二级 分布式理论
+    const DistributeTheory = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/distribute')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">分布式理论</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <div class="item item-divider dividerFont">基础</div>
                         <accordion-item class="stableBack" title="2PC" content-height="780">
                             <p>跨数据库两段提交事务：2PC (two-phase commit)， 2PC is the anti-scalability pattern (Pat Helland) 是反可伸缩模式的，JavaEE中的JTA事务可以支持2PC。因为2PC是反模式，尽量不要使用2PC，使用BASE来回避。</p>
                             <p><span class="redBold">第一阶段：</span></p>
@@ -4239,47 +4298,131 @@
                             <p>发送回滚请求：协调者向所有参与者发送Rollback请求</p>
                             <p>事务回滚：参与者接收到Rollback请求后，会利用其在阶段一中记录的Undo信息来执行事务回滚操作，完成回滚之后释放在整个事务执行期间占用的资源，并向协调者发送Ack消息，协调者接收到所有的参与者反馈的Ack消息后，完成事务中断</p>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="Paxos" content-height="2230">
-                            <p>Paxos是分布式的基础，其他大多数算法基本都是由Paxos引申出来。</p>
-                            <p>说到分布式一致性协议，Paxos 肯定是绕不开的，关于它和其作者 Lamport 的传奇故事也是有很多，这里就不啰嗦了，感兴趣的可以自行搜索。作为几种常见协议的基础，Paxos 提供了“选举” 的思想，Lamport 为了简化 Paxos，也为了讲述这个算法，假想了一个叫做 Paxos 的希腊城邦进行选举的情景，这个算法也是因此而得名。</p>
-                            <p><span class="redBold">Paxos 协议中，有三类节点：</span></p>
-                            <p><span class="redBold">Proposer:提案者：</span>Proposer 可以有多个，Proposer 提出议案(value)。所谓 value，在工程中可以是任何操作，例如“修改某个变量的值为某个值”、“设置当前 primary 为某个节点”等等。Paxos 协议中统一将这些操作抽象为 value。不同的 Proposer 可以提出不同的甚至矛盾的 value，例如某个 Proposer 提议“将变量 X 设置为 1”，另一个 Proposer 提议“将变量 X 设置为 2”，但对同一轮 Paxos 过程，最多只有一个 value 被批准。</p>
-                            <p><span class="redBold">Acceptor:批准者：</span>Acceptor 有 N 个，Proposer 提出的 value 必须获得超过半数(N/2+1)的Acceptor 批准后才能通过。Acceptor 之间完全对等独立。</p>
-                            <p><span class="redBold">Learner:学习者：</span>Learner 学习被批准的 value。所谓学习就是通过读取各个 Proposer 对 value 的选择结果，如果某个 value 被超过半数 Proposer 通过，则 Learner 学习到了这个 value。这里类似 Quorum 议会机制，某个 value 需要获得 W=N/2 + 1 的 Acceptor 批准，Learner 需要至少读取 N/2+1 个 Accpetor，至多读取 N 个 Acceptor 的结果后，能学习到一个通过的 value。</p>
-                            <p><span class="redBold">Paxos 算法的步骤是这样：</span></p>
-                            <p><span class="redBold">1、</span>首先有两种角色，一个是“提议者”，一个是“接受者”。提议者可以向接受者提出提议，然后接受者表达意见。</p>
-                            <p><span class="redBold">2、</span>因为存在多个提议者，如果同时表达意见会出现意见不一致的情况，所以首先需要尽快选出一个领导者，让意见统一。</p>
-                            <p><span class="redBold">3、</span>然后领导者会给接受者发出提议，如果一个提议被大多数接受者接纳，这个提议就通过了。</p>
-                            <p><span class="redBold">大致的流程是这样，再完善一下细节：</span></p>
-                            <p><span class="redBold">1、</span>如何明确领导者？这里会有两个阶段：</p>
-                            <p><span class="redBold">2、</span>第一阶段是先达成一致，协商出领导者，具体方法就是通过编号，提议者会先报告一个编号，谁的编号最大谁就是领导（Lamport 巧妙的比喻为“贿选”，谁出的钱多就选谁）。</p>
-                            <p><span class="redBold">3、</span>然后第二阶段就是上一轮胜出的领导提出提议，发送给各个接受者。</p>
-                            <p><span class="redBold">4、</span>跟常识不太一样的是，每个提议者不会执着于当领导，而是谋求尽快达成共识，所以如果在一个提议者提议的时候，如果发现接受者已经接受了其他领导者的提议，也会默默的把自己的提议改为前面领导者的提议。</p>
-                            <p><span class="redBold">5、</span>编号不能太小，很小的话前两个阶段都会直接失败，接受者拒绝接受你的提议。</p>
-                            <p><span class="redBold">6、</span>在步骤 2 中，还有可能出现冲突：比如如果一个提议者在对接受者 A 提议的时候，发现 A 接受了领导者 L1 的提议，然后又去接受者 B 那里提议，发现 B 接受了领导者 L2 的提议，已知这个提议者肯定会跟随前面已经存在的提议，那么他会把自己的提议改为上面两个的哪个呐？答案是数值更大的那个。</p>
-                            <p><span class="redBold">7、</span>在达成共识之前，这整个阶段，哪个提议者先来，哪个后来，接受者什么时候收到提议者的信息，都是不可控的。所以有可能产生这样一种情况：一个提议者已经晋升为领导者，但是还没发起提议，这时候另外一个“土豪”提议者过来，疯狂“贿选”，还是存在机会让自己胜出的。这时就形成了一种博弈：</p>
-                            <p><span class="redBold">8、</span>上一个领导者要赶在土豪提议者贿赂到接受者前，赶到接受者面前让他接受自己的提议，否则会因为自己的之前贿赂的钱比土豪少而被拒绝。</p>
-                            <p><span class="redBold">9、</span>土豪“提议者”要赶在上一个领导者将提议传达给接受者前，贿赂到接受者，否则土豪提议者即便贿赂成功，也要默默的将自己的提议改为前任意见领袖的提议。</p>
-                            <p>这整个博弈的过程，最终就看这两个提议者谁的进展快了。但最终一定会有一个领导者，先得到多数接受者的认可，那他的提议就胜出了。</p>
-                            <p><span class="redBold">总结来看，Paxos 包括以下几个原则：</span></p>
-                            <p><span class="redBold">1、</span>Paxos 算法包括两个阶段：第一个阶段主要是贿选，还没有提出提议；第二个阶段主要根据第一阶段的结果，明确接受谁的提议，并明确提议的内容是什么（这个提议可能是贿选胜出提议者自己的提议，也可能是前任意见领袖的提议，具体是哪个提议，往下看，见下面第 3 点的内容）。</p>
-                            <p><span class="redBold">2、</span>编号（贿赂金额）很重要，无论在哪个阶段，编号（贿赂金额）小的，都会被拒绝。</p>
-                            <p><span class="redBold">3、</span>在第一阶段中，一旦接受者已经接受了之前领导者的提议，那后面再来找这个接受者的提议者，即便在贿赂中胜出，也要被洗脑，默默将自己的提议改为前任意见领袖的提议，然后他会在第二阶段提出该提议（也就是之前意见领袖的提议，以力争让大家的意见趋同）。如果接受者之前没有接受过任何提议，那贿选胜出的提议者就可以提出自己的提议了。</p>
-                            <p>以上，我们说的 Paxos 其实又叫 Basic Paxos，只具备理论基础，实际上实现起来很麻烦而且效率低。因为每次同步一个信息，就要进行上述繁杂的达成共识阶段，无异会产生巨大的开销。</p>
-                            <p>于是后来又有了进阶版的 Multi Paxos 协议。只要 Leader 是相对稳定不变的，第 1 阶段就变得不必要。 这样，系统可以在接下来的 Paxos 算法实例中，跳过的第 1 阶段，直接使用同样的 Leader。</p>
-                            <p>Multi Paxos 本身对一些边缘情况没有定义，所以大多数实际应用是基于 Multi Paxos 进行补充，或者使用它的变种 Raft。</p>
+                        <div class="item item-divider dividerFont">Paxos</div>
+                        <accordion-item class="stableBack" title="组成和简介" content-height="750">
+                            <p>Paxos算法解决的问题正是分布式一致性问题，即一个分布式系统中的各个进程如何就某个值（决议）达成一致。Paxos算法运行在允许宕机故障的异步系统中，不要求可靠的消息传递，可容忍消息丢失、延迟、乱序以及重复。它利用大多数 (Majority) 机制保证了2F+1的容错能力，即2F+1个节点的系统最多允许F个节点同时出现故障。</p>
+                            <p>一个或多个提议进程 (Proposer) 可以发起提案 (Proposal)，Paxos算法使所有提案中的某一个提案，在所有进程中达成一致。系统中的多数派同时认可该提案，即达成了一致。最多只针对一个确定的提案达成一致。Paxos将系统中的角色分为提议者 (Proposer)，决策者 (Acceptor)，和最终决策学习者 (Learner)：</p>
+                            <p><span class="redBold">Proposer: </span>提出提案 (Proposal)。Proposal信息包括提案编号 (Proposal ID) 和提议的值 (Value)。<br><span class="redBold">Acceptor：</span>参与决策，回应Proposers的提案。收到Proposal后可以接受提案，若Proposal获得多数Acceptors的接受，则称该Proposal被批准。<br><span class="redBold">Learner：</span>不参与决策，从Proposers/Acceptors学习最新达成一致的提案（Value）。<br></p>
+                            <p>在多副本状态机中，每个副本同时具有Proposer、Acceptor、Learner三种角色。</p>
+                            <div><img src="./img/paxos1.bmp" width="100%"></div>
                         </accordion-item>
-                        <accordion-item class="stableBack" title="Raft" content-height="570">
-                            <p>在Raft中，任何时候一个服务器可以扮演下面角色之一：</p>
-                            <p><span class="redBold">Leader：</span>处理所有客户端交互，日志复制等，一般一次只有一个Leader。</p>
-                            <p><span class="redBold">Follower：</span>类似选民，完全被动。</p>
-                            <p><span class="redBold">Candidate候选人：</span>类似Proposer律师，可以被选为一个新的领导人。</p>
+                        <accordion-item class="stableBack" title="算法流程" content-height="1000">
+                            <p>Paxos算法通过一个决议分为两个阶段（Learn阶段之前决议已经形成）：</p>
+                            <p><span class="redBold">1、</span>第一阶段：Prepare阶段。Proposer向Acceptors发出Prepare请求，Acceptors针对收到的Prepare请求进行Promise承诺。<br><span class="redBold">2、</span>第二阶段：Accept阶段。Proposer收到多数Acceptors承诺的Promise后，向Acceptors发出Propose请求，Acceptors针对收到的Propose请求进行Accept处理。<br><span class="redBold">3、</span>第三阶段：Learn阶段。Proposer在收到多数Acceptors的Accept之后，标志着本次Accept成功，决议形成，将形成的决议发送给所有Learners。<br></p>
+                            <div><img src="./img/paxos2.bmp" width="100%"></div>
+                            <p><span class="redBold">Paxos算法流程中的每条消息描述如下：</span></p>
+                            <p>Prepare: Proposer生成全局唯一且递增的Proposal ID (可使用时间戳加Server ID)，向所有Acceptors发送Prepare请求，这里无需携带提案内容，只携带Proposal ID即可。<br>Promise: Acceptors收到Prepare请求后，做出“两个承诺，一个应答”。<br></p>
+                            <p><span class="redBold">两个承诺：</span></p>
+                            <p>不再接受Proposal ID小于等于（注意：这里是<= ）当前请求的Prepare请求。<br>不再接受Proposal ID小于（注意：这里是< ）当前请求的Propose请求。<br></p>
+                            <p><span class="redBold">一个应答：</span></p>
+                            <p>不违背以前作出的承诺下，回复已经Accept过的提案中Proposal ID最大的那个提案的Value和Proposal ID，没有则返回空值。</p>
+                            <p>Propose: Proposer 收到多数Acceptors的Promise应答后，从应答中选择Proposal ID最大的提案的Value，作为本次要发起的提案。如果所有应答的提案Value均为空值，则可以自己随意决定提案Value。然后携带当前Proposal ID，向所有Acceptors发送Propose请求。<br>Accept: Acceptor收到Propose请求后，在不违背自己之前作出的承诺下，接受并持久化当前Proposal ID和提案Value。<br>Learn: Proposer收到多数Acceptors的Accept后，决议形成，将形成的决议发送给所有Learners。<br></p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="代码实现" content-height="750">
+                            <div><img src="./img/paxos3.bmp" width="100%"></div>
+                            <p><span class="redBold">1、</span>获取一个Proposal ID n，为了保证Proposal ID唯一，可采用时间戳+Server ID生成；</p>
+                            <p><span class="redBold">2、</span>Proposer向所有Acceptors广播Prepare(n)请求；</p>
+                            <p><span class="redBold">3、</span>Acceptor比较n和minProposal，如果n>minProposal，minProposal=n，并且将 acceptedProposal 和 acceptedValue 返回；</p>
+                            <p><span class="redBold">4、</span>Proposer接收到过半数回复后，如果发现有acceptedValue返回，将所有回复中acceptedProposal最大的acceptedValue作为本次提案的value，否则可以任意决定本次提案的value；</p>
+                            <p><span class="redBold">5、</span>到这里可以进入第二阶段，广播Accept (n,value) 到所有节点；</p>
+                            <p><span class="redBold">6、</span>Acceptor比较n和minProposal，如果n>=minProposal，则acceptedProposal=minProposal=n，acceptedValue=value，本地持久化后，返回；否则，返回minProposal。</p>
+                            <p><span class="redBold">7、</span>提议者接收到过半数请求后，如果发现有返回值result >n，表示有更新的提议，跳转到1；否则value达成一致。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="活锁" content-height="130">
+                            <p>回顾两个承诺之一，Acceptor不再应答Proposal ID小于等于当前请求的Prepare请求。意味着需要应答Proposal ID大于当前请求的Prepare请求。两个Proposers交替Prepare成功，而Accept失败，形成活锁（Livelock）。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="Multi-Paxos算法" content-height="880">
+                            <p>原始的Paxos算法（Basic Paxos）只能对一个值形成决议，决议的形成至少需要两次网络来回，在高并发情况下可能需要更多的网络来回，极端情况下甚至可能形成活锁。如果想连续确定多个值，Basic Paxos搞不定了。因此Basic Paxos几乎只是用来做理论研究，并不直接应用在实际工程中。</p>
+                            <p>实际应用中几乎都需要连续确定多个值，而且希望能有更高的效率。Multi-Paxos正是为解决此问题而提出。Multi-Paxos基于Basic Paxos做了两点改进：</p>
+                            <p><span class="redBold">1、</span>针对每一个要确定的值，运行一次Paxos算法实例（Instance），形成决议。每一个Paxos实例使用唯一的Instance ID标识。<br><span class="redBold">2、</span>2.在所有Proposers中选举一个Leader，由Leader唯一地提交Proposal给Acceptors进行表决。这样没有Proposer竞争，解决了活锁问题。在系统中仅有一个Leader进行Value提交的情况下，Prepare阶段就可以跳过，从而将两阶段变为一阶段，提高效率。<br></p>
+                            <div><img src="./img/paxos4.bmp" width="100%"></div>
+                            <p>Multi-Paxos首先需要选举Leader，Leader的确定也是一次决议的形成，所以可执行一次Basic Paxos实例来选举出一个Leader。选出Leader之后只能由Leader提交Proposal，在Leader宕机之后服务临时不可用，需要重新选举Leader继续服务。在系统中仅有一个Leader进行Proposal提交的情况下，Prepare阶段可以跳过。</p>
+                            <p>Multi-Paxos通过改变Prepare阶段的作用范围至后面Leader提交的所有实例，从而使得Leader的连续提交只需要执行一次Prepare阶段，后续只需要执行Accept阶段，将两阶段变为一阶段，提高了效率。为了区分连续提交的多个实例，每个实例使用一个Instance ID标识，Instance ID由Leader本地递增生成即可。</p>
+                            <p>Multi-Paxos允许有多个自认为是Leader的节点并发提交Proposal而不影响其安全性，这样的场景即退化为Basic Paxos。Chubby和Boxwood均使用Multi-Paxos。ZooKeeper使用的Zab也是Multi-Paxos的变形。</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">Raft</div>
+                        <accordion-item class="stableBack" title="组成" content-height="300">
+                            <p>Raft将系统中的角色分为领导者（Leader）、跟从者（Follower）和候选人（Candidate）：</p>
+                            <p><span class="redBold">Leader：</span>接受客户端请求，并向Follower同步请求日志，当日志同步到大多数节点上后告诉Follower提交日志。</p>
+                            <p><span class="redBold">Follower：</span>接受并持久化Leader同步的日志，在Leader告之日志可以提交之后，提交日志。</p>
+                            <p><span class="redBold">Candidate：</span>Leader选举过程中的临时角色。</p>
                             <p>Raft阶段分为两个，首先是选举过程，然后在选举出来的领导人带领进行正常操作，比如日志复制等。</p>
-                            <p><span class="redBold">分区：</span></p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="选举" content-height="1120">
+                            <p>Raft 使用心跳（heartbeat）触发Leader选举。当服务器启动时，初始化为Follower。Leader向所有Followers周期性发送heartbeat。如果Follower在选举超时时间内没有收到Leader的heartbeat，就会等待一段随机的时间后发起一次Leader选举。</p>
+                            <p>Follower将其当前term加一然后转换为Candidate。它首先给自己投票并且给集群中的其他服务器发送 RequestVote RPC （RPC细节参见八、Raft算法总结）。结果有以下三种情况：</p>
+                            <p><span class="redBold">1、</span>赢得了多数的选票，成功选举为Leader；<br><span class="redBold">2、</span>收到了Leader的消息，表示有其它服务器已经抢先当选了Leader；<br><span class="redBold">3、</span>没有服务器赢得多数的选票，Leader选举失败，等待选举时间超时后发起下一次选举。<br></p>
+                            <div><img src="./img/raft1.bmp" width="100%"></div>
+                            <p>选举出Leader后，Leader通过定期向所有Followers发送心跳信息维持其统治。若Follower一段时间未收到Leader的心跳则认为Leader可能已经挂了，再次发起Leader选举过程。Raft保证选举出的Leader上一定具有最新的已提交的日志，这一点将在四、安全性中说明。</p>
+                            <p>值得注意的是，整个选举过程是有一个时间限制的，如下图：</p>
+                            <div><img src="./img/raft2.bmp" width="100%"></div>
+                            <p><span class="redBold">Splite Vote：</span>是因为如果同时有两个候选人向大家邀票，这时通过类似加时赛来解决，两个候选者在一段timeout比如300ms互相不服气的等待以后，因为双方得到的票数是一样的，一半对一半，那么在300ms以后，再由这两个候选者发出邀票，这时同时的概率大大降低，那么首先发出邀票的的候选者得到了大多数同意，成为领导者Leader，而另外一个候选者后来发出邀票时，那些Follower选民已经投票给第一个候选者，不能再投票给它，它就成为落选者了，最后这个落选者也成为普通Follower一员了。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="日志同步" content-height="1770">
+                            <p>Leader选出后，就开始接收客户端的请求。Leader把请求作为日志条目（Log entries）加入到它的日志中，然后并行的向其他服务器发起 AppendEntries RPC （RPC细节参见八、Raft算法总结）复制日志条目。当这条日志被复制到大多数服务器上，Leader将这条日志应用到它的状态机并向客户端返回执行结果。</p>
+                            <div><img src="./img/raft3.bmp" width="100%"></div>
+                            <p>某些Followers可能没有成功的复制日志，Leader会无限的重试 AppendEntries RPC直到所有的Followers最终存储了所有的日志条目。</p>
+                            <p>日志由有序编号（log index）的日志条目组成。每个日志条目包含它被创建时的任期号（term），和用于状态机执行的命令。如果一个日志条目被复制到大多数服务器上，就被认为可以提交（commit）了。</p>
+                            <div><img src="./img/raft4.bmp" width="100%"></div>
+                            <p><span class="redBold">Raft日志同步保证如下两点：</span></p>
+                            <p>如果不同日志中的两个条目有着相同的索引和任期号，则它们所存储的命令是相同的。<br>如果不同日志中的两个条目有着相同的索引和任期号，则它们之前的所有条目都是完全一样的。<br></p>
+                            <p>第一条特性源于Leader在一个term内在给定的一个log index最多创建一条日志条目，同时该条目在日志中的位置也从来不会改变。</p>
+                            <p>第二条特性源于 AppendEntries 的一个简单的一致性检查。当发送一个 AppendEntries RPC 时，Leader会把新日志条目紧接着之前的条目的log index和term都包含在里面。如果Follower没有在它的日志中找到log index和term都相同的日志，它就会拒绝新的日志条目。</p>
+                            <p>一般情况下，Leader和Followers的日志保持一致，因此 AppendEntries 一致性检查通常不会失败。然而，Leader崩溃可能会导致日志不一致：旧的Leader可能没有完全复制完日志中的所有条目。</p>
+                            <div><img src="./img/raft5.bmp" width="100%"></div>
+                            <p>上图阐述了一些Followers可能和新的Leader日志不同的情况。一个Follower可能会丢失掉Leader上的一些条目，也有可能包含一些Leader没有的条目，也有可能两者都会发生。丢失的或者多出来的条目可能会持续多个任期。Leader通过强制Followers复制它的日志来处理日志的不一致，Followers上的不一致的日志会被Leader的日志覆盖。Leader为了使Followers的日志同自己的一致，Leader需要找到Followers同它的日志一致的地方，然后覆盖Followers在该位置之后的条目。Leader会从后往前试，每次AppendEntries失败后尝试前一个日志条目，直到成功找到每个Follower的日志一致位点，然后向后逐条覆盖Followers在该位置之后的条目。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="安全性" content-height="1050">
+                            <p>Raft增加了如下两条限制以保证安全性：<span class="redBold">拥有最新的已提交的log entry的Follower才有资格成为Leader。</span></p>
+                            <p>这个保证是在RequestVote RPC中做的，Candidate在发送RequestVote RPC时，要带上自己的最后一条日志的term和log index，其他节点收到消息时，如果发现自己的日志比请求中携带的更新，则拒绝投票。日志比较的原则是，如果本地的最后一条log entry的term更大，则term大的更新，如果term一样大，则log index更大的更新。<span class="redBold">Leader只能推进commit index来提交当前term的已经复制到大多数服务器上的日志，旧term日志的提交要等到提交当前term的日志来间接提交（log index 小于 commit index的日志被间接提交）</span>之所以要这样，是因为可能会出现已提交的日志又被覆盖的情况：</p>
+                            <div><img src="./img/raft6.bmp" width="100%"></div>
+                            <p><span class="redBold">1、</span>在阶段a，term为2，S1是Leader，且S1写入日志（term, index）为(2, 2)，并且日志被同步写入了S2；</p>
+                            <p><span class="redBold">2、</span>在阶段b，S1离线，触发一次新的选主，此时S5被选为新的Leader，此时系统term为3，且写入了日志（term, index）为（3， 2）;</p>
+                            <p><span class="redBold">3、</span>S5尚未将日志推送到Followers就离线了，进而触发了一次新的选主，而之前离线的S1经过重新上线后被选中变成Leader，此时系统term为4，此时S1会将自己的日志同步到Followers，按照上图就是将日志（2， 2）同步到了S3，而此时由于该日志已经被同步到了多数节点（S1, S2, S3），因此，此时日志（2，2）可以被提交了。；</p>
+                            <p><span class="redBold">4、</span>在阶段d，S1又下线了，触发一次选主，而S5有可能被选为新的Leader（这是因为S5可以满足作为主的一切条件：1. term = 5 > 4，2. 最新的日志为（3，2），比大多数节点（如S2/S3/S4的日志都新），然后S5会将自己的日志更新到Followers，于是S2、S3中已经被提交的日志（2，2）被截断了。</p>
+                            <p><span class="redBold">5、</span>增加上述限制后，即使日志（2，2）已经被大多数节点（S1、S2、S3）确认了，但是它不能被提交，因为它是来自之前term（2）的日志，直到S1在当前term（4）产生的日志（4， 4）被大多数Followers确认，S1方可提交日志（4，4）这条日志，当然，根据Raft定义，（4，4）之前的所有日志也会被提交。此时即使S1再下线，重新选主时S5不可能成为Leader，因为它没有包含大多数节点已经拥有的日志（4，4）。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="分区" content-height="300">
                             <p>Raft能够正确地处理网络分区（“脑裂”）问题。假设A~E五个结点，B是leader。如果发生“脑裂”，A、B成为一个子分区，C、D、E成为一个子分区。此时C、D、E会发生选举，选出C作为新term的leader。这样我们在两个子分区内就有了不同term的两个leader。这时如果有客户端写A时，因为B无法复制日志到大部分follower所以日志处于uncommitted未提交状态。而同时另一个客户端对C的写操作却能够正确完成，因为C是新的leader，它只知道D和E。</p>
                             <p>当网络通信恢复，B能够发送心跳给C、D、E了，却发现“改朝换代”了，因为C的term值更大，所以B自动降格为follower。然后A和B都回滚未提交的日志，并从新leader那里复制最新的日志。</p>
                         </accordion-item>
-                        <div class="item item-divider dividerFont">分布式事务（解决方案）</div>
+                        <accordion-item class="stableBack" title="Raft与Multi-Paxos的异同" content-height="400">
+                            <p>同：</p>
+                            <div><img src="./img/raft7.bmp" width="100%"></div>
+                            <p>异：</p>
+                            <div><img src="./img/raft8.bmp" width="100%"></div>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        mounted() {
+            // let editorNginxConf = CodeMirror.fromTextArea(document.getElementById("NginxConf"), this.options)
+            // editorNginxConf.setValue(this.NginxConf)
+            // editorNginxConf.setSize('auto','300px');
+        }
+    }
+    //// 二级 分布式应用
+    const DistributeReality = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/distribute')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">分布式应用</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
                         <accordion-item class="stableBack" title="LCN开源框架（TCC）" content-height="290">
                             <p>(Try-Confirm-Cancel)补偿模式（最终一致性）TCC模型完全交由业务实现、每个子业务都需要实现TCC接口：try：尝试执行业务，完成所有业务检查、预留必要的业务资源；confirm：真正执行业务、不再做业务检查；cancel：释放try阶段预留的业务资源。</p>
                             <p>该模式对代码的嵌入性高，要求每个业务需要写三种步骤的操作。</p>
@@ -6489,6 +6632,9 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
 
         //// 一级菜单 分布式
         { path: '/distribute', component: Distribute },
+        { path: '/distributeBasic', component: DistributeBasic }, //// 二级菜单 基本概念
+        { path: '/distributeTheory', component: DistributeTheory }, //// 二级菜单 分布式理论
+        { path: '/distributeReality', component: DistributeReality }, //// 二级菜单 分布式应用
 
         //// 一级菜单 SSM
         { path: '/ssm', component: SSM },
