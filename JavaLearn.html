@@ -75,13 +75,13 @@
                     <von-header :theme="'stable'">
                         <span slot="title"><h3 class="padding text-center headerTop">目录</h3></span>
                     </von-header>
-                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="4"></cells>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="5"></cells>
                 </div>
             </div>
         `,
         data() {
             return {
-                cells: ['Java基础','设计模式','数据库基础','网络基础','操作系统','中间件','分布式','SSM','算法','问题排查','Go基础','面试准备'],
+                cells: ['Java基础','设计模式','数据库基础','网络基础','操作系统','中间件','分布式','SSM','算法','问题排查','Go基础','面试准备','金融知识'],
             }
         },
         methods: {
@@ -99,6 +99,7 @@
                     case 9: this.$router.push({path: '/solveProblem'}); break;
                     case 10: this.$router.push({path: '/golang'}); break;
                     case 11: this.$router.push({path: '/interview'}); break;
+                    case 12: this.$router.push({path: '/financial'}); break;
                     default:
                 }
             },
@@ -4483,7 +4484,7 @@
         `,
         data() {
             return {
-                cells: ['基础概念','Spring原理','null','null','null','null'],
+                cells: ['基础概念','Spring原理','常用注解','null','null','null'],
             }
         },
         methods: {
@@ -4491,7 +4492,7 @@
                 switch (cellIndex) {
                     case 0: this.$router.push({path: `/basicSSM`}); break;
                     case 1: this.$router.push({path: `/springBasic`}); break;
-                    case 2: break;
+                    case 2: this.$router.push({path: `/anotations`}); break;
                     case 3: break;
                     case 4: break;
                     case 5: break;
@@ -4513,6 +4514,9 @@
                     <accordion default-index="0">
                         <accordion-item class="stableBack" title="Java版本" content-height="70">
                             <p>J2SE（标准版，客户端应用），J2EE（企业版，服务器应用），J2ME（微型版，嵌入式应用）</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="JSR" content-height="170">
+                            <p>JSR是Java Specification Requests的缩写，意思是“Java 规范提案”。是指向JCP(JavaCommunity Process)提出新增一个标准化技术规范的正式请求。任何人都可以提交JSR，以向Java平台增添新的API和服务。JSR已成为Java界的一个重要标准。简单的就是jsr是java开发者以及授权者指定的标准，而java开发者以及授权者形成一个jcp国际组织。职能是指定java标准。</p>
                         </accordion-item>
                         <accordion-item class="stableBack" title="Spring" content-height="450">
                             <p>Spring是一个生态体系（也可以说是技术体系），是集大成者，它包含了Spring Framework、Spring Boot、Spring Cloud等（还包括Spring Cloud data flow、spring data、spring integration、spring batch、spring security、spring hateoas）</p>
@@ -4781,6 +4785,177 @@
             let editorCGlibProxy = CodeMirror.fromTextArea(document.getElementById("CGlibProxy"), this.options)
             editorCGlibProxy.setValue(this.CGlibProxy)
             editorCGlibProxy.setSize('auto','300px');
+        }
+    }
+    //// 二级 常用注解
+    const Anotations = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/ssm')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">常用注解</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <div class="item item-divider dividerFont">Spring</div>
+                        <accordion-item class="stableBack" title="@Bean" content-height="100">
+                            <p>使用@Bean 注解表明myBean需要交给Spring进行管理，未指定bean 的名称，默认采用的是 "方法名" + "首字母小写"的配置方式</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Autowired" content-height="120">
+                            <p>注解(不推荐使用，建议使用@Resource) @Autowired可以对成员变量、方法和构造函数进行标注，来完成自动装配的工作。@Autowired的标注位置不同，它们都会在Spring在初始化这个bean时，自动装配这个属性。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Qualifier" content-height="150">
+                            <p>@Autowired是根据类型进行自动装配的。例如，如果当Spring上下文中存在不止一个UserDao类型的bean时，就会抛出BeanCreationException异常;如果Spring上下文中不存在UserDao类型的bean，也会抛出BeanCreationException异常。我们可以使用@Qualifier配合@Autowired来解决这些问题。如下：1). 可能存在多个UserDao实例；2). 可能不存在UserDao实例</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Resource" content-height="500">
+                            <p>JSR-250标准注解，推荐使用它来代替Spring专有的@Autowired注解。@Resource的作用相当于@Autowired，只不过@Autowired按byType自动注入，而@Resource默认按byName自动注入罢了。@Resource有两个属性是比较重要的，分别是name和type，Spring将 @Resource注解的name属性解析为bean的名字，而type属性则解析为bean的类型。所以如果使用name属性，则使用byName的自动注入策略，而使用type属性时则使用byType自动注入策略。如果既不指定name也不指定type属性，这时将通过反射机制使用byName自动注入策略。装配顺序：</p>
+                            <p>a.如果同时指定了name和type，则从Spring上下文中找到唯一匹配的bean进行装配，找不到则抛出异常</p>
+                            <p>b.如果指定了name，则从上下文中查找名称(id)匹配的bean进行装配，找不到则抛出异常</p>
+                            <p>c.如果指定了type，则从上下文中找到类型匹配的唯一bean进行装配，找不到或者找到多个，都会抛出异常</p>
+                            <p>d.如果既没有指定name，又没有指定type，则自动按照byName方式进行装配(见2);如果没有匹配，则回退为一个原始类型(UserDao)进行匹配，如果匹配则自动装配;</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@PostConstruct" content-height="170">
+                            <p>JSR-250注解 在方法上加上注解@PostConstruct，这个方法就会在Bean初始化之后被Spring容器执行(注：Bean初始化包括，实例化Bean，并装配Bean的属性(依赖注入))。它的一个典型的应用场景是，当你需要往Bean里注入一个其父类中定义的属性，而你又无法复写父类的属性或属性的setter方法时。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@PreDestroy" content-height="170">
+                            <p>JSR-250注解 在方法上加上注解@PreDestroy，这个方法就会在Bean初始化之后被Spring容器执行。其用法同@PostConstruct。和@PostConstruct 区别在于：@PostConstruct注释的方法将在类实例化后调用，而标注了 @PreDestroy 的方法将在类销毁之前调用。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Component" content-height="180">
+                            <p>(不推荐使用) 只需要在对应的类上加上一个@Component注解，就将该类定义为一个Bean了。Spring还提供了更加细化的注解形式：@Repository、@Service、@Controller，它们分别对应存储层Bean，业务层Bean，和展示层Bean。目前版本(2.5)中，这些注解与@Component的语义是一样的，完全通用，在Spring以后的版本中可能会给它们追加更多的语义。所以，我们推荐使用@Repository、@Service、@Controller来替代@Component。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Scope" content-height="120">
+                            <p>在使用XML定义Bean时，我们可能还需要通过bean的scope属性来定义一个Bean的作用范围，我们同样可以通过@Scope注解来完成这项工作</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Transactional" content-height="740">
+                            <p>指定回滚：@Transactional(rollbackFor=Exception.class)</p>
+                            <p>指定不回滚：@Transactional(noRollbackFor=RuntimeException.class)</p>
+                            <p>如果有事务，那么加入事务，没有的话新建一个(不写的情况下)：@Transactional(propagation=Propagation.REQUIRED)</p>
+                            <p>容器不为这个方法开启事务：@Transactional(propagation=Propagation.NOT_SUPPORTED)</p>
+                            <p>不管是否存在事务，都创建一个新的事务，原来的挂起，新的执行完毕，继续执行老的事务：@Transactional(propagation=Propagation.REQUIRES_NEW) </p>
+                            <p>必须在一个已有的事务中执行，否则抛出异常：@Transactional(propagation=Propagation.MANDATORY)</p>
+                            <p>必须在一个没有的事务中执行，否则抛出异常(与Propagation.MANDATORY相反)：@Transactional(propagation=Propagation.NEVER)</p>
+                            <p>如果其他bean调用这个方法，在其他bean中声明事务，那就用事务。如果其他bean没有声明事务，那就不用事务：@Transactional(propagation=Propagation.SUPPORTS)</p>
+                            <p>如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行；如果当前没有事务，则该取值等价于REQUIRED：@Transactional(propagation=Propagation.NESTED)</p>
+                            <p>readOnly=true只读,不能更新,删除：@Transactional (propagation = Propagation.REQUIRED,readOnly=true)</p>
+                            <p>设置超时时间：@Transactional (propagation = Propagation.REQUIRED,timeout=30)</p>
+                            <p>设置数据库隔离级别：@Transactional (propagation = Propagation.REQUIRED,isolation=Isolation.DEFAULT)</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@CrossOrigin" content-height="120">
+                            <p>@CrossOrigin(origins = "", maxAge = 1000) 这个注解主要是为了解决跨域访问的问题。这个注解可以为整个controller配置启用跨域，也可以在方法级别启用。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Controller" content-height="170">
+                            <p>使用@Controller注解标识UserAction之后，就表示要把UserAction交给Spring容器管理，在Spring容器中会存在一个名字为"userAction"的action，这个名字是根据UserAction类名来取的。注意：如果@Controller不指定其value【@Controller】，则默认的bean名字为这个类的类名首字母小写，如果指定value【@Controller(value="UserAction")】或者【@Controller("UserAction")】，则使用value作为bean的名字。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Service" content-height="170">
+                            <p>@Service("userService")注解是告诉Spring，当Spring要创建UserServiceImpl的的实例时，bean的名字必须叫做"userService"，这样当Action需要使用UserServiceImpl的的实例时,就可以由Spring创建好的"userService"，然后注入给Action：在Action只需要声明一个名字叫“userService”的变量来接收由Spring注入的"userService"即可</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Repository" content-height="170">
+                            <p>@Repository(value="userDao")注解是告诉Spring，让Spring创建一个名字叫“userDao”的UserDaoImpl实例。当Service需要使用Spring创建的名字叫“userDao”的UserDaoImpl实例时，就可以使用@Resource(name = "userDao")注解告诉Spring，Spring把创建好的userDao注入给Service即可。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@RequestMapping" content-height="170">
+                            <p>我们可以 @RequestMapping 注解将类似 “/favsoft”这样的URL映射到整个类或特定的处理方法上。一般来说，类级别的注解映射特定的请求路径到表单控制器上，而方法级别的注解只是映射为一个特定的HTTP方法请求（“GET”，“POST”等）或HTTP请求参数。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@PathVariable" content-height="170">
+                            <p>在Spring MVC中，可以使用 @PathVariable 注解方法参数并将其绑定到URI模板变量的值上</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@RequestBody" content-height="170">
+                            <p>@RequestBody是指方法参数应该被绑定到HTTP请求Body上。如果觉得@RequestBody不如@RequestParam趁手，我们可以使用 HttpMessageConverter将request的body转移到方法参数上， HttMessageConverser将 HTTP请求消息在Object对象之间互相转换，但一般情况下不会这么做。事实证明，@RequestBody在构建REST架构时，比@RequestParam有着更大的优势。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@ResponseBody" content-height="140">
+                            <p>@ResponseBody与@RequestBody类似，它的作用是将返回类型直接输入到HTTP response body中。@ResponseBody在输出JSON格式的数据时，会经常用到。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@RestController" content-height="140">
+                            <p>我们经常见到一些控制器实现了REST的API，只为服务于JSON，XML或其它自定义的类型内容，@RestController用来创建REST类型的控制器，与@Controller类型。@RestController就是这样一种类型，它避免了你重复的写@RequestMapping与@ResponseBody。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@HttpEntity" content-height="140">
+                            <p>除了能获得request请求和response响应之外，它还能访问请求和响应头。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@ModelAttribute" content-height="140">
+                            <p>ModelAttribute可以作用在方法或方法参数上，当它作用在方法上时，标明该方法的目的是添加一个或多个模型属性（model attributes）。该方法支持与@RequestMapping一样的参数类型，但并不能直接映射成请求。控制器中的@ModelAttribute方法会在@RequestMapping方法调用之前而调用。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="缓存注解" content-height="300">
+                            <p>@EnableCaching 开启缓存注解的支持</p>
+                            <p>@CacheConfig 用于统一制定一些配置参数，这样在其他缓存注解里面就不用重复指定</p>
+                            <p>@Cacheable 如果之前已经有缓存数据值直接返回缓存数据，否则执行方法，缓存方法的返回结果</p>
+                            <p>@CachePut 能够根据方法的请求参数对其结果进行缓存，和 @Cacheable 不同的是，它每次都会触发真实方法的调用</p>
+                            <p>@CacheEvict 能够根据一定的条件对缓存进行清空</p>
+                            <p>@Caching 组合多个Cache注解使用</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">SpringBoot</div>
+                        <accordion-item class="stableBack" title="@SpringBootApplication" content-height="140">
+                            <p>查看源码可发现，@SpringBootApplication是一个复合注解，包含了@SpringBootConfiguration，@EnableAutoConfiguration，@ComponentScan这三个注解。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@SpringBootConfiguration" content-height="140">
+                            <p>标注当前类是配置类，这个注解继承自@Configuration。并会将当前类内声明的一个或多个以@Bean注解标记的方法的实例纳入到srping容器中，并且实例名就是方法名。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@EnableAutoConfiguration" content-height="140">
+                            <p>是自动配置的注解，这个注解会根据我们添加的组件jar来完成一些默认配置，我们做微服时会添加spring-boot-starter-web这个组件jar的pom依赖，这样配置会默认配置springmvc和tomcat。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@ComponentScan" content-height="140">
+                            <p>扫描当前包及其子包下被@Component，@Controller，@Service，@Repository注解标记的类并纳入到spring容器中进行管理。等价于<context:component-scan>的xml配置文件中的配置项。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@ServletComponentScan" content-height="140">
+                            <p>Servlet、Filter、Listener 可以直接通过 @WebServlet、@WebFilter、@WebListener 注解自动注册，这样通过注解servlet ，拦截器，监听器的功能而无需其他配置，所以这次相中使用到了filter的实现，用到了这个注解。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@MapperScan" content-height="140">
+                            <p>spring-boot支持mybatis组件的一个注解，通过此注解指定mybatis接口类的路径，即可完成对mybatis接口的扫描。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@ImportResource、@Import、@PropertySource" content-height="140">
+                            <p>这三个注解都是用来导入自定义的一些配置文件。</p>
+                        </accordion-item>
+                        <div class="item item-divider dividerFont">JPA</div>
+                        <accordion-item class="stableBack" title="@Entity" content-height="140">
+                            <p>声明该类为持久类。将一个Javabean类声明为一 个实体的数据库表映射类,最好实现序列化.此时,默认情况下,所有的类属性都为映射到数据表的持久性字段.若在类中,添加另外属性,而非映射来数据库的, 要用下面的Transient来注解.</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Table" content-height="140">
+                            <p>持久性映射的表(表名="promotion_info).@Table是类一级的注解,定义在@Entity下,为实体bean映射表,目录和schema的名字,默认为实体bean的类名,不带包名.</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Id" content-height="100">
+                            <p>注释可以表明哪种属性是该类中的独特标识符(即相当于数据表的主键)。 </p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@GeneratedValue" content-height="100">
+                            <p>定义自动增长的主键的生成策略. </p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Transient" content-height="100">
+                            <p>将忽略这些字段和属性,不用持久化到数据库.适用于,在当前的持久类中,某些属性不是用于映射到数据表,而是用于其它的业务逻辑需要,这时,须将这些属性进行transient的注解.否则系统会因映射不到数据表相应字段而出错. </p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Temporal" content-height="100">
+                            <p>@Temporal(TemporalType.TIMESTAMP) 声明时间格式 </p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Enumerated" content-height="100">
+                            <p>声明枚举 </p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Version" content-height="100">
+                            <p>声明添加对乐观锁定的支持</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@OneToOne" content-height="100">
+                            <p>可以建立实体bean之间的一对一的关联</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@OneToMany" content-height="100">
+                            <p>可以建立实体bean之间的一对多的关联</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@ManyToOne" content-height="100">
+                            <p>可以建立实体bean之间的多对一的关联</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@ManyToMany" content-height="100">
+                            <p>可以建立实体bean之间的多对多的关联</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@Formula" content-height="100">
+                            <p>一个SQL表达式，这种属性是只读的,不在数据库生成属性(可以使用sum、average、max等) </p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="@OrderBy" content-height="100">
+                            <p>Many端某个字段排序(List)</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+            }
+        },
+        mounted() {
         }
     }
 
@@ -6486,6 +6661,330 @@
         }
     }
 
+    //// 一级 金融知识
+    const Financial = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/home')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">金融知识</h3></span>
+                    </von-header>
+                    <cells class="cells-43" :items="cells" :on-cell-click="onCellClick" row="2"></cells>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+                cells: ['估值','会计基础','null','null','null','null'],
+            }
+        },
+        methods: {
+            onCellClick(cellIndex) {
+                switch (cellIndex) {
+                    case 0: this.$router.push({path: `/valuation`}); break;
+                    case 1: this.$router.push({path: `/accountingBasic`}); break;
+                    case 2: break;
+                    case 3: break;
+                    case 4: break;
+                    case 5: break;
+                    default: this.$router.push({path: `/demo`});
+                }
+
+            },
+        }
+    }
+    //// 二级 估值
+    const Valuation = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/financial')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">估值</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="股票估值方法" content-height="1400">
+                            <p><span class="redBold">市盈率估值法（PE）</span></p>
+                            <p>市盈率 = 股价 ÷ 每股收益，其中，每股收益＝利润/总股数，PE是指企业以目前的盈利水平，多少年能完全回本？计算公司为PE=每股股价/每股收益，举例来说：买入5.35元每股的工商银行，目前每股收益率为0.79元，那要6.77年才能回本，PE为6.77倍。</p>
+                            <p>从PE估值法的计算公式我们可以看出，里面没有考虑企业的净资产，没有考虑业绩增速，只假设了企业一直这样平稳经营下去，那什么样的企业才符合这样的条件呢？那就是经营已经非常稳定的成熟型企业，比如目前的国有银行、家电巨头、医药巨头、基建巨头等成熟型企业，所以说经营稳定的工商银行、伊利股份、美的集团、中国建筑、华东医药等用市盈率来评估确实是比较合理的。一般情况下，只要企业经营稳定，PE在20倍左右比较合理，在10倍左右算是非常划算。</p>
+                            <p><span class="redBold">PEG估值法</span></p>
+                            <p>PEG = PE ÷ 盈利增长率，举例来说：假设某只股票的市盈率为20，通过相关计算之后某投资者预测该企业的每年盈利增长速度为10%，则该股票的PEG为20÷10=2；如果盈利增长速度为20%，则PEG为20÷20=1。显然，PEG值越低，说明该股要么市盈率越低，要么盈利增长率越高，从而越具有投资价值。</p>
+                            <p>从PEG估值法的计算公式我们可以看出，里面考虑到了企业的盈利、市值以及业绩增速，没有考虑到净资产，那什么样的企业比较适合这样的估值方法呢？一般是行业或者企业处于上升阶段时，比较适合用PEG估值法，比如目前的医疗设备、5G、芯片、光伏等行业，对于这样的行业，其实他们的盈利也不一定十分稳定，还有就是业绩增速你不一定能准确预测，建议在对企业进行估值时，还是要参考一下PB，PB越低，至少安全边际越高。</p>
+                            <p><span class="redBold">PB估值法</span></p>
+                            <p>PB = 每股股价 ÷ 每股净资产，你以34.67元每股的价格买入每股净资产只有8.52元的天齐锂业，那目前天齐锂业的PB为4.07倍。一般情况下，PB越小，安全边际越高，如果PB小于1倍，甚至低于0.8倍，那是非常划算的。</p>
+                            <p>从PB估值法的计算公式我们可以看出，里面没有考虑企业的盈利，也没有考虑公司的业绩增速，单纯就是从公司清算的角度出发，我以现在的价格买下这家公司，然后退市清盘，到底划不划算，什么样的企业符合这样的条件呢？就是企业未来的盈利能力不稳定，这样的企业就适合用PB估值法，比如周期股、盈利能力较差或业绩不稳定的企业。比如宝钢股份、京东方A、国力电力等，目前市场上很多股票都适应PB估值法，毕竟A股中稳定盈利的企业并不多。</p>
+                            <p>PB估值法要注意一点，那就是要把商誉剔除，就是PB = 市值 ÷ (净资产-商誉），因为商誉在财务报表上算是资产，但在实际清算时，一分不值，所以用PB估值法时，记住剔除商誉，比如众泰汽车目前的市值为106亿元，净资产为170.83亿元，商誉为65.79亿元，表面上公司目前的PB为0.63倍，但是实际上剔除商誉后的PB约为1.01倍，和0.63倍还是有很大差距的，这一点大家一定要注意。</p>
+                            <p><span class="redBold">市净率估值法</span></p>
+                            <p>市净率 = 股价 ÷ 最近一期的每股净资产，这种估值方法适用于净资产规模大且比较稳定的企业，如钢铁、煤炭、建筑等传统企业可以使用。但IT、咨询等资产规模较小、人力成本占主导的企业就不适用。分析的时候依旧延续“同行比、历史比”的原则，通常市净率越低，表明投资越安全。</p>
+                            <p><span class="redBold">市现率估值法</span></p>
+                            <p>市现率 = 每股股价 ÷ 每股自由现金流，市现率越小，表明上市公司的每股现金增加额越多，经营压力越小。换言之：一只股票的市价除以每股现金流量得到的数字，就代表着你从这只股票上用现金收回投资成本需要多少年。市现率越低，说明你收回成本的时间越短，就越值得投资。</p>
+                            <p><span class="redBold">DCF估值法</span></p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="停牌股票估值方法" content-height="1150">
+                            <p><span class="redBold">指数收益法</span></p>
+                            <p>对于需要进行估值的股票，使用指数收益法进行估值分为两个步骤：第一步：在估值日，以公开发布的相应行业指数的日收益率作为该股票的收益率。第二步：根据第一步所得的收益率计算该股票当日的公允价值。</p>
+                            <p>指数收益法的优点：估值方法相对公允，同一个行业有近似的属性，能反映市场变化和行业变化。操作上比较简单，有公开数据，容易表述，有利于剔除系统风险对个股的影响。</p>
+                            <p>指数收益法的缺点：每个公司情况千差万别，行业指数不能代表每个公司的情况，公司本身自有的风险可能无法反映出来。目前市场上行业划分标准还不统一。</p>
+                            <p><span class="redBold">可比公司法</span></p>
+                            <p>对于需要进行估值的股票，使用可比公司法进行估值分为三个步骤：第一步：选出与该股票上市公司可比的其他可以取得合理市场价格的公司。所谓“可比”，主要是指行业、地区、主营业务、公司规模、财务结构等方面具有相似性。第二步：在估值日，以可比公司的股票平均收益率作为该股票的收益率。第三步：根据第二步所得到的收益率计算该股票当日的公允价值。</p>
+                            <p>可比公司法的优点：估值方法相对公允，估值相似性高。</p>
+                            <p>可比公司法的缺点：有些股票可能找不到可比公司。找到的可比公司与停牌股票有各种不同之处，需要采取各种参数修正，涉及主观因素多，计算较复杂。</p>
+                            <p><span class="redBold">市场价格模型法</span></p>
+                            <p>市场价格模型方法的原理是利用历史上股票价格和市场指数的相关性，根据指数的变动近似推断出股票价格的变动。对于需要进行估值的股票，使用市场价格模型方法进行估值分为三个步骤：第一步：根据历史数据计算该股票价格与某个市场指数或行业指数的相关性指标，如BETA值。第二步：根据相关性指标和指数收益率，计算该股票的日收益率。第三步：根据第二步所得到的收益率计算该股票当日的公允价值。</p>
+                            <p>市场价格模型法的优点：与指数收益法相比，该方法考虑了上市公司过去自身的特点。</p>
+                            <p>市场价格模型法的缺点：BETA值计算期间的选择不好确定。仅考虑了停牌前的特点，对停牌期间公司的变化没有很好的反映。</p>
+                            <p><span class="redBold">采用估值模型进行估值</span></p>
+                            <p>模型一：CAPM，资本资产定价模型，该估值模型偏重于理论研究，实际应用性较差，一般基金管理公司应用层面不采用。</p>
+                            <p>模型二：DCF，现金流折现法，该估值模型所依据的参数确定涉及的主观判断较高，因此不同公司的结果可能差异较大，因此不倾向于单独使用，可做辅助参考用。</p>
+                            <p>模型三：Earnings Multiple，市盈率法，该估值模型与市场实际情况结合较为紧密，结果较有说服力，所用参数涉及主观判断程度较少，有利于达成一致意见。</p>
+                        </accordion-item>
+                        <accordion-item class="stableBack" title="债券估值方法" content-height="1150">
+                            <div><img src="./img/debenture.bmp" width="100%"></div>
+                            <p><span class="redBold">成本法</span></p>
+                            <p>买入成本法：买入成本法就是以债券的买入价格加上债券的应计利息来进行估值，但这种情况并没有考虑债券存在的溢折价情况，过于简单粗暴，在溢价时高估债券价值，折价时则低估债券价值。</p>
+                            <p>摊余成本法：摊余成本法就是在债券买入价和应计利息的基础上又考虑了每日摊销的溢折价，它可以在设定的波动范围内，保持投资账面净值和收益的稳定，同时通过登记簿来记录市价变动情况，不需要调整账面净值，相对来说既公允又便捷。</p>
+                            <p>在目前的会计准则中，规定只有持有至到期类型的债券才可以采用摊余成本法估值，所以对于非持有至到期且不好估值的债券就会采用买入成本法估值。</p>
+                            <p>因为持有至到期是债券投资的主要策略之一，所以成本法的优点主要就在于可以很好地回避市场波动的干扰，防止净值的大幅波动；但另一方面，因为被动变现现象的客观存在，如果必须变现就可能发生变现价与估值价的背离，所以一方面要对采用成本法估值的产品设定限制，首先根据存续期约束资产端的债券久期，其次考虑负债端的稳定性和结构，如是特定单一委托人还是特定多个委托人的委托结构；另一方面要搭配影子定价法和偏离度控制来使用。</p>
+                            <p>同时，如果一个债券含有权益信息，如可转债和可交换债，存在行权转股的投资策略，理论上不能采用成本法估值。</p>
+                            <p><span class="redBold">市价法</span></p>
+                            <p>收盘价：只有在交易所竞价系统交易的债券才能获得交易所得收盘价，而在银行间，上交所固收平台和深交所大宗平台的交易的债券都无法直接获得交易所的收盘价；另一方面债券的交易流动性也可能很差，其收盘价格并不公允。所以因为债券的流动性和交易场所问题，用交易所收盘价作为市价法的估值方法无法完全反映债券的真实变现价值，在使用前，必须对债券交易所价格的稳定性和公允性进行深入考虑。</p>
+                            <p>第三方估值：目前市场上第三方机构估值多采用的是中债金融估值中心有限公司（以下简称“中债”）和中证指数有限公司（以下简称“中证”）两家机构的估值结果，据了解，两家机构都是用统计作出各种债券收益率曲线、行业利差，再根据成交信息和曲线、利差一起对债券估值；两者的区别主要是中债依托于国务院、人民银行和银监会，中证依托于两家交易所和证监会，其统计样本不同，覆盖范围有差别，同时二者绘制收益率曲线时用的插值法不同，中债采用的是单调三次Hermite多项插值法，中证采用的是三阶样条插值法，所以中证的曲线比中债光滑。在公募基金行业实际业务操作中，一般银行间的债券使用“中债估值”，交易所的债券使用“中证估值”。</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+
+            }
+        },
+        mounted() {
+        }
+    }
+    //// 二级 会计基础
+    const AccountingBasic = {
+        template: `
+            <div class="page has-navbar" v-nav="{hideNavbar: true}">
+                <div class="page-content">
+                    <von-header :theme="'stable'">
+                        <button class="button button-icon ion-ios-arrow-back" slot="left" @click="$router.back('/financial')"></button>
+                        <span slot="title"><h3 class="padding text-center headerTop">会计基础</h3></span>
+                    </von-header>
+                    <accordion default-index="0">
+                        <accordion-item class="stableBack" title="AOP" content-height="1500">
+                            <p>S</p>
+                        </accordion-item>
+                    </accordion>
+                </div>
+            </div>
+        `,
+        data() {
+            return {
+                StaticProxy:
+                    "/** \n" +
+                    "* 定义一个账户接口 \n" +
+                    "*/  \n" +
+                    "public interface Count {  \n" +
+                    "    // 查看账户方法  \n" +
+                    "    public void queryCount();  \n" +
+                    "  \n" +
+                    "    // 修改账户方法  \n" +
+                    "    public void updateCount();    \n" +
+                    "}\n" +
+                    "\n" +
+                    "import net.battier.dao.Count;  \n" +
+                    "/** \n" +
+                    "  * 委托类(包含业务逻辑) \n" +
+                    "  */  \n" +
+                    "public class CountImpl implements Count {  \n" +
+                    "   \n" +
+                    "    @Override  \n" +
+                    "    public void queryCount() {  \n" +
+                    "        System.out.println(\"查看账户方法...\");  \n" +
+                    "  \n" +
+                    "    }  \n" +
+                    "\n" +
+                    "    @Override  \n" +
+                    "    public void updateCount() {  \n" +
+                    "        System.out.println(\"修改账户方法...\");  \n" +
+                    "    }  \n" +
+                    "}\n" +
+                    "\n" +
+                    "import net.battier.dao.Count;  \n" +
+                    " /** \n" +
+                    "  * 这是一个代理类（增强CountImpl实现类） \n" +
+                    "  */  \n" +
+                    "public class CountProxy implements Count {  \n" +
+                    "    private CountImpl countImpl;  \n" +
+                    "    /** \n" +
+                    "     * 覆盖默认构造器 \n" +
+                    "     *  \n" +
+                    "     * @param countImpl \n" +
+                    "     */  \n" +
+                    "    public CountProxy(CountImpl countImpl) {  \n" +
+                    "        this.countImpl = countImpl;  \n" +
+                    "    }  \n" +
+                    "  \n" +
+                    "    @Override  \n" +
+                    "    public void queryCount() {  \n" +
+                    "        System.out.println(\"事务处理之前\");  \n" +
+                    "        // 调用委托类的方法;  \n" +
+                    "        countImpl.queryCount();  \n" +
+                    "        System.out.println(\"事务处理之后\");  \n" +
+                    "    }  \n" +
+                    "  \n" +
+                    "    @Override  \n" +
+                    "    public void updateCount() {  \n" +
+                    "        System.out.println(\"事务处理之前\");  \n" +
+                    "        // 调用委托类的方法;  \n" +
+                    "        countImpl.updateCount();  \n" +
+                    "        System.out.println(\"事务处理之后\");  \n" +
+                    "    }  \n" +
+                    "}\n" +
+                    "\n" +
+                    "import net.battier.dao.impl.CountImpl;  \n" +
+                    "import net.battier.dao.impl.CountProxy;    \n" +
+                    "/** \n" +
+                    " *测试Count类 \n" +
+                    " */  \n" +
+                    "public class TestCount {  \n" +
+                    "    public static void main(String[] args) {  \n" +
+                    "        CountImpl countImpl = new CountImpl();  \n" +
+                    "        CountProxy countProxy = new CountProxy(countImpl);  \n" +
+                    "        countProxy.updateCount();  \n" +
+                    "        countProxy.queryCount();  \n" +
+                    "    }  \n" +
+                    "}\n",
+                Proxy:
+                    "public interface TestService {\n" +
+                    "    void serviceA();\n" +
+                    "    void serviceB();\n" +
+                    "}\n" +
+                    "\n" +
+                    "public class TestServiceImpl implements TestService {\n" +
+                    "\n" +
+                    "    @Override\n" +
+                    "    public void serviceA() {\n" +
+                    "        System.out.println(\"打印Service (A)..\");\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    @Override\n" +
+                    "    public void serviceB() {\n" +
+                    "        System.out.println(\"打印Service (B)..\");\n" +
+                    "    }\n" +
+                    "\n" +
+                    "}\n" +
+                    "\n" +
+                    "import java.lang.reflect.InvocationHandler;\n" +
+                    "import java.lang.reflect.Method;\n" +
+                    "import java.lang.reflect.Proxy;\n" +
+                    "\n" +
+                    "/**\n" +
+                    " * @author Administrator\n" +
+                    " * @Description\n" +
+                    " * @Date 2020/7/21 9:25\n" +
+                    " */\n" +
+                    "public class TestServiceProxyJDK implements InvocationHandler {\n" +
+                    "\n" +
+                    "    private Object target;\n" +
+                    "\n" +
+                    "    public Object bind(Object target) {\n" +
+                    "        this.target = target;\n" +
+                    "        // 取得代理对象\n" +
+                    "        return Proxy.newProxyInstance(target.getClass().getClassLoader(),\n" +
+                    "                target.getClass().getInterfaces(), this);\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    @Override\n" +
+                    "    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {\n" +
+                    "        Object result = null;\n" +
+                    "        System.out.println(\"ProxyService (A) start...\");\n" +
+                    "        System.out.println(\"method name : \"+method.getName());\n" +
+                    "        result = method.invoke(target, args);\n" +
+                    "        System.out.println(\"ProxyService (A) end...\");\n" +
+                    "        return result;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "}\n" +
+                    "\n" +
+                    "TestServiceProxyJDK proxy = new TestServiceProxyJDK();\n" +
+                    "TestService bookProxy = (TestService) proxy.bind(new TestServiceImpl());\n" +
+                    "bookProxy.serviceA();\n" +
+                    "bookProxy.serviceB();",
+                CGlibProxy:
+                    "public class TestServiceNoImpl {\n" +
+                    "    public void serviceA() {\n" +
+                    "        System.out.println(\"未实现接口的A\");\n" +
+                    "    }\n" +
+                    "}\n" +
+                    "\n" +
+                    "import net.sf.cglib.proxy.Enhancer;\n" +
+                    "import net.sf.cglib.proxy.MethodInterceptor;\n" +
+                    "import net.sf.cglib.proxy.MethodProxy;\n" +
+                    "\n" +
+                    "import java.lang.reflect.Method;\n" +
+                    "\n" +
+                    "/**\n" +
+                    " * @author Administrator\n" +
+                    " * @Description\n" +
+                    " * @Date 2020/7/21 9:28\n" +
+                    " */\n" +
+                    "public class TestServiceProxyCGlib implements MethodInterceptor {\n" +
+                    "\n" +
+                    "    private Object target;\n" +
+                    "\n" +
+                    "    /**\n" +
+                    "     * 创建代理对象\n" +
+                    "     *\n" +
+                    "     * @param target\n" +
+                    "     * @return\n" +
+                    "     */\n" +
+                    "    public Object getInstance(Object target) {\n" +
+                    "        this.target = target;\n" +
+                    "        Enhancer enhancer = new Enhancer();\n" +
+                    "        enhancer.setSuperclass(this.target.getClass());\n" +
+                    "        // 回调方法\n" +
+                    "        enhancer.setCallback(this);\n" +
+                    "        // 创建代理对象\n" +
+                    "        return enhancer.create();\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    @Override\n" +
+                    "    public Object intercept(Object arg0, Method arg1, Object[] arg2, MethodProxy arg3) throws Throwable {\n" +
+                    "        System.out.println(\"事物开始\");\n" +
+                    "        arg3.invokeSuper(arg0, arg2);\n" +
+                    "        System.out.println(\"事物结束\");\n" +
+                    "        return null;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "}\n" +
+                    "\n" +
+                    "TestServiceProxyCGlib proxy = new TestServiceProxyCGlib();\n" +
+                    "TestServiceNoImpl testProxy = (TestServiceNoImpl)proxy.getInstance(new TestServiceNoImpl());\n" +
+                    "testProxy.serviceA();",
+                options: {
+                    tabSize: 2,
+                    theme: "dracula",
+                    readOnly: true,
+                    scrollbarStyle: "simple",
+                }
+            }
+        },
+        mounted() {
+            let editorStaticProxy = CodeMirror.fromTextArea(document.getElementById("StaticProxy"), this.options)
+            editorStaticProxy.setValue(this.StaticProxy)
+            editorStaticProxy.setSize('auto','300px');
+            let editorProxy = CodeMirror.fromTextArea(document.getElementById("Proxy"), this.options)
+            editorProxy.setValue(this.Proxy)
+            editorProxy.setSize('auto','300px');
+            let editorCGlibProxy = CodeMirror.fromTextArea(document.getElementById("CGlibProxy"), this.options)
+            editorCGlibProxy.setValue(this.CGlibProxy)
+            editorCGlibProxy.setSize('auto','300px');
+        }
+    }
+
     //// 单元模块 HashMap
     const HashMap = {
         template: `
@@ -6805,6 +7304,7 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
         { path: '/ssm', component: SSM },
         { path: '/basicSSM', component: BasicSSM }, //// 二级菜单 基本概念
         { path: '/springBasic', component: SpringBasic }, //// 二级菜单 Spring原理
+        { path: '/anotations', component: Anotations }, //// 二级菜单 Spring原理
 
         //// 一级菜单 算法
         { path: '/algorithm', component: Algorithm },
@@ -6823,6 +7323,11 @@ boolean compareAndSetState(int e222222222222222222222222222222222222222222222222
 
         //// 一级菜单 面试准备
         { path: '/interview', component: Interview },
+
+        //// 一级菜单 金融知识
+        { path: '/financial', component: Financial },
+        { path: '/valuation', component: Valuation },
+        { path: '/accountingBasic', component: AccountingBasic },
 
         //// 代码段
         { path: '/hashMap', component: HashMap },
