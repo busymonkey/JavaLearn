@@ -2851,16 +2851,20 @@
                         <span slot="title"><h3 class="padding text-center headerTop">杂项</h3></span>
                     </von-header>
                     <accordion default-index="0">
-                        <accordion-item class="stableback" title="SQL join" content-height="850">
+                        <accordion-item class="stableback" title="SQL join" content-height="1000">
                             <div><img src="./img/sqlJoin.bmp" width="100%" height="300px"></div>
                             <p><span class="redBold">inner join</span></p>
                             <div><textarea id="sqlInnerJoin"></textarea></div>
+                            <p>inner join on = join on</p>
+                            <p>join on 和 where 效率一样（无索引）</p>
                             <p><span class="redBold">left join：</span>LEFT JOIN返回左表的全部行和右表满足ON条件的行，如果左表的行在右表中没有匹配，那么这一行右表中对应数据用NULL代替。</p>
                             <div><textarea id="sqlLeftJoin"></textarea></div>
+                            <p>left join on = left outer join on，没有left inner join on，right join 类似</p>
                             <p><span class="redBold">right join：</span>RIGHT JOIN返回右表的全部行和左表满足ON条件的行，如果右表的行在左表中没有匹配，那么这一行左表中对应数据用NULL代替。</p>
                             <div><textarea id="sqlRightJoin"></textarea></div>
                             <p><span class="redBold">full join</span></p>
                             <div><textarea id="sqlFullJoin"></textarea></div>
+                            <p>full join on = full outer join on，且兑换两个表的sql位置结果一样</p>
                         </accordion-item>
                         <accordion-item class="stableback" title="面试题" content-height="1350">
                             <p><span class="redBold">问题1：MySQL中存储索引用到的数据结构是B+树，B+树的查询时间跟树的高度有关，是log(n)，如果用hash存储，那么查询时间是O(1)。既然hash比B+树更快，为什么mysql用B+树来存储索引呢？</span><br>答：一、从内存角度上说，数据库中的索引一般时在磁盘上，数据量大的情况可能无法一次性装入内存，B+树的设计可以允许数据分批加载。<br>二、从业务场景上说，如果只选择一个数据那确实是hash更快，但是数据库中经常会选中多条这时候由于B+树索引有序，并且又有链表相连，它的查询效率比hash就快很多了。</p>
